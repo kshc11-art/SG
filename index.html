@@ -4,359 +4,1027 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="읽기 가이드">
-  <title>읽기 가이드 v5</title>
+  <title>읽기 가이드 v17</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html, body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8fafc; min-height: 100vh; }
+    html, body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; background: #f8fafc; min-height: 100vh; }
     body { padding-bottom: env(safe-area-inset-bottom); }
     button { font-family: inherit; cursor: pointer; border: none; background: none; }
-    button:active { opacity: 0.8; }
-    .container { max-width: 500px; margin: 0 auto; padding-bottom: 80px; }
+    
+    .container { max-width: 520px; margin: 0 auto; padding: 1rem; padding-bottom: 90px; }
+    
     .tab-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e2e8f0; z-index: 100; padding-bottom: env(safe-area-inset-bottom); }
-    .tab-bar-inner { display: flex; max-width: 500px; margin: 0 auto; }
-    .tab-btn { flex: 1; padding: 0.75rem 0.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; }
-    .tab-btn span:first-child { font-size: 1.25rem; }
-    .tab-btn span:last-child { font-size: 0.75rem; }
+    .tab-bar-inner { display: flex; max-width: 520px; margin: 0 auto; }
+    .tab-btn { flex: 1; padding: 0.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.15rem; }
+    .tab-btn span:first-child { font-size: 1.2rem; }
+    .tab-btn span:last-child { font-size: 0.65rem; color: #94a3b8; }
     .tab-btn.active span:last-child { color: #2563eb; font-weight: 600; }
-    .tab-btn:not(.active) span:last-child { color: #94a3b8; }
-    .page { padding: 1rem; }
-    .stats-bar { display: flex; justify-content: center; gap: 2rem; padding: 1rem; background: #fef3c7; border-radius: 16px; margin-bottom: 1.5rem; }
-    .stat { text-align: center; }
-    .stat-icon { font-size: 1.5rem; }
-    .stat-text { font-size: 0.8rem; color: #92400e; }
-    h2 { font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 1.5rem; color: #1e293b; }
+    
+    .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .back-btn { padding: 0.5rem 1rem; border-radius: 10px; background: #f1f5f9; color: #64748b; font-size: 0.9rem; }
+    .mode-btn { padding: 0.5rem 1rem; border-radius: 10px; font-weight: 600; font-size: 0.9rem; }
+    
+    h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; }
+    .subtitle { font-size: 0.8rem; color: #64748b; margin-bottom: 1rem; }
+    
+    /* 타입 선택 */
     .type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    .type-btn { padding: 1.5rem 1rem; border-radius: 20px; display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
+    .type-card { padding: 1.5rem 1rem; border-radius: 20px; display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
     .type-icon { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
-    .type-name { font-size: 1.1rem; font-weight: 600; color: #1e293b; }
-    .header-bar { display: flex; justify-content: space-between; margin-bottom: 1rem; }
-    .header-btn { padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.9rem; }
-    .progress-bar { margin-bottom: 1rem; }
-    .progress-label { display: flex; justify-content: space-between; font-size: 0.85rem; color: #64748b; margin-bottom: 0.5rem; }
-    .progress-track { height: 6px; background: #e2e8f0; border-radius: 3px; }
-    .progress-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
-    .phase-bar { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border-radius: 12px; margin-bottom: 1rem; }
-    .phase-emoji { font-size: 1.25rem; }
+    .type-name { font-size: 1.1rem; font-weight: 600; }
+    .type-desc { font-size: 0.75rem; color: #64748b; }
+    
+    /* 장르 선택 */
+    .genre-row { display: flex; gap: 0.4rem; margin-bottom: 0.75rem; overflow-x: auto; padding-bottom: 0.25rem; }
+    .genre-btn { padding: 0.4rem 0.7rem; border-radius: 14px; font-size: 0.75rem; white-space: nowrap; border: 2px solid #e2e8f0; background: white; }
+    .genre-btn.active { border-color: #3b82f6; background: #eff6ff; color: #1d4ed8; }
+    
+    .genre-box { background: white; border-radius: 12px; padding: 0.75rem; margin-bottom: 0.75rem; border-left: 3px solid; }
+    .genre-box h4 { font-size: 0.9rem; margin-bottom: 0.5rem; }
+    .genre-tip { margin-bottom: 0.4rem; }
+    .genre-tip strong { font-size: 0.8rem; }
+    .genre-tip p { font-size: 0.73rem; color: #64748b; margin-top: 0.1rem; line-height: 1.45; }
+    
+    /* Phase 카드 */
+    .phase-card { margin-bottom: 0.75rem; background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+    .phase-header { padding: 0.85rem 1rem; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+    .phase-emoji { font-size: 1.2rem; }
     .phase-name { font-weight: 700; }
-    .phase-duration { font-size: 0.8rem; color: #64748b; }
-    .step-type-badge { margin-left: auto; padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 0.7rem; }
-    .card { background: white; border-radius: 24px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 1rem; }
-    .card-label { font-size: 0.75rem; font-weight: 600; margin-bottom: 0.5rem; }
-    .card-title { font-size: 1.4rem; font-weight: 700; color: #1e293b; margin-bottom: 1rem; }
-    .thought-box { border-radius: 16px; padding: 1rem; margin-bottom: 1rem; }
-    .thought-label { font-size: 0.75rem; color: #64748b; }
-    .thought-text { font-size: 1.1rem; font-weight: 500; font-style: italic; }
-    .overview-box { font-size: 0.95rem; color: #475569; padding: 0.75rem; background: #f8fafc; border-radius: 12px; margin-bottom: 1rem; }
-    .toggle-btn { width: 100%; padding: 0.75rem; border-radius: 12px; font-size: 1rem; font-weight: 600; margin-bottom: 1rem; }
-    .details-box { padding: 1rem; background: #f8fafc; border-radius: 16px; }
-    .detail-item { padding: 0.5rem 0.75rem; background: white; border-radius: 8px; margin-bottom: 0.5rem; font-size: 0.85rem; }
-    .detail-item.bordered { border-left: 3px solid; }
-    .checkpoint { padding: 0.75rem 1rem; background: #fef3c7; border-radius: 12px; font-size: 0.9rem; color: #92400e; margin-top: 1rem; }
-    .complete-btn { width: 100%; padding: 1.25rem; border-radius: 16px; color: white; font-size: 1.1rem; font-weight: 600; margin-top: 1rem; }
-    .nav-buttons { display: flex; gap: 0.75rem; margin-top: 1rem; }
-    .nav-btn { flex: 1; padding: 0.75rem; border-radius: 12px; font-size: 1rem; }
-    .nav-btn.prev { background: white; border: 1px solid #e2e8f0; color: #64748b; }
-    .nav-btn.next { color: white; font-weight: 600; }
-    .minimap { margin-top: 1rem; padding: 1rem; background: #f8fafc; border-radius: 16px; }
-    .minimap-label { font-size: 0.8rem; color: #64748b; margin-bottom: 0.75rem; }
-    .minimap-phases { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
-    .minimap-phase { display: flex; align-items: center; gap: 4px; }
-    .minimap-dot { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; }
-    .minimap-arrow { color: #cbd5e1; }
-    details { border-radius: 16px; margin-bottom: 0.75rem; overflow: hidden; }
-    summary { padding: 1rem; font-weight: 600; cursor: pointer; list-style: none; }
-    summary::-webkit-details-marker { display: none; }
-    .details-content { padding: 0 1rem 1rem; }
-    .tool-item { background: white; border-radius: 10px; padding: 0.75rem; margin-bottom: 0.5rem; }
-    .tool-title { font-weight: 600; }
-    .tool-sub { font-size: 0.8rem; color: #64748b; }
-    .tool-hint { font-size: 0.8rem; color: #059669; }
-    .timer-display { font-size: 5rem; font-weight: 700; font-family: monospace; margin-bottom: 1.5rem; }
-    .timer-presets { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.5rem; }
-    .preset-btn { padding: 0.75rem 1.25rem; border-radius: 25px; font-size: 1rem; }
-    .preset-btn.active { border: 2px solid #2563eb; background: #eff6ff; color: #2563eb; }
-    .preset-btn:not(.active) { border: 2px solid #e2e8f0; background: white; color: #64748b; }
-    .timer-controls { display: flex; gap: 1rem; justify-content: center; }
-    .timer-main-btn { padding: 1rem 3rem; border-radius: 50px; color: white; font-size: 1.1rem; font-weight: 600; }
-    .timer-reset-btn { padding: 1rem 1.5rem; border-radius: 50px; border: 1px solid #e2e8f0; background: white; color: #64748b; font-size: 1.1rem; }
-    .option-btn { width: 100%; text-align: left; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.75rem; }
-    .option-btn.checked { background: #dcfce7; border-color: #86efac; }
-    .option-checkbox { width: 22px; height: 22px; border-radius: 6px; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; flex-shrink: 0; }
-    .option-btn.checked .option-checkbox { background: #22c55e; border-color: #22c55e; }
-    .option-label { font-weight: 600; }
-    .option-hint { font-size: 0.8rem; color: #64748b; }
-    .overview-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 1rem; }
-    .overview-header { padding: 1rem; display: flex; align-items: center; gap: 0.5rem; }
-    .overview-steps { padding: 0.75rem; }
-    .overview-step { padding: 0.75rem; border-radius: 10px; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.75rem; cursor: pointer; }
-    .overview-step-num { width: 24px; height: 24px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; flex-shrink: 0; }
-    .overview-step-info { flex: 1; }
-    .overview-step-title { font-weight: 600; font-size: 0.95rem; }
-    .overview-step-desc { font-size: 0.8rem; color: #64748b; }
+    .phase-duration { font-size: 0.75rem; color: #64748b; margin-left: auto; }
+    .phase-body { padding: 0.5rem 0.75rem 0.75rem; }
+    
+    /* Step 아이템 */
+    .step-item { padding: 0.7rem; border-radius: 10px; margin-bottom: 0.4rem; background: #f8fafc; display: flex; align-items: center; gap: 0.65rem; cursor: pointer; }
+    .step-item:active { background: #e2e8f0; }
+    .step-num { width: 22px; height: 22px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; flex-shrink: 0; }
+    .step-info { flex: 1; }
+    .step-title { font-weight: 600; font-size: 0.9rem; }
+    .step-overview { font-size: 0.75rem; color: #64748b; }
+    .step-arrow { color: #94a3b8; font-size: 0.7rem; }
+    
+    /* 세부 보기 카드 - 스와이프 가능 */
+    .detail-wrapper { touch-action: pan-y; user-select: none; }
+    .detail-card { background: white; border-radius: 20px; padding: 1.25rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: transform 0.15s ease-out; }
+    .detail-card.swiping { transition: none; }
+    
+    /* 스와이프 힌트 */
+    .swipe-hint { text-align: center; font-size: 0.7rem; color: #94a3b8; margin-top: 0.6rem; padding: 0.4rem; background: #f1f5f9; border-radius: 8px; }
+    .swipe-hint span { margin: 0 0.6rem; }
+    
+    /* SOS 플로팅 버튼 */
+    .sos-float { padding: 0.5rem 0.7rem; border-radius: 10px; background: #fef3c7; color: #b45309; font-size: 0.8rem; font-weight: 600; }
+    
+    /* 완료 메시지 */
+    .complete-msg { background: linear-gradient(135deg, #22c55e, #10b981); color: white; padding: 0.75rem; border-radius: 12px; text-align: center; margin-bottom: 0.75rem; font-weight: 600; animation: celebrate 0.5s; }
+    @keyframes celebrate { 0% { transform: scale(0.9); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+    
+    /* 현재 단계 강조 */
+    .now-badge { display: inline-block; background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; font-size: 0.72rem; font-weight: 700; padding: 0.3rem 0.65rem; border-radius: 10px; margin-bottom: 0.4rem; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+    
+    /* 다음 미리보기 */
+    .next-preview { background: #f1f5f9; border-radius: 10px; padding: 0.55rem 0.7rem; margin-top: 0.65rem; }
+    .next-preview-label { font-size: 0.68rem; color: #64748b; margin-bottom: 0.2rem; }
+    .next-preview-title { font-size: 0.82rem; font-weight: 600; color: #475569; }
+    
+    /* 격려 배너 */
+    .encourage { background: linear-gradient(135deg, #818cf8, #c084fc); color: white; padding: 0.55rem; border-radius: 10px; text-align: center; margin-bottom: 0.75rem; font-size: 0.8rem; }
+    .detail-label { font-size: 0.7rem; font-weight: 600; margin-bottom: 0.4rem; }
+    .detail-title { font-size: 1.3rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .detail-thought { border-radius: 14px; padding: 0.85rem; margin-bottom: 0.85rem; }
+    .detail-thought-label { font-size: 0.7rem; color: #64748b; }
+    .detail-thought-text { font-size: 1rem; font-weight: 500; font-style: italic; }
+    .detail-overview { font-size: 0.9rem; color: #475569; padding: 0.65rem; background: #f8fafc; border-radius: 10px; margin-bottom: 0.85rem; }
+    
+    .toggle-btn { width: 100%; padding: 0.65rem; border-radius: 10px; font-size: 0.95rem; font-weight: 600; margin-bottom: 0.85rem; }
+    
+    .detail-content { padding: 0.85rem; background: #f8fafc; border-radius: 14px; font-size: 0.85rem; line-height: 1.55; }
+    .detail-content ul { padding-left: 1.1rem; margin: 0.4rem 0; }
+    .detail-content li { margin-bottom: 0.35rem; }
+    .detail-content b { color: #1e293b; }
+    .detail-content p { margin-bottom: 0.4rem; }
+    
+    .box-y { background: #fef3c7; border-radius: 8px; padding: 0.5rem 0.65rem; margin: 0.4rem 0; color: #92400e; font-size: 0.8rem; }
+    .box-g { background: #dcfce7; border-radius: 8px; padding: 0.5rem 0.65rem; margin: 0.4rem 0; color: #166534; font-size: 0.8rem; }
+    .box-r { background: #fee2e2; border-radius: 8px; padding: 0.5rem 0.65rem; margin: 0.4rem 0; color: #dc2626; font-size: 0.8rem; }
+    .box-b { background: #dbeafe; border-radius: 8px; padding: 0.5rem 0.65rem; margin: 0.4rem 0; color: #1e40af; font-size: 0.8rem; }
+    .box-c { background: #cffafe; border-radius: 8px; padding: 0.5rem 0.65rem; margin: 0.4rem 0; color: #0e7490; font-size: 0.8rem; }
+    .box-p { background: #f3e8ff; border-radius: 8px; padding: 0.5rem 0.65rem; margin: 0.4rem 0; color: #7c3aed; font-size: 0.8rem; }
+    
+    /* 진행률 */
+    .progress-bar { margin-bottom: 0.85rem; }
+    .progress-info { display: flex; justify-content: space-between; font-size: 0.8rem; color: #64748b; margin-bottom: 0.4rem; }
+    .progress-track { height: 5px; background: #e2e8f0; border-radius: 3px; }
+    .progress-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+    
+    /* 네비게이션 */
+    .nav-buttons { position: fixed; bottom: 65px; left: 0; right: 0; padding: 0 1rem; padding-bottom: 0.5rem; background: linear-gradient(transparent, #f8fafc 20%); }
+    .nav-inner { max-width: 520px; margin: 0 auto; display: flex; gap: 0.5rem; }
+    .nav-btn { flex: 1; padding: 0.65rem; border-radius: 12px; font-weight: 600; font-size: 0.85rem; }
+    
+    /* SOS */
+    .sos-card { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px; margin-bottom: 0.65rem; overflow: hidden; }
+    .sos-header { padding: 0.7rem 0.9rem; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+    .sos-emoji { font-size: 1.2rem; }
+    .sos-title { font-weight: 600; font-size: 0.95rem; }
+    .sos-body { padding: 0.65rem 0.9rem; background: white; border-top: 1px solid #fcd34d; }
+    .sos-strat { background: #fef3c7; border-radius: 8px; padding: 0.5rem 0.65rem; margin-bottom: 0.4rem; }
+    .sos-action { font-weight: 600; color: #b45309; font-size: 0.85rem; }
+    .sos-hint { font-size: 0.75rem; color: #78350f; margin-top: 0.1rem; }
+    
+    /* 타이머 */
+    .timer-display { font-size: 3.5rem; font-weight: 700; font-family: monospace; text-align: center; margin: 1.25rem 0; }
+    .timer-presets { display: flex; gap: 0.4rem; justify-content: center; flex-wrap: wrap; margin-bottom: 0.85rem; }
+    .preset-btn { padding: 0.45rem 0.85rem; border-radius: 18px; font-size: 0.85rem; border: 2px solid #e2e8f0; background: white; }
+    .preset-btn.active { border-color: #3b82f6; background: #eff6ff; color: #1d4ed8; }
+    .timer-controls { display: flex; gap: 0.65rem; justify-content: center; }
+    .timer-main { padding: 0.65rem 1.75rem; border-radius: 22px; font-size: 0.95rem; font-weight: 600; color: white; }
+    .timer-reset { padding: 0.65rem 1.25rem; border-radius: 22px; border: 1px solid #e2e8f0; background: white; font-size: 0.95rem; }
+    .timer-info { background: #eff6ff; border-radius: 10px; padding: 0.65rem 0.85rem; margin-top: 1.25rem; font-size: 0.8rem; color: #1d4ed8; text-align: center; }
+    
+    /* 체크리스트 */
+    .chk { margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px dashed #e2e8f0; }
+    .chk-item { display: flex; align-items: center; gap: 0.4rem; padding: 0.2rem 0; font-size: 0.78rem; }
+    .chk-box { width: 18px; height: 18px; border: 2px solid #cbd5e1; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; cursor: pointer; flex-shrink: 0; }
+    .chk-box.on { background: #22c55e; border-color: #22c55e; color: white; }
+    
+    /* 리셋 버튼 */
+    .reset-btn { padding: 0.25rem 0.5rem; border-radius: 6px; background: #fee2e2; color: #dc2626; font-size: 0.65rem; }
   </style>
 </head>
 <body>
   <div class="container" id="app"></div>
-  <div class="tab-bar">
-    <div class="tab-bar-inner" id="tabs"></div>
-  </div>
-  <script>
-    var TEXT_STRUCTURES = {
-      simple: [
-        { name: '나열/설명', icon: '📋', signals: ['예를 들어', '특징은', '포함하여'], question: '이것의 특징은?' },
-        { name: '순서/과정', icon: '1️⃣', signals: ['첫째', '다음으로', '마지막으로'], question: '어떤 순서로?' },
-        { name: '시간순', icon: '📅', signals: ['처음에', '나중에', '그때'], question: '언제 무슨 일이?' },
-        { name: '정의', icon: '📖', signals: ['~란', '~은/는', '정의하면'], question: '이것은 무엇?' },
-        { name: '비교/대조', icon: '⚖️', signals: ['그러나', '반면', '~와 달리'], question: '어떻게 다른가?' }
-      ],
-      complex: [
-        { name: '원인/결과', icon: '🔗', signals: ['때문에', '따라서', '~로 인해'], question: '왜? 결과는?' },
-        { name: '문제/해결', icon: '💡', signals: ['문제는', '해결책은', '방법은'], question: '문제와 해결책?' },
-        { name: '주장/근거', icon: '⚔️', signals: ['주장하건대', '연구에 따르면'], question: '주장과 근거?' },
-        { name: '평가/비평', icon: '⭐', signals: ['평가하면', '장단점은'], question: '어떤 기준?' },
-        { name: '귀납/연역', icon: '🔺', signals: ['일반적으로', '구체적으로'], question: '논리 흐름?' }
-      ]
-    };
-    var SIGNAL_WORDS = [
-      { category: '추가/강조', words: ['또한', '게다가', '특히'], meaning: '"특히"=⭐중요', color: '#22c55e' },
-      { category: '대조/전환', words: ['그러나', '하지만', '반면'], meaning: '⚠️ 핵심일 확률 높음', color: '#ef4444' },
-      { category: '인과', words: ['따라서', '그러므로', '때문에'], meaning: '논리 흐름 핵심', color: '#3b82f6' },
-      { category: '예시', words: ['예를 들어', '가령', '즉'], meaning: '이해했으면 스킵 가능', color: '#8b5cf6' },
-      { category: '결론', words: ['결론적으로', '요약하면', '결국'], meaning: '✅ 반드시 집중', color: '#10b981' }
-    ];
-    var FICTION_SIGNPOSTS = [
-      { name: '대조/모순', trigger: '예상과 다른 행동', question: '왜?' },
-      { name: '깨달음', trigger: '"알았다"', question: '뭘 바꿀까?' },
-      { name: '어려운 질문', trigger: '힘든 자문', question: '무슨 갈등?' },
-      { name: '조언자', trigger: '경험자 조언', question: '교훈?' },
-      { name: '반복', trigger: '같은 것 반복', question: '왜?' },
-      { name: '회상', trigger: '과거 장면', question: '왜 지금?' }
-    ];
-    var NONFICTION_GENRES = [
-      { icon: '💪', name: '자기계발', focus: '액션만', insight: '90% filler' },
-      { icon: '🧬', name: '과학교양', focus: '주장vs증거', insight: '비판적으로' },
-      { icon: '💼', name: '비즈니스', focus: '프레임워크', insight: '하나만' },
-      { icon: '✍️', name: '에세이', focus: '관점/논리', insight: '내 생각 비교' }
-    ];
-    var EXPERT_STRATEGIES = [
-      { icon: '🔓', name: '활성화', what: '사전지식 떠올리기', how: '"아는 건?" 30초' },
-      { icon: '🔮', name: '추론', what: '글에 없는 것 채우기', how: '"이건 ~겠지"' },
-      { icon: '🔍', name: '점검', what: '이해 여부 확인', how: '"이해하나?" 매 문단' },
-      { icon: '❓', name: '질문', what: '글에 질문', how: '"왜?" "어떻게?"' },
-      { icon: '📝', name: '요약', what: '내 말로 표현', how: '"핵심은..." 한 문장' },
-      { icon: '🎨', name: '시각화', what: '머릿속 그림', how: '다이어그램 상상' },
-      { icon: '🔗', name: '연결', what: '다른 것과 연결', how: '"~와 비슷하네"' }
-    ];
-    var EMERGENCY = [
-      { emoji: '😵', situation: '이해 안 돼', strategies: [{ action: '문장 쪼개기', how: '긴 문장 끊기', example: '"A는 B다" 먼저' }, { action: '첫 문장만', how: '각 문단 첫 문장', example: '연결해서 읽기' }, { action: '결론부터', how: '마지막 먼저', example: '결론→본론→서론' }, { action: '쉬운 자료', how: '위키, 유튜브', example: '10분 영상 후' }] },
-      { emoji: '🤔', situation: '기억 안 나', strategies: [{ action: '덮고 말하기', how: '소리내어', example: '10초 안에 핵심' }, { action: '키워드 3개', how: '중요한 것만', example: '[수면][기억][통합]' }, { action: '그림으로', how: '다이어그램', example: '원인→결과' }, { action: '설명해보기', how: '누군가에게', example: '"이건 말이야..."' }] },
-      { emoji: '🤯', situation: '집중 안 돼', strategies: [{ action: '5분만', how: '타이머 5분', example: '그 후 결정' }, { action: '소리내어', how: '입으로 읽기', example: '중얼중얼' }, { action: '손가락', how: '줄 추적', example: '눈 고정' }, { action: '환경 리셋', how: '폰 치우기', example: '2분 환기' }] },
-      { emoji: '🌲', situation: '전체가 안 보여', strategies: [{ action: '목차로', how: '현재 위치', example: '"3장 중 2번째"' }, { action: '한 줄 정리', how: '"여기까지는..."', example: '"문제→원인→해결"' }, { action: '지도 그리기', how: '박스+화살표', example: '[서론]→[본론]' }] },
-      { emoji: '😰', situation: '너무 어려워', strategies: [{ action: '난이도 낮추기', how: '쉬운 자료', example: '입문서' }, { action: '건너뛰기', how: '표시+넘기기', example: '⭐ → 나중에' }, { action: '목표 축소', how: '오늘 1페이지', example: '작은 성공' }] }
-    ];
-    var PROTOCOLS = {
-      academic: { name: '학술서/논문', icon: '🎓', color: '#1d4ed8', bg: '#dbeafe', light: '#bfdbfe', phases: [
-        { name: '큰 그림', duration: '3분', emoji: '🗺️', steps: [
-          { title: '30초 스캔', type: 'seq', thought: '"전체 지형은?"', overview: '제목→소제목→첫/끝 문단', details: ['① 제목', '② 소제목들', '③ 첫+끝 문단', '④ 그림/표'], checkpoint: '큰 그림 그려져?' },
-          { title: '구조 판별', type: 'opt', thought: '"어떤 패턴?"', overview: '구조 찾기', options: ['주장-근거', '문제-해결', '원인-결과', '비교-대조', '순서'], checkpoint: '구조 정했어?' },
-          { title: '목적 설정', type: 'seq', thought: '"뭘 얻을까?"', overview: '목표 한 문장', template: '"읽고 나면 [____] 알게 될 것"', checkpoint: '목적 완성?' }
-        ]},
-        { name: '정독', duration: '문단당 2-3분', emoji: '📖', steps: [
-          { title: '문단 읽기', type: 'seq', thought: '"역할은?"', overview: '기능 파악', details: ['🎯 주제 제시', '📊 근거/예시', '⚡ 반론', '➡️ 전환', '📋 요약'], tip: '첫 문장에 80%', checkpoint: '역할 파악?' },
-          { title: '덮고 말하기', type: 'seq', thought: '"방금 건..."', overview: '인출 연습', details: ['① 가리기', '② "핵심은..." 말하기', '③ 확인'], science: '재읽기보다 50% 효과', checkpoint: '말할 수 있어?' },
-          { title: '신호어 반응', type: 'opt', thought: '"뭘 알려주지?"', overview: '신호어 반응', signals: [{ word: '그러나', action: '⚠️ 집중!', color: '#ef4444' }, { word: '따라서', action: '결론!', color: '#3b82f6' }, { word: '특히', action: '⭐ 강조', color: '#f59e0b' }], checkpoint: '신호어 반응?' },
-          { title: '키워드 메모', type: 'opt', thought: '"이걸로 기억"', overview: '1-2개만', format: '[섹션] - 키워드', checkpoint: '키워드 적었어?' }
-        ]},
-        { name: '마무리', duration: '3분', emoji: '✅', steps: [
-          { title: '3문장 요약', type: 'seq', thought: '"핵심만..."', overview: '3문장 압축', structure: ['1️⃣ 주제', '2️⃣ 핵심', '3️⃣ 이유'], checkpoint: '3문장 완성?' },
-          { title: '내 반응', type: 'opt', thought: '"나는..."', overview: '반응 한 줄', options: ['동의', '의문', '적용', '연결'], checkpoint: '반응 적었어?' },
-          { title: '복습 일정', type: 'seq', thought: '"언제 다시?"', overview: '간격 반복', schedule: ['내일', '3일 후', '1주 후'], checkpoint: '일정 정했어?' }
-        ]}
-      ]},
-      fiction: { name: '소설/문학', icon: '📚', color: '#be185d', bg: '#fce7f3', light: '#fbcfe8', phases: [
-        { name: '준비', duration: '1분', emoji: '📚', steps: [
-          { title: '표지/제목 분석', type: 'seq', thought: '"뭘 다룰까?"', overview: '힌트 얻기', details: ['표지→분위기', '제목→주제', '소개→갈등'], checkpoint: '예측해봤어?' },
-          { title: '추적 준비', type: 'opt', thought: '"기록하면서"', overview: '메모 방식', marks: ['?=질문', '!=중요', '★=명문장', 'C=변화', 'F=복선'], checkpoint: '방식 정했어?' }
-        ]},
-        { name: '몰입', duration: '자유', emoji: '🌙', steps: [
-          { title: '장면 시각화', type: 'opt', thought: '"영화처럼"', overview: '머릿속 재현', elements: ['공간', '인물', '분위기'], checkpoint: '그려져?' },
-          { title: '인물 추적', type: 'opt', thought: '"뭘 알게 됐지?"', overview: '기록', track: ['이름/외모', '관계', '동기', '갈등', '변화'], checkpoint: '파악하고 있어?' },
-          { title: '문학 신호등', type: 'opt', thought: '"중요한 순간?"', overview: '6가지 신호', useSignposts: true, checkpoint: '포착해?' },
-          { title: '주제 힌트', type: 'opt', thought: '"뭘 말하려는 걸까?"', overview: '힌트 수집', hints: ['반복', '갈등', '변화', '제목'], checkpoint: '모으고 있어?' }
-        ]},
-        { name: '멈출 때', duration: '30초', emoji: '🔖', steps: [
-          { title: '상황 메모', type: 'seq', thought: '"이어가려면"', overview: '한 줄로', format: '[장소]-[누가]-[뭐 하는 중]', checkpoint: '메모했어?' }
-        ]},
-        { name: '다 읽은 후', duration: '5-10분', emoji: '🏆', steps: [
-          { title: '플롯 정리', type: 'seq', thought: '"흐름은..."', overview: '6단계', stages: ['발단', '사건발생', '상승', '절정', '하강', '결말'], checkpoint: '정리했어?' },
-          { title: '인물 변화', type: 'seq', thought: '"어떻게 변했지?"', overview: '변화 아크', template: '[인물]은 [A]→[B]로 변했다', checkpoint: '변화 정리?' },
-          { title: '주제 결론', type: 'seq', thought: '"말하려는 건..."', overview: '주제 도출', template: '"이 작품은 [____]에 대해 [____]을 말한다"', checkpoint: '주제 한 문장?' }
-        ]}
-      ]},
-      nonfiction: { name: '대중 비문학', icon: '💡', color: '#059669', bg: '#ecfdf5', light: '#a7f3d0', phases: [
-        { name: '장르 파악', duration: '1분', emoji: '🔍', steps: [
-          { title: '유형 판별', type: 'opt', thought: '"어떤 종류?"', overview: '장르마다 다름', useGenres: true, checkpoint: '유형 정했어?' },
-          { title: '내 목적', type: 'seq', thought: '"뭘 얻지?"', overview: '구체적 목적', tip: '목적 없으면 다 까먹음', checkpoint: '목적 정했어?' },
-          { title: '목차 선별', type: 'seq', thought: '"어디가 유용?"', overview: '관련 챕터', details: ['① 목차 훑기', '② 2-3개 표시', '③ 그것부터'], checkpoint: '챕터 골랐어?' }
-        ]},
-        { name: '전략적 읽기', duration: '자유', emoji: '📚', steps: [
-          { title: '장르별 전략', type: 'opt', thought: '"이 유형은..."', overview: '유형에 맞게', useStrategies: true, checkpoint: '장르에 맞게?' },
-          { title: '최소 표시', type: 'seq', thought: '"다 중요하면 다 X"', overview: '5-10개만', tip: '이것만 보고 복습', checkpoint: '선별적?' },
-          { title: '적용 생각', type: 'opt', thought: '"내 상황에..."', overview: '적용 가능성', questions: ['가능?', '뭘 해야?', '장애물?', '내일 당장?'], checkpoint: '적용 생각?' }
-        ]},
-        { name: '마무리', duration: '3분', emoji: '✨', steps: [
-          { title: '핵심 추출', type: 'opt', thought: '"건진 건..."', overview: '장르별 정리', outputs: ['자기계발→액션 1-2개', '과학→주장+증거', '비즈니스→프레임워크', '에세이→주장+내 입장'], checkpoint: '정리했어?' },
-          { title: '비판적 평가', type: 'opt', thought: '"한계는..."', overview: '맹목 수용 방지', questions: ['빈틈?', '반대?', '안 통할 때?'], checkpoint: '비판적으로?' },
-          { title: '실행 계획', type: 'seq', thought: '"언제, 뭘..."', overview: '날짜 있는 계획', template: '"[날짜]까지 [행동]"', warning: '날짜 없음 = 안 함', checkpoint: '실행 계획?' }
-        ]}
-      ]},
-      exam: { name: '시험공부', icon: '🎯', color: '#dc2626', bg: '#fef2f2', light: '#fecaca', phases: [
-        { name: '문제 먼저', duration: '5분', emoji: '🎯', steps: [
-          { title: '문제 훑기', type: 'seq', thought: '"뭘 물어보지?"', overview: '풀지 말고 분석', details: ['① 문제만 읽기', '② 유형 파악', '③ 모르는 것 ⭐', '④ 키워드 ○'], checkpoint: '유형 파악?' },
-          { title: '추측하기', type: 'seq', thought: '"틀려도 돼"', overview: '생성 효과', details: ['① ⭐ 선택', '② 30초 추측', '③ 확신도 %'], science: '틀려도 학습에 도움', checkpoint: '추측 적었어?' }
-        ]},
-        { name: '역방향 학습', duration: '25분', emoji: '📚', steps: [
-          { title: '관련 부분 찾기', type: 'seq', thought: '"뭘 알아야?"', overview: '문제→교재', details: ['① 키워드 파악', '② 목차에서 찾기', '③ 그 부분만'], checkpoint: '찾았어?' },
-          { title: '읽고 덮고 말하기', type: 'seq', thought: '"핵심은..."', overview: '인출 연습', details: ['① 읽기', '② 덮기', '③ 말하기', '④ 확인'], checkpoint: '인출 연습?' },
-          { title: '다시 풀기', type: 'seq', thought: '"이제 풀 수 있어?"', overview: '학습 확인', details: ['① 다시 풀기', '② 확인', '③ 틀리면 "왜?"'], tip: '오답 이유 = 가장 중요', checkpoint: '다시 풀었어?' },
-          { title: '플래시카드', type: 'opt', thought: '"까먹지 말자"', overview: '핵심만', rules: ['질문1=답1', '자기 말로', '그림 추가'], checkpoint: '카드 만들었어?' }
-        ]},
-        { name: '마무리', duration: '2분', emoji: '🏁', steps: [
-          { title: '오늘 복습', type: 'seq', thought: '"방금 배운 거"', overview: '첫 복습', details: ['① 카드 전부', '② 3초 안에', '③ 못 떠올린 거 표시'], checkpoint: '복습 했어?' },
-          { title: '복습 일정', type: 'seq', thought: '"망각 이기자"', overview: '간격 반복', schedule: ['내일', '3일 후', '1주 후'], tip: '캘린더에!', checkpoint: '일정 정했어?' }
-        ]}
-      ]}
-    };
+  <div class="tab-bar"><div class="tab-bar-inner" id="tabs"></div></div>
+  <div id="nav"></div>
 
-    var state = { tab: 'guide', type: null, phase: 0, step: 0, completed: {}, checked: {}, view: 'detail', showDetails: true, timer: 25*60, timerRunning: false, timerPreset: 25, stats: JSON.parse(localStorage.getItem('lgStats') || '{"sessions":0,"points":0}') };
-    var timerInterval = null;
-    function saveStats() { localStorage.setItem('lgStats', JSON.stringify(state.stats)); }
-    function formatTime(s) { return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0'); }
-    function render() {
-      var app = document.getElementById('app');
-      var tabs = document.getElementById('tabs');
-      tabs.innerHTML = [{ id: 'guide', icon: '📖', label: '가이드' }, { id: 'tools', icon: '🧰', label: '도구' }, { id: 'emergency', icon: '🆘', label: '비상' }, { id: 'timer', icon: '⏱️', label: '타이머' }].map(function(t) { return '<button class="tab-btn '+(state.tab===t.id?'active':'')+'" onclick="setTab(\''+t.id+'\')"><span>'+t.icon+'</span><span>'+t.label+'</span></button>'; }).join('');
-      if (state.tab === 'guide') {
-        if (!state.type) app.innerHTML = renderTypeSelect();
-        else if (state.view === 'overview') app.innerHTML = renderOverview();
-        else app.innerHTML = renderDetail();
-      } else if (state.tab === 'tools') app.innerHTML = renderTools();
-      else if (state.tab === 'emergency') app.innerHTML = renderEmergency();
-      else if (state.tab === 'timer') app.innerHTML = renderTimer();
+<script>
+// ========== 장르별 전략 ==========
+var GENRES = {
+  science: { name: '과학', icon: '🔬', color: '#0891b2', tips: [
+    { t: '그래프/표 먼저 (Figure First)', d: '본문 읽기 전에 모든 그래프와 표를 먼저 봐라. 축 라벨, 오차 막대, y축이 0부터인지, 범례 확인.' },
+    { t: 'IMRaD 구조', d: 'Introduction→Methods→Results→Discussion. 보통 Abstract→Conclusion→Figures→Intro→Results 순으로 읽으면 효율적.' },
+    { t: '헤징 언어 구분', d: '"suggests/may" = 불확실, "demonstrates/proves" = 강한 주장. 저자 확신 정도 읽기.' },
+    { t: '재현 가능성 체크', d: '방법론이 충분히 상세? 다른 연구자가 따라할 수 있나? 코드/데이터 공개?' },
+    { t: '통계 의심하기', d: 'p<0.05만 보지 말고: 효과 크기, 신뢰구간 폭, 표본 크기, 다중비교 보정 확인.' }
+  ]},
+  history: { name: '역사', icon: '📜', color: '#b45309', tips: [
+    { t: 'Sourcing First', d: '내용 전에: 누가? 언제? 왜 썼나? 저자 입장/이해관계? 1차 vs 2차 사료?' },
+    { t: 'Contextualize', d: '그 시대 맥락에서 이해. 현재 기준으로 과거 판단 금지. 당시 "상식"은?' },
+    { t: 'Corroborate', d: '다른 사료와 교차 검증. 단일 출처 맹신 금지.' },
+    { t: 'Close Reading', d: '단어 선택, 톤, 강조점 분석. 빠진 것(침묵)도 분석 대상.' },
+    { t: '인과 vs 상관', d: '"A 때문에 B" 근거 충분? 다른 요인은? 시간 선후만으론 인과 아님.' }
+  ]},
+  philosophy: { name: '철학', icon: '🤔', color: '#7c3aed', tips: [
+    { t: '논증 재구성', d: '결론 먼저 찾고 → 전제들 나열 → 숨겨진 가정 찾기.' },
+    { t: '자선의 원칙', d: '상대 논증을 가장 강한 형태로 해석한 후 비판. 허수아비 공격 금지.' },
+    { t: '개념 정의 확인', d: '핵심 용어 정의 확인. "자유", "정의", "지식" 같은 단어 특히 주의.' },
+    { t: '반례/사고실험', d: '극단 상황에서도 성립? 예외 있으면 주장 수정 필요?' },
+    { t: '함축과 전제', d: '명시적 주장 외 암묵적 가정은? 그 가정이 참인지?' }
+  ]},
+  social: { name: '사회과학', icon: '👥', color: '#0d9488', tips: [
+    { t: '이론 vs 증거', d: '해석 프레임워크(이론)와 실제 데이터(증거) 분리. 다른 이론도 가능?' },
+    { t: '4가지 타당도', d: '구성(측정이 개념 반영?), 내적(인과 확신?), 외적(일반화?), 통계적(분석 적절?)' },
+    { t: 'WEIRD 편향', d: '표본이 Western, Educated, Industrialized, Rich, Democratic에 편중? 다른 문화에도?' },
+    { t: '상관 ≠ 인과', d: '인과 추론 조건: 시간적 선행 + 공변 + 대안 배제 + 메커니즘.' },
+    { t: '조작적 정의', d: '"행복", "성공" 같은 추상 개념을 어떻게 측정? 측정이 개념 반영?' }
+  ]}
+};
+
+// ========== 프로토콜 데이터 ==========
+var PROTOCOLS = {
+  academic: {
+    name: '학술서/비문학', icon: '📚', color: '#1d4ed8', bg: '#dbeafe', light: '#bfdbfe',
+    phases: [
+      { name: '시작 전', emoji: '🚀', duration: '3분', steps: [
+        { id: 'survey', title: '30초 서베이', overview: '전체 지형 파악하기', thought: '"이 글의 전체 모양이 어떻게 생겼지?"',
+          content: '<ul><li><b>제목·부제</b> 읽기 (핵심 키워드)</li><li><b>목차·소제목</b> 훑기 (각 3-5초)</li><li><b>첫 문단</b> 읽기 (저자 의도)</li><li><b>마지막 문단</b> 읽기 (결론)</li><li><b>시각 자료</b> 스캔 (그림, 표, 박스)</li></ul><p>이 단계에서는 <b>이해하려 하지 말 것</b>. 지도만 그리기.</p><div class="box-b">"이 글은 <b>[주제]</b>에 대해 <b>[N개]</b> 파트로 <b>[구조]</b> 방식으로 전개된다"</div>',
+          chk: ['주제 파악', '구조 파악', '분량 확인'] },
+        { id: 'structure', title: '글 구조 판별', overview: '8가지 패턴 중 어떤 것?', thought: '"어떤 패턴으로 전개되지?"',
+          content: '<ul><li><b>주장-근거</b>: 논설문, 사설</li><li><b>문제-해결</b>: 정책, 제안</li><li><b>원인-결과</b>: 분석, 설명</li><li><b>비교-대조</b>: 분류, 평가</li><li><b>순서-과정</b>: 절차, 역사</li><li><b>정의-설명</b>: 개념 소개</li><li><b>질문-답변</b>: 탐구, 연구</li><li><b>분류-범주</b>: 분류학</li></ul><div class="box-y"><b>신호어 사전</b><br>전환: 그러나, 하지만, 반면<br>결론: 따라서, 그러므로, 요컨대<br>강조: 특히, 중요한 것은, 핵심은<br>예시: 예를 들어, 가령, 구체적으로<br>인과: 왜냐하면, ~때문에, 그 결과</div><div class="box-c">텍스트 구조 인식은 이해도와 기억력을 유의미하게 향상 (Meyer & Ray, 2011)</div>',
+          chk: ['구조 유형 파악', '신호어 발견'] },
+        { id: 'purpose', title: '읽기 목적 설정', overview: '구체적 목표 한 문장', thought: '"읽고 나면 뭘 할 수 있지?"',
+          content: '<p><b>Bloom 6단계</b></p><ul><li><b>기억</b>: 핵심 내용 떠올리기</li><li><b>이해</b>: 자기 말로 설명하기</li><li><b>적용</b>: 실제 상황에 활용하기</li><li><b>분석</b>: 논증의 강점/약점 파악</li><li><b>평가</b>: 찬반 의견 형성</li><li><b>창조</b>: 새로운 아이디어 만들기</li></ul><div class="box-b">"읽고 나면 나는 <b>[____]</b>을/를 할 수 있을 것이다"</div><div class="box-c">목표 지향적 읽기는 관련 정보에 주의를 집중시킨다 (Rouet & Britt, 2011)</div>',
+          chk: ['구체적 목표 문장'] },
+        { id: 'activate', title: '사전지식 활성화', overview: '아는 것 3개 + 궁금한 것 2개', thought: '"이 주제에 대해 뭘 알지?"',
+          content: '<ul><li>타이머 30초 설정</li><li><b>아는 것 3가지</b> 빠르게 적기 (틀려도 OK!)</li><li><b>궁금한 것 2가지</b> 질문 형태로</li><li>읽으면서 확인하고 수정</li></ul><div class="box-g"><b>예시 (주제: 인지 부조화)</b><br>아는 것: 1) 믿음과 행동 다를 때 불편 2) 페스팅거? 3) 합리화<br>궁금: 1) 어떻게 해소? 2) 모든 사람에게?</div><div class="box-c"><b>생성 효과</b>: 스스로 만든 정보는 더 잘 기억. 틀린 추측도 수정하면 오히려 더 잘 기억됨(Hypercorrection Effect)</div>',
+          chk: ['아는 것 3개', '궁금한 것 2개'] }
+      ]},
+      { name: '읽는 중', emoji: '📖', duration: '문단당 2-3분', steps: [
+        { id: 'para', title: '문단 역할 파악', overview: '이 문단이 뭐 하는 거지?', thought: '"주제? 근거? 반론? 요약?"',
+          content: '<ul><li>🎯 <b>주제 제시</b>: 핵심 주장 (보통 첫 문장)</li><li>📊 <b>근거/예시</b>: 주장 뒷받침</li><li>⚡ <b>반론/전환</b>: "그러나"</li><li>📋 <b>요약/정리</b></li><li>🔗 <b>연결/전이</b></li><li>❓ <b>문제 제기</b></li></ul><div class="box-y">첫 문장 + 마지막 문장에 80% 정보!</div><div class="box-b">"이 문단은 <b>[역할]</b>이다. 왜냐하면 <b>[근거]</b>"</div>',
+          chk: ['핵심 문단 태깅'] },
+        { id: 'retrieve', title: '덮고 → 말하기', overview: '인출 연습 (가장 효과적!)', thought: '"방금 읽은 건..."',
+          content: '<ul><li>한 섹션 읽고 <b>책/화면 가리기</b></li><li><b>10초 안에</b> "핵심은..." 소리내어</li><li>책 열어서 <b>확인</b></li><li>빠뜨린 것에 <b>⭐ 표시</b></li><li>⭐ 표시된 것 나중에 집중 복습</li></ul><div class="box-p"><b>대안</b>: 키워드 3개만 / 글로 쓰기 / 마인드맵</div><div class="box-c"><b>인출 연습</b>: 재읽기보다 50% 더 효과적. 어려워야 효과 = "바람직한 어려움" (Roediger & Karpicke, 2006)</div>',
+          chk: ['인출 연습 실행', '빠진 것 확인'] },
+        { id: 'elaborate', title: '정교화 질문', overview: '왜? 어떻게? 연결은?', thought: '"더 깊이 파보면..."',
+          content: '<ul><li>🔍 <b>왜</b>: "이게 왜 그럴까?"</li><li>🔗 <b>연결</b>: "내가 아는 X와 어떻게?"</li><li>🔄 <b>비교</b>: "Y와 뭐가 다르지?"</li><li>📍 <b>예시</b>: "실제 예는 뭐가 있지?"</li><li>❓ <b>반례</b>: "이게 틀린 경우는?"</li><li>🎯 <b>적용</b>: "이걸 어디에 쓰지?"</li></ul><div class="box-r">"모르겠다"로 끝내지 말고 <b>틀려도 추측</b>하라!</div><div class="box-c"><b>정교화 질문</b>: 효과 크기 d=0.5-0.8 (Dunlosky et al., 2013)</div>',
+          chk: ['질문 1개+', '나만의 답변'] },
+        { id: 'visualize', title: '시각화/도식화', overview: '그림으로 그리기', thought: '"이걸 그림으로 그린다면?"',
+          content: '<ul><li><b>순서/과정</b> → 플로우차트 (□→□→□)</li><li><b>비교</b> → 벤다이어그램 또는 표</li><li><b>계층/분류</b> → 트리 구조</li><li><b>원인-결과</b> → 화살표 (A→B→C)</li><li><b>관계</b> → 마인드맵</li><li><b>시간순</b> → 타임라인</li><li><b>대립</b> → 양쪽 화살표 (↔)</li></ul><div class="box-c"><b>이중 부호화</b>: 언어+시각 = 2가지 경로로 기억 (Paivio, 1971)</div>',
+          chk: ['핵심 관계 도식화'] },
+        { id: 'selfexp', title: '자기 설명', overview: '스스로에게 설명하기', thought: '"이 부분이 의미하는 건..."',
+          content: '<ul><li>새 정보마다 <b>멈추기</b></li><li>"이건 ~라는 뜻이다" <b>혼잣말</b></li><li>왜 저자가 여기에 넣었나</li><li>이해 안 되면 <b>? 표시</b>하고 넘기기</li></ul><div class="box-b"><b>패턴</b>:<br>• "이 문장은 앞 문장을 ~한다"<br>• "이건 ~의 예시/근거/반례다"<br>• "저자가 이걸 말하는 이유는..."</div><div class="box-c"><b>자기설명 효과</b>: 메타분석 g=0.61 (Bisra et al., 2018)</div>',
+          chk: ['자기설명 실행'] },
+        { id: 'monitor', title: '이해도 점검', overview: '메타인지 체크', thought: '"나 지금 이해하고 있나?"',
+          content: '<p><b>🔴 이해 안 됨 신호</b>:</p><ul><li>읽었는데 뭔 말인지 모름</li><li>다음 문장과 연결 안 됨</li><li>예시가 떠오르지 않음</li><li>요약하라면 못 함</li></ul><p><b>🟢 이해됨 신호</b>:</p><ul><li>자기 말로 바꿀 수 있음</li><li>예시를 만들 수 있음</li><li>다음 내용 예측 가능</li></ul><div class="box-y"><b>대처</b>: 재읽기 / 쪼개기 / 용어 확인 / 연결 찾기 / 일단 스킵</div>',
+          chk: ['막힘없이 설명 가능'] }
+      ]},
+      { name: '마무리', emoji: '✅', duration: '3분', steps: [
+        { id: 'summary', title: '단계별 요약', overview: '1문장 → 3문장 → 1문단', thought: '"핵심만 추리면..."',
+          content: '<div class="box-b"><b>1문장</b>: 핵심 주장<br><b>3문장</b>: 주요 근거/논점<br><b>1문단</b>: 종합 + 의의</div><ul><li>자기 말로 바꿔서</li><li>원문 안 보고</li><li>빠뜨린 것 확인</li></ul>',
+          chk: ['1문장 요약', '3문장 요약'] },
+        { id: 'critique', title: '비판적 평가', overview: '강점/약점/숨은 가정', thought: '"이 글의 한계는?"',
+          content: '<ul><li>강점은? 약점은?</li><li>증거 충분?</li><li>대안 가능성?</li><li>숨겨진 가정?</li><li>편향 있나?</li><li>다른 관점에서 보면?</li></ul>',
+          chk: ['비판점 1개+'] },
+        { id: 'test', title: '자기 테스트', overview: '문제 만들고 풀기', thought: '"시험에 나온다면..."',
+          content: '<p><b>문제 유형 (Bloom)</b>:</p><ul><li>📝 <b>기억</b>: "X는 무엇?"</li><li>🤔 <b>이해</b>: "X는 왜?"</li><li>🔗 <b>적용</b>: "이 상황에 X를 적용하면?"</li><li>🔄 <b>분석</b>: "X와 Y의 관계?"</li><li>⚖️ <b>평가</b>: "X의 장단점?"</li></ul><div class="box-c"><b>테스트 효과</b>: 테스트 자체가 학습. 문제 만드는 과정에서도 학습 (Roediger & Karpicke, 2006)</div>',
+          chk: ['문제 3개+', '답변 작성'] }
+      ]},
+      { name: '복습', emoji: '🔄', duration: '간격 두고', steps: [
+        { id: 'spaced', title: '간격 복습', overview: '망각 곡선 이기기', thought: '"언제 다시 볼까?"',
+          content: '<p><b>최적 간격</b>: 1일 → 3일 → 7일 → 21일 → 2개월</p><p><b>앱</b>: Anki, Quizlet, RemNote</p><div class="box-c"><b>간격 효과</b>: 같은 시간 투자해도 분산하면 효과 2배</div>',
+          chk: ['복습 일정'] },
+        { id: 'teach', title: '가르치기', overview: '파인만 기법', thought: '"초등학생에게 설명하면..."',
+          content: '<ul><li>1. 초등학생에게 설명하듯</li><li>2. 막히는 부분 = 약점</li><li>3. 다시 공부</li><li>4. 단순화해서 재설명</li></ul><div class="box-y">설명 못하면 이해 못한 것!</div>',
+          chk: ['가르치기 연습'] },
+        { id: 'interleave', title: '섞어서 복습', overview: '인터리빙', thought: '"다른 것과 섞으면..."',
+          content: '<p><b>❌ 블로킹 (나쁨)</b>:<br>A→A→A→B→B→B→C→C→C</p><p><b>✓ 인터리빙 (좋음)</b>:<br>A→B→C→A→C→B→A→B→C</p><div class="box-y"><b>🤔 언제 써야 하나?</b></div><ul><li><b>인터리빙 ⭕</b>: 유형 구분이 중요할 때 (수학 문제 유형, 예술 사조, 진단)</li><li><b>인터리빙 ❌</b>: 완전 새로운 개념 처음 배울 때 → 먼저 블로킹으로 기초 잡기</li></ul><div class="box-b"><b>실행 규칙</b>:<br>1. 기초 단계 = 블로킹 (한 유형 집중)<br>2. 기초 잡히면 = 인터리빙 (섞기)<br>3. "이건 어떤 유형?" 구분 연습</div><div class="box-c">효과크기 d=0.42. 유형 구분력 향상 (Rohrer & Taylor, 2007)</div>',
+          chk: ['기초 잡힌 후 섞기'] }
+      ]}
+    ]
+  },
+  fiction: {
+    name: '소설/문학', icon: '📖', color: '#be185d', bg: '#fce7f3', light: '#fbcfe8',
+    phases: [
+      { name: '읽기 준비', emoji: '📚', duration: '1분', steps: [
+        { id: 'preview', title: '표지/제목 분석', overview: '장르·분위기·갈등 예측', thought: '"뭘 다룰까?"',
+          content: '<ul><li><b>표지 이미지</b>: 색감, 분위기, 인물, 배경</li><li><b>제목</b>: 상징, 은유, 주제 암시</li><li><b>뒷표지</b>: 중심 갈등, 주인공, 배경</li><li><b>작가 소개</b>: 시대, 국가, 경향</li></ul><div class="box-b"><b>기록</b><br>장르: [____]<br>분위기: [밝음/어두움/긴장/따뜻...]<br>예상 갈등: [____] vs [____]</div><div class="box-y">예측이 틀려도 OK! 예측하고 읽으면 능동적</div>',
+          chk: ['장르·분위기 예측'] },
+        { id: 'tracking', title: '추적 시스템', overview: '기록 방식 정하기', thought: '"뭘 기록하지?"',
+          content: '<p><b>추적 항목</b>:</p><ul><li><b>인물</b>: 이름, 관계, 특징</li><li><b>플롯</b>: 주요 사건, 전환점</li><li><b>의문점</b>: 복선? 떡밥?</li><li><b>상징/반복</b>: 계속 나오는 것</li><li><b>명문장</b></li></ul><div class="box-p"><b>주석 기호</b><br>? = 질문 | ! = 중요 | ★ = 명문장<br>→ = 변화 | ~ = 반복 | ⚡ = 갈등</div>',
+          chk: ['추적 방식 결정'] }
+      ]},
+      { name: '읽는 중', emoji: '🌙', duration: '자유', steps: [
+        { id: 'signpost', title: '문학 신호등', overview: 'Notice & Note 6가지', thought: '"이게 왜 중요하지?"',
+          content: '<ul><li><b>대조/모순</b>: 예상과 다르게 행동 → "왜 이렇게 했지?"</li><li><b>깨달음</b>: 갑자기 무언가 깨달음 → "이게 뭘 바꿀까?"</li><li><b>어려운 질문</b>: 자신에게 힘든 질문 → "내적 갈등"</li><li><b>조언자의 말</b>: 경험 많은 인물 조언 → "주제 힌트"</li><li><b>반복</b>: 같은 것 반복 → "왜 반복?"</li><li><b>회상</b>: 과거 장면 삽입 → "왜 지금 이 기억?"</li></ul><div class="box-c">Notice & Note: Beers & Probst가 개발한 문학 읽기 전략</div>',
+          chk: ['신호 1개+ 발견'] },
+        { id: 'character', title: '인물 분석', overview: '5차원 입체적 이해', thought: '"이 인물은 어떤 사람?"',
+          content: '<ul><li><b>외면</b>: 외모, 행동, 말투, 습관</li><li><b>내면</b>: 원하는 것(want), 필요한 것(need), 두려움</li><li><b>관계</b>: 다른 인물과</li><li><b>갈등</b>: 외적 vs 내적</li><li><b>변화</b>: 처음 → 나중</li></ul><div class="box-b"><b>인물 카드</b><br>이름: [____]<br>역할: 주인공/조력자/적대자<br>원하는 것: [____]<br>두려운 것: [____]</div><div class="box-y"><b>동적</b>: 변화함 (보통 주인공)<br><b>정적</b>: 변화 없음 (대조 역할)</div>',
+          chk: ['주인공 분석 완료'] },
+        { id: 'narrator', title: '시점/화자 분석', overview: '누가 이야기하나', thought: '"믿을 수 있는 화자인가?"',
+          content: '<ul><li><b>1인칭</b>: "나" - 주관적, 제한적, 편향 가능</li><li><b>3인칭 제한</b>: 한 인물 관점만</li><li><b>3인칭 전지</b>: 모든 인물 접근</li><li><b>다중/교차</b>: 여러 인물 번갈아</li></ul><div class="box-r"><b>신뢰도 체크</b><br>숨기는 게 있나?<br>편향된 시각?<br>의도적으로 속이나?</div>',
+          chk: ['시점 파악'] },
+        { id: 'symbol', title: '상징/이미지 추적', overview: '반복되는 것', thought: '"왜 계속 나오지?"',
+          content: '<p><b>찾을 것</b>:</p><ul><li>반복되는 <b>사물</b> (거울, 문, 새...)</li><li>반복되는 <b>색/빛</b></li><li>반복되는 <b>날씨/계절</b></li><li>반복되는 <b>동작</b></li></ul><div class="box-y">왜 반복? 뭘 상징? 처음과 나중에 의미 달라지나?</div>',
+          chk: ['반복 요소 발견'] },
+        { id: 'style', title: '문체/톤 분석', overview: '어떻게 쓰여 있나', thought: '"왜 이렇게 썼지?"',
+          content: '<ul><li><b>문장 길이</b>: 짧고 끊김 vs 길고 유려</li><li><b>어휘</b>: 격식/비격식, 시대, 계층</li><li><b>톤</b>: 유머/진지/냉소/따뜻</li><li><b>속도</b>: 빠름(액션) vs 느림(묘사)</li><li><b>대화 비율</b></li></ul><div class="box-c">긴장 장면 → 짧은 문장<br>사색 장면 → 긴 문장</div>',
+          chk: ['문체 특징 파악'] },
+        { id: 'setting', title: '배경 분석', overview: '시간과 공간', thought: '"배경이 어떤 역할?"',
+          content: '<ul><li><b>시간</b>: 시대, 계절, 시간대</li><li><b>공간</b>: 장소 특징, 분위기</li><li><b>사회</b>: 문화, 계층, 규범</li></ul><div class="box-y">배경이 인물에 어떤 영향?<br>배경이 갈등을 만들거나 심화?</div>',
+          chk: ['배경 특징 파악'] }
+      ]},
+      { name: '다 읽은 후', emoji: '🏆', duration: '5분', steps: [
+        { id: 'arc', title: '인물 변화 정리', overview: '캐릭터 아크', thought: '"어떻게 달라졌나?"',
+          content: '<div class="box-b"><b>[인물]</b>은 처음에 <b>[A 상태]</b>였는데,<br><b>[핵심 사건]</b>을 겪고,<br><b>[B 상태]</b>로 변했다.</div><ul><li>뭘 배웠나?</li><li>어떤 선택을 했나? 왜?</li><li>대가/희생은?</li><li>변화가 주제와 어떻게 연결?</li></ul>',
+          chk: ['주인공 변화 정리'] },
+        { id: 'plot', title: '플롯 구조', overview: '3막 구조', thought: '"전체 흐름은..."',
+          content: '<ul><li><b>1막 (Setup)</b>: 일상 → 촉발 사건 → 결심</li><li><b>2막 (Confrontation)</b>: 시련들 → 중간점 → 최악의 순간</li><li><b>3막 (Resolution)</b>: 클라이맥스 → 결말</li></ul><div class="box-y"><b>핵심 전환점</b>: 촉발 사건, 1막 전환점, 중간점, 2막 전환점, 클라이맥스</div>',
+          chk: ['플롯 정리'] },
+        { id: 'theme', title: '주제 도출', overview: '의미 종합', thought: '"결국 하고 싶은 말은..."',
+          content: '<ul><li><b>반복</b>: 반복된 것이 주제 힌트</li><li><b>갈등 해결</b>: 어떻게 해결? 그 방식이 주제</li><li><b>인물 변화</b>: 뭘 배웠나?</li><li><b>제목 연결</b>: 제목이 왜 이건가?</li></ul><div class="box-b">"이 작품은 <b>[주제]</b>에 대해 <b>[저자 입장]</b>을 말한다"</div><div class="box-r"><b>소재</b>: 무엇에 관한 것 (전쟁, 사랑...)<br><b>주제</b>: 그것에 대해 무엇을 말하는지</div>',
+          chk: ['주제 한 문장'] },
+        { id: 'conflict', title: '갈등 분석', overview: '어떤 갈등이었나', thought: '"핵심 대립은..."',
+          content: '<ul><li><b>인물 vs 인물</b>: 가장 흔함</li><li><b>인물 vs 자신</b>: 내적 갈등</li><li><b>인물 vs 사회</b>: 규범, 제도</li><li><b>인물 vs 자연</b>: 환경, 생존</li><li><b>인물 vs 운명</b>: 피할 수 없는 것</li><li><b>인물 vs 기술</b>: AI, 기계, 디스토피아</li></ul><div class="box-y">어떻게 해결? 완전히? 부분적? 열린 결말?</div>',
+          chk: ['갈등 유형 파악'] },
+        { id: 'response', title: '개인적 반응', overview: '나와 연결', thought: '"나에게 어떤 의미?"',
+          content: '<ul><li>가장 기억에 남는 장면/문장?</li><li>가장 공감한 인물? 왜?</li><li>새롭게 알게 된 것?</li><li>내 생각/가치관에 영향?</li><li>추천한다면 누구에게?</li></ul>',
+          chk: ['개인 반응 기록'] }
+      ]}
+    ]
+  },
+  paper: {
+    name: '논문', icon: '📑', color: '#059669', bg: '#ecfdf5', light: '#d1fae5',
+    phases: [
+      { name: '1st Pass', emoji: '👀', duration: '5-10분', steps: [
+        { id: 'pass1', title: '읽을 가치 판단', overview: '5Cs 평가', thought: '"이 논문 읽어야 할까?"',
+          content: '<p><b>읽을 것</b>: 제목, 초록, 키워드, 서론 마지막, 소제목, 결론 첫 문단, 참고문헌</p><div class="box-b"><b>5Cs 평가</b><br><b>Category</b>: 어떤 유형? (실험/리뷰/이론)<br><b>Context</b>: 어떤 분야/맥락?<br><b>Correctness</b>: 가정이 합리적?<br><b>Contributions</b>: 새로운 점?<br><b>Clarity</b>: 잘 쓰였나?</div><div class="box-y"><b>결정</b>: 중단 / 2nd Pass / 나중에</div>',
+          chk: ['5Cs 평가', '계속/중단 결정'] }
+      ]},
+      { name: '2nd Pass', emoji: '🔍', duration: '~1시간', steps: [
+        { id: 'pass2', title: 'Figure First', overview: '그래프/표 먼저', thought: '"데이터가 뭘 말해주지?"',
+          content: '<p><b>읽기 순서</b>:</p><ul><li>1. <b>Figure/Table 먼저</b> (가장 중요!)<br>- 축, 범례, 오차막대<br>- 핵심 숫자</li><li>2. <b>서론</b> 꼼꼼히</li><li>3. <b>방법</b> 빠르게</li><li>4. <b>결과</b> 꼼꼼히</li><li>5. <b>논의</b> 빠르게</li></ul>',
+          chk: ['Figure 이해', '핵심 논증 파악'] },
+        { id: 'template', title: '기록 템플릿', overview: '체계적 정리', thought: '"뭘 기록해야 하지?"',
+          content: '<div class="box-b"><b>필수 기록 항목</b>:</div><ul><li><b>연구 질문</b>: 무엇을 알고자?</li><li><b>가설</b>: 예상한 결과는?</li><li><b>방법</b>: 어떻게 검증?</li><li><b>핵심 결과</b>: 주요 수치/발견</li><li><b>결론</b>: 저자 주장</li><li><b>한계</b>: 저자 인정 or 내가 발견</li><li><b>의문점</b>: 이해 안 되는 것</li><li><b>후속 연구</b>: 다음에 뭘 해야?</li></ul><div class="box-y">논문마다 동일 양식 사용 → 비교 쉬움</div>',
+          chk: ['템플릿 작성'] },
+        { id: 'method', title: '방법론 평가', overview: '인과 강도 판단', thought: '"연구 설계가 적절?"',
+          content: '<p><b>🔍 연구 유형 → 인과 강도</b>:</p><ul><li><b>RCT</b> (무작위 배정+대조군) → 인과 주장 ⭕ 가능</li><li><b>준실험</b> (무작위 없음) → 인과 주장 △ 주의</li><li><b>관찰 연구</b> → 인과 주장 ❌ 상관만</li></ul><div class="box-y"><b>실행</b>: Methods에서 "random" 검색 → 있으면 RCT, 없으면 관찰</div><p><b>📋 체크리스트</b>:</p><ul><li>표본 크기 N=? (작으면 검정력↓)</li><li>통제 변수 뭐 있나? (없으면 교란↑)</li><li>블라인딩 했나? (없으면 기대효과↑)</li><li>탈락률? (높으면 선택편향↑)</li></ul><div class="box-r"><b>주의</b>: "관찰 연구"인데 "~때문에"라고 인과 주장하면 의심!</div>',
+          chk: ['연구 유형 확인', '통제 변수 확인'] },
+        { id: 'stats', title: '통계 검증', overview: 'p-value 넘어서', thought: '"통계가 말해주는 건?"',
+          content: '<div class="box-r"><b>p-value 오해</b><br>p=0.05 ≠ 틀릴 확률 5%<br>p>0.05 ≠ 효과 없음<br>p<0.05 ≠ 중요함</div><p><b>🔍 대신 이것 찾기</b>:</p><ul><li><b>효과 크기 (d)</b>: 0.2=소, 0.5=중, 0.8=대<br><span style="color:#059669">→ d < 0.2이면 통계적 유의해도 실질적 의미 작음</span></li><li><b>신뢰구간 (CI)</b>: 폭 좁을수록 정밀<br><span style="color:#059669">→ CI가 0 포함하면 효과 불확실</span></li><li><b>표본 크기 (N)</b>: 클수록 작은 효과도 유의<br><span style="color:#dc2626">→ N>1000인데 d<0.1이면 "통계적으로만 유의"</span></li></ul><div class="box-y"><b>실행</b>: Results에서 d=, r=, Cohen, CI 검색</div>',
+          chk: ['효과 크기 확인', 'CI 확인'] },
+        { id: 'pass3', title: '3rd Pass (선택)', overview: '가상 재구현', thought: '"내가 이 연구를 했다면?"',
+          content: '<p><b>목표</b>: 이 연구를 내가 재현할 수 있나?</p><ul><li><b>가정 나열</b>: 모든 암묵적 가정 명시</li><li><b>증거 추적</b>: 각 주장의 증거 찾기</li><li><b>문제점 식별</b>: 방법론, 분석, 해석 문제</li><li><b>대안 제시</b>: 다른 방법/해석 가능?</li><li><b>후속 연구</b>: 다음 연구 아이디어</li></ul><div class="box-y"><b>언제 필요</b>: 직접 연구 분야, 리뷰 작성 시</div>',
+          chk: ['가정 나열', '문제점 식별'] }
+      ]},
+      { name: '비판', emoji: '⚡', duration: '', steps: [
+        { id: 'toulmin', title: 'Toulmin 논증 분석', overview: '논리 구조', thought: '"주장-근거-보증은?"',
+          content: '<ul><li><b>Claim</b>: 저자가 주장하는 것</li><li><b>Grounds</b>: 데이터, 증거</li><li><b>Warrant</b>: 근거→주장 연결 (종종 숨겨짐!)</li><li><b>Qualifier</b>: "아마", "대체로"</li><li><b>Rebuttal</b>: 예외, 한계</li></ul><div class="box-y"><b>Warrant가 핵심</b>. "왜 이 근거가 저 주장을 지지?"라고 물으면 발견.</div>',
+          chk: ['Claim·Warrant 식별'] },
+        { id: 'bias', title: '편향 체크', overview: '5가지 질문', thought: '"뭘 놓쳤을까?"',
+          content: '<p><b>🔍 5가지 편향 점검 질문</b>:</p><ul><li><b>Q1. 후원자</b>: 연구비 출처 어디? → Acknowledgments/Funding 확인<br><span style="color:#dc2626">⚠️ 결과가 후원자에게 유리하면 주의</span></li><li><b>Q2. 표본</b>: 누구를 연구? → Methods의 Participants 확인<br><span style="color:#dc2626">⚠️ WEIRD(서구/대학생) 편중이면 일반화 주의</span></li><li><b>Q3. 사전등록</b>: 가설 미리 정했나? → 논문에 "preregistered" 검색<br><span style="color:#dc2626">⚠️ 없으면 HARKing 가능성</span></li><li><b>Q4. 부정적 결과</b>: 안 된 것도 보고? → Results에서 "non-significant" 검색<br><span style="color:#dc2626">⚠️ 긍정만 있으면 선택적 보고 의심</span></li><li><b>Q5. 저자 이해관계</b>: 저자가 득볼 게? → Conflict of Interest 확인<br><span style="color:#dc2626">⚠️ 제약회사 연구자+약 효과 논문 = 주의</span></li></ul><div class="box-y"><b>실행</b>: 5개 중 2개 이상 ⚠️이면 "비판적으로 읽기"</div>',
+          chk: ['후원자 확인', '사전등록 확인'] },
+        { id: 'validity', title: '4가지 타당도', overview: '타당도 평가', thought: '"연구가 타당한가?"',
+          content: '<p><b>🔍 4가지 타당도 체크 질문</b>:</p><ul><li><b>구성 타당도</b>: 측정 도구가 개념 반영?<br><span style="color:#64748b">→ "행복"을 어떻게 측정? 설문? 뇌 스캔?</span></li><li><b>내적 타당도</b>: 진짜 A→B 인과?<br><span style="color:#64748b">→ "다른 요인 통제? RCT? 교란변수?"</span></li><li><b>외적 타당도</b>: 다른 상황에도 적용?<br><span style="color:#64748b">→ "대학생 표본 → 일반인에게도?"</span></li><li><b>통계적 결론 타당도</b>: 통계 적절?<br><span style="color:#64748b">→ "표본 크기 충분? 다중비교 보정?"</span></li></ul><div class="box-y"><b>트레이드오프</b>: 실험실(내적↑, 외적↓) vs 현장(내적↓, 외적↑)</div><div class="box-b"><b>실행</b>: Limitations 섹션에서 저자가 인정한 타당도 문제 확인</div>',
+          chk: ['내적 타당도', '외적 타당도'] }
+      ]},
+      { name: '문헌 정리', emoji: '📚', duration: '', steps: [
+        { id: 'search', title: '문헌 검색', overview: '체계적으로 찾기', thought: '"어떻게 찾지?"',
+          content: '<ul><li><b>키워드 조합</b>: (A AND B) OR C</li><li><b>DB</b>: Google Scholar, PubMed, JSTOR</li><li><b>Forward</b>: 이 논문 인용한 후속</li><li><b>Backward</b>: 이 논문이 인용한 선행</li><li><b>저자 추적</b>: 핵심 저자의 다른 논문</li></ul><div class="box-y">최신 <b>리뷰/메타분석</b>에서 시작!</div>',
+          chk: ['핵심 논문 10개+'] },
+        { id: 'matrix', title: '문헌 매트릭스', overview: '체계적 정리', thought: '"어떻게 정리?"',
+          content: '<p><b>표 구성</b>:</p><p>행: 각 논문<br>열: 저자/연도 | 연구질문 | 방법론 | 표본 | 핵심결과 | 한계점 | 내 연구 관련성</p><div class="box-p">스프레드시트 활용<br>태그/색 코딩<br>별점으로 중요도</div>',
+          chk: ['매트릭스 작성'] },
+        { id: 'synthesize', title: '종합하기', overview: '나열 → 통합', thought: '"공통점/차이점은?"',
+          content: '<div class="box-r"><b>❌ 나쁜 예</b>: "A(2020)는 X를 발견. B(2021)는 Y를 발견."<br>→ 이건 요약이지 종합 아님</div><div class="box-g"><b>✓ 좋은 예</b>: "X 주제에 대해 A,B,C는 대체로 일치하나, Y 측면에서 상충. 이는 방법론 차이 때문. Z 영역은 연구 부족."</div>',
+          chk: ['테마별 종합', '갭 식별'] }
+      ]},
+      { name: '작성', emoji: '✍️', duration: '', steps: [
+        { id: 'outline', title: 'IMRaD 구조', overview: '아웃라인', thought: '"어떤 순서로?"',
+          content: '<ul><li><b>Introduction</b>: 왜 중요? 기존 한계? 연구 질문?</li><li><b>Methods</b>: 어떻게? (재현 가능하게)</li><li><b>Results</b>: 뭘 발견? (해석 없이 사실만)</li><li><b>Discussion</b>: 의미? 한계? 함의?</li><li><b>Abstract</b>: 전체 요약 (마지막에!)</li></ul>',
+          chk: ['아웃라인 완성'] },
+        { id: 'draft', title: '초고 작성', overview: '완벽 금지!', thought: '"일단 쓰자"',
+          content: '<p><b>추천 순서</b>:</p><p>Methods → Results → Intro → Discussion → Abstract</p><div class="box-y"><b>규칙</b>:<br>25분 쓰기 → 5분 휴식<br><b>완벽주의 금지</b><br>막히면 [TODO] 표시하고 넘기기</div>',
+          chk: ['초고 완성'] },
+        { id: 'revise', title: '수정하기', overview: '큰 것 → 작은 것', thought: '"어떤 순서로 고치지?"',
+          content: '<p><b>수정 순서 5단계</b>:</p><ul><li>1. <b>구조</b>: 논리 흐름, 섹션 순서</li><li>2. <b>단락</b>: 하나의 아이디어?</li><li>3. <b>문장</b>: 명확, 간결, 능동태</li><li>4. <b>단어</b>: 정확한 용어</li><li>5. <b>형식</b>: 인용, 참고문헌</li></ul><div class="box-p">하루 지나고 다시<br>소리내어 읽기<br>프린트해서 읽기</div>',
+          chk: ['구조→문장→형식 순서로 수정'] }
+      ]}
+    ]
+  },
+  exam: {
+    name: '시험 공부', icon: '🎯', color: '#dc2626', bg: '#fef2f2', light: '#fecaca',
+    phases: [
+      { name: '준비', emoji: '🎯', duration: '시작 전', steps: [
+        { id: 'pretest', title: '문제 먼저 보기', overview: '사전 질문 효과', thought: '"뭘 물어볼까?"',
+          content: '<ul><li>교재 읽기 전 <b>기출/챕터 문제</b> 먼저 훑기</li><li>모르는 것에 ⭐ 표시 (풀지 말고!)</li><li>어떤 유형? 어떤 깊이?</li><li>이제 교재 읽으며 ⭐ 해결</li></ul><div class="box-c"><b>사전 질문 효과</b>: 문제 먼저 보면 관련 정보에 주의 집중 (Pressley et al., 1990)</div>',
+          chk: ['문제 유형 파악'] },
+        { id: 'predict', title: '먼저 추측하기', overview: '생성 효과', thought: '"답이 뭘까?"',
+          content: '<ul><li>답 보기 전 <b>30초 추측</b></li><li>확신도 표시 (30%? 70%?)</li><li>틀려도 OK! 수정이 학습</li></ul><div class="box-c"><b>과잉수정 효과</b>: 자신있게 틀린 후 정답 보면 오히려 더 잘 기억 (Butterfield & Metcalfe, 2001)</div>',
+          chk: ['추측 기록'] }
+      ]},
+      { name: '학습', emoji: '📖', duration: '핵심', steps: [
+        { id: 'retrieval', title: '덮고 → 말하기', overview: '인출 연습', thought: '"방금 뭘 배웠지?"',
+          content: '<ul><li>한 섹션 읽고 <b>책 가리기</b></li><li><b>10초 안에</b> 핵심 말하기</li><li>책 열어서 확인</li><li>빠진 것 = 약점 → 집중</li></ul><div class="box-c">재읽기보다 50% 더 효과적</div>',
+          chk: ['인출 연습'] },
+        { id: 'elaborate', title: '정교화 질문', overview: '왜? 어떻게?', thought: '"더 깊이..."',
+          content: '<ul><li>"이게 왜 그럴까?"</li><li>"X와 어떻게 연결?"</li><li>"실제 예는?"</li><li>"틀린 경우는?"</li></ul><div class="box-c">효과 크기 d=0.5-0.8</div>',
+          chk: ['정교화 질문'] },
+        { id: 'interleave', title: '섞어서 연습', overview: '인터리빙', thought: '"다른 것과 섞으면..."',
+          content: '<p><b>❌ 블로킹</b>: A→A→A→B→B→B</p><p><b>✓ 인터리빙</b>: A→B→C→A→C→B</p><div class="box-y"><b>핵심 질문</b>: "이건 어떤 유형?" 구분력 훈련</div><p><b>🔍 언제 쓰나?</b></p><ul><li><b>⭕ 인터리빙</b>: 문제 유형 구분이 어려울 때, 비슷한 개념 헷갈릴 때</li><li><b>❌ 블로킹</b>: 완전 새 개념, 기초 익히는 중</li></ul><div class="box-b"><b>실행</b>: 오답 패턴 보고 헷갈리는 유형끼리 섞어서 연습</div><div class="box-c">효과크기 d=0.42. 유형 구분력 향상</div>',
+          chk: ['헷갈리는 유형 섞기'] },
+        { id: 'flashcard', title: '플래시카드 규칙', overview: '효과적인 카드', thought: '"카드를 잘 만들려면?"',
+          content: '<p><b>✓ 좋은 카드</b>:</p><ul><li>한 카드 = <b>한 개념</b></li><li>앞면: 질문 (정답 보이면 안됨)</li><li>뒷면: <b>간결한</b> 답</li><li><b>양방향</b>: A→B도, B→A도</li><li>이미지 추가 (이중 부호화)</li></ul><p><b>✗ 나쁜 카드</b>:</p><ul><li>너무 긴 답 (문단 전체)</li><li>앞면에 힌트 있음</li><li>한 카드에 여러 개념</li><li>그냥 복붙 (자기 말 아님)</li></ul>',
+          chk: ['카드 규칙 준수'] }
+      ]},
+      { name: '복습', emoji: '🔄', duration: '간격 두고', steps: [
+        { id: 'spacing', title: '간격 반복', overview: '망각 곡선', thought: '"언제 다시?"',
+          content: '<p><b>최적 간격</b>: 1일 → 3일 → 7일 → 21일 → 2개월</p><p><b>앱</b>: Anki, Quizlet, RemNote</p><div class="box-c">같은 시간 투자해도 분산하면 효과 2배</div>',
+          chk: ['복습 일정'] },
+        { id: 'errorlog', title: '오답 분석', overview: '패턴 찾기', thought: '"왜 틀렸지?"',
+          content: '<p><b>오답 유형</b>:</p><ul><li><b>몰랐음</b>: 지식 부족 → 보충</li><li><b>헷갈림</b>: 유사 개념 혼동 → 비교표</li><li><b>실수</b>: 주의 부족 → 체크리스트</li><li><b>함정</b>: 출제 의도 파악 실패</li></ul><div class="box-y">오답 노트에 기록하고 패턴 분석</div>',
+          chk: ['오답 패턴 인식'] },
+        { id: 'distractor', title: '오답 함정 7가지', overview: '선택지 함정', thought: '"출제자 의도는?"',
+          content: '<p><b>7가지 함정 유형</b>:</p><ul><li><b>부분적 사실</b>: 일부만 맞고 나머지 틀림</li><li><b>무관한 사실</b>: 참이지만 질문과 무관</li><li><b>극단적 표현</b>: "항상", "절대", "모든"</li><li><b>단어 함정</b>: 비슷한 용어로 혼동 유발</li><li><b>범위 초과</b>: 지문에 없는 내용 추론</li><li><b>인과 뒤집기</b>: 원인↔결과 바꿈</li><li><b>정도 왜곡</b>: "조금"→"매우"로 과장</li></ul><div class="box-y">오답에 유형 태그 달아서 패턴 파악!</div>',
+          chk: ['함정 유형 태그'] },
+        { id: 'time', title: '시간 관리', overview: '실전 전략', thought: '"시간 배분은?"',
+          content: '<ul><li>문제당 시간 = 총시간 ÷ 문제수</li><li><b>1.5배 넘으면 넘어가기</b></li><li>체크포인트: 25%, 50%, 75%</li><li>쉬운 것 먼저, 어려운 것 나중</li><li>마지막 5분 = 검토</li></ul>',
+          chk: ['시간 배분 계획'] },
+        { id: 'meta', title: '메타인지 체크', overview: '유창성 환상', thought: '"정말 아는 건가?"',
+          content: '<ul><li>이거 <b>정말</b> 아는가 vs <b>익숙한</b> 건가?</li><li>안 보고 설명할 수 있나?</li><li>비슷한 문제 풀 수 있나?</li></ul><div class="box-r"><b>유창성 환상</b>: 읽기 쉬우면 안다고 착각<br>형광펜, 밑줄 = 학습 착각 유발<br>→ <b>테스트</b>로 확인!</div>',
+          chk: ['메타인지 점검'] }
+      ]}
+    ]
+  }
+};
+
+// ========== 비판적 사고 도구 ==========
+var CRITICAL = {
+  name: '비판적 사고', icon: '🧠', color: '#7c3aed', bg: '#f3e8ff', light: '#e9d5ff',
+  phases: [
+    { name: '논증 분석', emoji: '⚖️', duration: '', color: '#7c3aed', steps: [
+      { id: 'toulmin', title: 'Toulmin + Warrant찾기', overview: '숨겨진 가정 드러내기', thought: '"이 주장의 구조는?"',
+        content: '<p><b>Toulmin 6요소</b>:</p><ul><li><b>주장(Claim)</b>: "따라서" 뒤</li><li><b>근거(Grounds)</b>: "왜냐하면" 앞, 데이터/통계</li><li><b>보증(Warrant)</b>: 근거→주장 연결 (보통 암묵적!)</li><li><b>보강(Backing)</b>: 보증 지지 증거</li><li><b>한정어</b>: "아마", "대체로"</li><li><b>반박</b>: 예외 조건</li></ul><p><b>🔍 Warrant 찾기 테크닉</b>:</p><ul><li>1. 주장+근거 문장 찾기</li><li>2. 둘 사이에 "왜?" 삽입<br>"[근거] 있으면 왜 [주장]이 따라오지?"</li><li>3. 그 "왜?"의 답 = Warrant!</li></ul><div class="box-g"><b>예</b>: 주장=정책폐지, 근거=실업률↑<br>"왜?": 실업률↑이 왜 폐지 이유?<br>Warrant: <b>실업률↑=정책실패</b> (숨겨진 가정!)</div><div class="box-y"><b>Warrant 약점 판정</b>:<br>□ 명시적으로 언급됐나?<br>□ Backing 있나?<br>□ 예외 인정했나?<br>→ 약하면: "근거는 있지만 왜 결론인지 설명 부족"</div>' },
+      { id: 'stasis', title: '주장 유형 (Stasis)', overview: '사실/정의/가치/정책', thought: '"어떤 종류의 주장?"',
+        content: '<ul><li><b>사실</b>: X가 일어났는가? → 관찰, 데이터 필요</li><li><b>정의</b>: X는 무엇인가? → 기준, 분류 필요</li><li><b>가치</b>: X는 좋은가? → 평가 기준 필요</li><li><b>정책</b>: 무엇을 해야? → 문제+해결책+실행가능성</li></ul><div class="box-y">주장 유형 파악 → 어떤 증거 필요한지 알 수 있음!</div>' },
+      { id: 'walton', title: 'Walton 논증 도식', overview: '전문가/유추/결과/경사면', thought: '"어떤 논증 패턴?"',
+        content: '<ul><li><b>전문가 호소</b>: E가 전문가→A 참<br><span style="color:#64748b">⚠️ 정말 그 분야? 합의? 편향?</span></li><li><b>유추</b>: A≈B→A의 X가 B에도<br><span style="color:#64748b">⚠️ 관련 측면서 유사? 결정적 차이?</span></li><li><b>결과</b>: A→B, B나쁨→A하지마<br><span style="color:#64748b">⚠️ B가 정말 일어나나?</span></li><li><b>미끄러운 경사</b>: A→B→...→Z<br><span style="color:#64748b">⚠️ 각 단계 불가피?</span></li></ul>' },
+      { id: 'argmap', title: '논증 도식화', overview: '전제→결론 그리기', thought: '"논리 구조를 그리면?"',
+        content: '<ul><li>1. <b>결론 찾기</b>: "따라서", "그러므로" 뒤</li><li>2. <b>전제 찾기</b>: "왜냐하면" 앞</li><li>3. <b>암묵적 가정</b>: 명시 안 된 전제</li><li>4. <b>화살표로 연결</b>: 전제 → 결론</li><li>5. <b>독립 vs 상호의존</b>: 전제가 따로? 함께?</li></ul>' }
+    ]},
+    { name: '논리와 인과', emoji: '🔗', duration: '', color: '#059669', steps: [
+      { id: 'inference', title: '추론 3유형', overview: '연역/귀납/귀추', thought: '"어떤 추론?"',
+        content: '<ul><li><b>연역</b>: 전제 참→결론 <b>필연적</b> 참<div class="box-g">"모든 A는 B. X는 A. ∴ X는 B"</div></li><li><b>귀납</b>: 개별→일반, <b>개연적</b><div class="box-g">"본 까마귀 다 검음→모든 까마귀 검음"</div></li><li><b>귀추</b>: 최선의 설명으로 추론<div class="box-g">"땅 젖음→비가 왔을 것"</div></li></ul>' },
+      { id: 'condition', title: '필요/충분/INUS', overview: '조건 관계', thought: '"어떤 조건?"',
+        content: '<ul><li><b>필요</b>: Y 있으려면 X 필수 (불→산소)</li><li><b>충분</b>: X 있으면 Y 확정 (참수→죽음)</li><li><b>INUS</b>: 충분조건의 필요한 부분 (합선+가연물+산소=화재)</li></ul><div class="box-y">"X 없이 Y?" → 필요 체크 | "X 있으면 항상 Y?" → 충분 체크</div>' },
+      { id: 'causal_signal', title: '인과/상관 신호어', overview: '텍스트에서 구분', thought: '"인과 주장인가?"',
+        content: '<p><b>🔴 인과 주장 신호</b> (이게 보이면 인과 주장 중!):</p><ul><li><b>영어</b>: causes, leads to, results in, produces, affects, impacts</li><li><b>한국어</b>: ~때문에, ~로 인해, ~가 ~를 야기, ~하면 ~된다, ~의 원인</li></ul><p><b>🟡 상관 표현</b> (인과 아님):</p><ul><li><b>영어</b>: associated with, correlated with, linked to, predicts</li><li><b>한국어</b>: ~와 관련, ~할수록 ~하는 경향, ~와 연관</li></ul><p><b>🟢 헤징</b> (불확실성 인정):</p><ul><li>may, might, ~일 수 있다, ~로 보인다</li></ul><div class="box-y"><b>발견시</b>: 인과 신호어 → 연구설계 확인 → RCT 아니면 "상관으로 해석"</div>' },
+      { id: 'causal_judge', title: '인과 판정 3단계', overview: '필수+강화 조건', thought: '"인과 얼마나 확실?"',
+        content: '<p><b>Step 1: 필수 조건</b> (하나라도 없으면 인과 ❌)</p><ul><li>□ <b>시간 선후</b>: 원인이 결과보다 먼저? → Methods 시점 확인</li><li>□ <b>공변</b>: 원인↔결과 같이 변함? → Results 상관/회귀 확인</li></ul><p><b>Step 2: 강화 조건</b> (많을수록 인과 확신↑)</p><ul><li>□ <b>용량-반응</b>: 원인↑→결과↑ → 용량별 그래프 있나?</li><li>□ <b>메커니즘</b>: 왜 A→B인지 설명 → Discussion에 경로 있나?</li><li>□ <b>실험 증거</b>: RCT로 확인?</li><li>□ <b>일관성</b>: 다른 연구에서도 반복?</li><li>□ <b>특이성</b>: 특정 원인→특정 결과?</li></ul><p><b>Step 3: 판정</b></p><div class="box-g">필수 2개 + 강화 3개↑ = "인과 가능성 높음"</div><div class="box-y">필수 2개 + 강화 1-2개 = "인과 가능성 있음, 추가 연구 필요"</div><div class="box-r">필수 미충족 = "상관일 뿐, 인과 아님"</div>' },
+      { id: 'confound', title: '교란변수', overview: '제3변수 문제', thought: '"숨은 변수?"',
+        content: '<p><b>교란변수</b>: 원인과 결과 <b>모두에</b> 영향 → 가짜 인과처럼 보임</p><div class="box-g">커피↔폐암? 실제: 교란변수=<b>흡연</b></div><p><b>통제 방법</b>:</p><ul><li><b>RCT</b>: 무작위 배정 (가장 강력)</li><li><b>통계적 통제</b>: 회귀분석에서 통제</li><li><b>짝짓기/층화</b>: 비슷한 집단끼리</li></ul><div class="box-y">체크: "이 관계를 설명하는 제3변수 있나?"</div>' },
+      { id: 'study_type', title: '연구설계 판별', overview: 'Methods 키워드', thought: '"어떤 연구?"',
+        content: '<p><b>Step 1: 무작위 배정 키워드 있나?</b></p><ul><li>찾기: "randomly assigned", "randomized", "무작위 배정"</li><li>→ 있음: Step 2로 | 없음: Step 3으로</li></ul><p><b>Step 2: 대조군 있나?</b></p><ul><li>찾기: "control group", "placebo", "대조군"</li><li>→ 있음: <b>RCT 확정</b> | 없음: 약한 RCT</li></ul><p><b>Step 3: 개입 있나?</b></p><ul><li>찾기: "intervention", "treatment", "처치"</li><li>→ 있음: <b>준실험</b> | 없음: Step 4로</li></ul><p><b>Step 4: 관찰 키워드만?</b></p><ul><li>찾기: "observational", "survey", "cohort", "조사"</li><li>→ <b>관찰연구</b> 확정</li></ul><div class="box-g">RCT → "A가 B를 야기" 가능</div><div class="box-y">준실험 → "인과 가능성" (약함)</div><div class="box-r">관찰 → "A와 B가 함께 나타남" (인과 불가)</div>' }
+    ]},
+    { name: '논리적 오류', emoji: '🚫', duration: '', color: '#ef4444', steps: [
+      { id: 'forms', title: '형식 오류', overview: '전건부정, 후건긍정', thought: '"형식이 맞아?"',
+        content: '<p><b>✓ 타당한 형식</b></p><ul><li><b>전건 긍정</b>: P→Q, P ∴ Q</li><li><b>후건 부정</b>: P→Q, ¬Q ∴ ¬P</li><li><b>가언 삼단</b>: P→Q, Q→R ∴ P→R</li></ul><div class="box-r"><b>✗ 오류</b><br>전건 부정: P→Q, ¬P ∴ ¬Q ❌<br>후건 긍정: P→Q, Q ∴ P ❌</div>' },
+      { id: 'adhominem', title: '인신공격/허수아비', overview: '사람 공격, 왜곡 공격', thought: '"논증을 공격하나?"',
+        content: '<p><b>인신공격 (Ad Hominem)</b></p><ul><li><b>직접</b>: "전과자니까 틀림"</li><li><b>정황</b>: "이해관계 있으니 못 믿어"</li><li><b>피장파장</b>: "너도 마찬가지"</li></ul><div class="box-r">주장 진위는 주장자와 독립적!</div><p><b>허수아비 (Straw Man)</b></p><ul><li>상대 주장 왜곡해서 공격</li></ul><div class="box-y">체크: 상대가 실제로 그렇게 주장했나?</div>' },
+      { id: 'appeals', title: '부당한 호소들', overview: '권위/대중/전통/감정', thought: '"논리 외에 뭘 쓰나?"',
+        content: '<ul><li><b>권위</b>: 해당 분야 전문가 아님</li><li><b>대중</b>: 많이 믿으니까 참</li><li><b>전통</b>: 오래됐으니 옳다</li><li><b>자연</b>: 자연적=좋음 (독버섯도 자연)</li><li><b>감정</b>: 공포/동정/분노로 설득</li><li><b>무지</b>: 증명 안 됐으니 반대가 참<div class="box-r">증거 부재 ≠ 부재의 증거</div></li><li><b>결과</b>: 믿으면 좋은 결과니까 참<div class="box-r">"신이 없으면 삶 의미 없음 ∴ 신 존재" ❌</div></li></ul>' },
+      { id: 'premise', title: '가정/전제 오류', overview: '거짓 딜레마, 순환논증', thought: '"전제가 숨어있나?"',
+        content: '<ul><li><b>거짓 딜레마</b>: 선택지 더 있는데 둘만<div class="box-g">"내 편 아니면 적" (중립은?)</div></li><li><b>미끄러운 경사</b>: 근거 없이 극단으로 연쇄<div class="box-y">체크: 각 단계가 불가피한가?</div></li><li><b>순환 논증</b>: 결론을 전제로 사용<div class="box-g">"성경이 참 ∵ 신의 말씀 ∵ 성경에 그렇게 써있음"</div></li><li><b>복합 질문</b>: 가정 숨긴 질문<div class="box-g">"언제부터 부정행위 그만뒀나요?"</div></li></ul>' },
+      { id: 'induction', title: '귀납/인과 오류', overview: '성급한 일반화, Post Hoc', thought: '"귀납이 건전한가?"',
+        content: '<p><b>귀납 오류</b></p><ul><li><b>성급한 일반화</b>: 적은 사례로 전체 결론<div class="box-g">"내가 만난 3명 다 그래 → 그 집단 다 그래"</div></li><li><b>체리 피킹</b>: 유리한 증거만 선택</li></ul><p><b>인과 오류</b></p><ul><li><b>Post Hoc</b>: 시간 순서만으로 인과<div class="box-g">"닭 울고 해 뜸 → 닭이 해 뜨게 함?"</div></li><li><b>상관=인과</b>: 같이 변한다고 인과<div class="box-g">"아이스크림↑ 범죄↑" ❌ 공통원인=더위</div></li><li><b>역인과</b>: 원인-결과 뒤바꿈</li></ul><div class="box-y"><b>인과 표현 발견시</b>: "~때문에", "~야기" → 인과 4단계 점검!</div>' }
+    ]},
+    { name: '통계적 함정', emoji: '📊', duration: '', color: '#3b82f6', steps: [
+      { id: 'sample', title: '표본 문제', overview: '편향, 생존자', thought: '"표본이 대표적?"',
+        content: '<ul><li><b>표본 편향</b>: 모집단 대표 안 함</li><li><b>생존자 편향</b>: 살아남은 것만 봄<div class="box-g">"성공 창업가만 보고 중퇴해도 성공"</div></li><li><b>자기선택</b>: 특정 성향만 참여</li></ul>' },
+      { id: 'pvalue_effect', title: 'p값 × 효과크기', overview: '조합 해석', thought: '"실제로 의미있나?"',
+        content: '<p><b>p-value 오해</b>:</p><div class="box-r">❌ p=0.05 = 5% 틀림<br>❌ p>0.05 = 효과 없음<br>❌ p<0.05 = 중요함</div><p><b>효과크기 (Cohen d)</b>: 0.2=소, 0.5=중, 0.8=대</p><p><b>🔍 조합 해석표</b>:</p><table style="width:100%;font-size:0.8rem;border-collapse:collapse"><tr style="background:#f1f5f9"><td style="padding:4px;border:1px solid #e2e8f0">p&lt;0.05 + d≥0.5</td><td style="padding:4px;border:1px solid #e2e8f0">✓ 유의+의미있음</td></tr><tr><td style="padding:4px;border:1px solid #e2e8f0">p&lt;0.05 + d&lt;0.2</td><td style="padding:4px;border:1px solid #e2e8f0">⚠️ 유의하지만 실용적 의미 거의 없음</td></tr><tr style="background:#f1f5f9"><td style="padding:4px;border:1px solid #e2e8f0">p&gt;0.05 + d≥0.5</td><td style="padding:4px;border:1px solid #e2e8f0">? 검정력 부족 가능</td></tr><tr><td style="padding:4px;border:1px solid #e2e8f0">p&gt;0.05 + d&lt;0.2</td><td style="padding:4px;border:1px solid #e2e8f0">✗ 효과 없거나 매우 작음</td></tr></table>' },
+      { id: 'phacking', title: 'p-hacking 의심 신호', overview: '분석 조작 탐지', thought: '"데이터 조작?"',
+        content: '<p><b>🔴 Results에서 이런 게 보이면 의심</b>:</p><ul><li>□ p값이 0.05 근처에 몰림 (0.048, 0.049)</li><li>□ "추가 분석에서" 갑자기 유의해짐</li><li>□ 아웃라이어 제거 후 유의해짐</li><li>□ 여러 종속변수 중 하나만 유의</li><li>□ "경향이 있었다" (p=0.06) 표현</li></ul><div class="box-y">→ 2개 이상 = p-hacking 의심</div><p><b>HARKing 의심</b>:</p><ul><li>□ 사전등록 없음</li><li>□ Introduction 가설이 Results와 너무 정확히 일치</li></ul><div class="box-y"><b>사전등록 확인</b>: 논문에서 "preregistered" 검색, 없으면 OSF.io 검색</div>' },
+      { id: 'graph', title: '그래프 속임수', overview: '시각적 조작', thought: '"그래프가 정직?"',
+        content: '<ul><li><b>y축 조작</b>: 0에서 시작 안 함 → 차이 과장</li><li><b>축 비율 왜곡</b>: 가로/세로 비율로 기울기 조작</li><li><b>3D 효과</b>: 원근법으로 크기 왜곡</li><li><b>선택적 범위</b>: 유리한 구간만</li></ul><div class="box-y">체크: y축 0부터? 축 비율 적절? 전체 범위?</div>' }
+    ]},
+    { name: '인지 편향', emoji: '🧠', duration: '', color: '#f59e0b', steps: [
+      { id: 'heuristic', title: '판단 휴리스틱', overview: '가용성, 대표성, 앵커링', thought: '"어떤 지름길?"',
+        content: '<ul><li><b>가용성</b>: 떠올리기 쉬운 것 과대평가<div class="box-g">"비행기 사고 뉴스→비행기 위험"</div></li><li><b>대표성</b>: 전형적이면 해당 범주 (기저율 무시)</li><li><b>앵커링</b>: 첫 숫자에 영향받음</li></ul>' },
+      { id: 'confirm', title: '확증 편향', overview: '믿는 것만 찾기', thought: '"반대 증거도 찾았나?"',
+        content: '<ul><li><b>확증</b>: 믿는 것 지지 정보만 찾음</li><li><b>불확증</b>: 반대 증거에 더 엄격</li><li><b>동기화된 추론</b>: 원하는 결론으로</li></ul><div class="box-y">대응: 의도적으로 반대 증거 찾기</div>' },
+      { id: 'self', title: '자기 관련 편향', overview: '던닝-크루거, 과신', thought: '"나를 객관적으로?"',
+        content: '<ul><li><b>자기 고양</b>: 성공=내 탓, 실패=외부</li><li><b>우월성 환상</b>: 90%가 평균 이상</li><li><b>던닝-크루거</b>: 능력↓→과대평가</li><li><b>기획 오류</b>: 시간/비용 낙관 추정</li></ul>' },
+      { id: 'decision', title: '의사결정 편향', overview: '프레이밍, 손실 회피', thought: '"판단이 왜곡?"',
+        content: '<ul><li><b>프레이밍</b>: 표현에 따라 판단 다름</li><li><b>손실 회피</b>: 손실>이득 (약 2:1)</li><li><b>현상 유지</b>: 변화 싫어함</li><li><b>매몰 비용</b>: 회수 불가능 비용 때문에 계속</li></ul>' }
+    ]},
+    { name: '과학 방법론', emoji: '🔬', duration: '', color: '#059669', steps: [
+      { id: 'falsify', title: '반증 가능성', overview: '포퍼의 기준', thought: '"반증 가능?"',
+        content: '<p>틀릴 수 있는 예측 내놔야 과학적</p><div class="box-y">체크: 이 주장이 틀렸다면 어떤 증거가?</div>' },
+      { id: 'rct', title: 'RCT', overview: '무작위 대조 시험', thought: '"어떻게 인과 증명?"',
+        content: '<p>인과추론의 <b>황금 기준</b></p><ul><li><b>무작위 배정</b>: 그룹 간 차이 제거</li><li><b>대조군</b>: 처치 vs 자연 변화</li><li><b>블라인드</b>: 기대 효과 제거</li></ul>' },
+      { id: 'validity4', title: '타당도 판정', overview: '체크리스트+해석', thought: '"연구가 타당?"',
+        content: '<p><b>내적 타당도 체크</b>:</p><ul><li>□ 무작위 배정? (Methods에 "randomly")</li><li>□ 대조군 있나?</li><li>□ 탈락률 20% 미만?</li><li>□ 블라인드 설계?</li></ul><div class="box-g">4개중 4개=높음 | 2-3개=중간 | 0-1개=낮음</div><p><b>타당도별 해석</b>:</p><div class="box-r"><b>내적↓</b>: "A가 B 야기했다고 확신 어려움"</div><div class="box-y"><b>외적↓</b>: "[대학생]에서 나와서 [일반인]에 적용 불확실"</div><div class="box-b"><b>구성↓</b>: "측정한 게 정말 [개념]인지 의문"</div>' },
+      { id: 'replication', title: '재현 위기', overview: '왜 재현이 안 되나', thought: '"결과 믿을 수?"',
+        content: '<ul><li><b>원인</b>: 출판 편향, p-해킹, 낮은 검정력</li><li><b>대응</b>: 사전등록, 공개 데이터</li></ul><div class="box-y">체크: 독립 재현? 사전등록?</div>' }
+    ]},
+    { name: '출처 평가', emoji: '🔍', duration: '', color: '#0891b2', steps: [
+      { id: 'craap', title: 'CRAAP 테스트', overview: '5가지 기준', thought: '"이 출처 믿을 만해?"',
+        content: '<p><b>5가지 기준으로 출처 평가</b>:</p><ul><li><b>C</b>urrency (최신성): 언제 작성? 최근 업데이트?</li><li><b>R</b>elevance (관련성): 내 질문에 맞나? 독자 대상은?</li><li><b>A</b>uthority (권위): 저자 자격? 소속? 연락처?</li><li><b>A</b>ccuracy (정확성): 증거 있나? 다른 출처와 일치?</li><li><b>P</b>urpose (목적): 정보 제공? 설득? 판매? 오락?</li></ul><div class="box-y"><b>실행</b>: 각 기준 1-5점 → 총점 20점 이상이면 신뢰</div>' },
+      { id: 'lateral', title: '측면 읽기', overview: '외부에서 검증', thought: '"다른 곳에서 확인?"',
+        content: '<p><b>사이트 자체 정보 믿지 말고, 외부에서 검색!</b></p><ul><li><b>1단계</b>: 탭 새로 열기</li><li><b>2단계</b>: "사이트명 + 신뢰" 또는 "저자명 + 자격" 검색</li><li><b>3단계</b>: 위키피디아, 팩트체크 사이트 확인</li><li><b>4단계</b>: 다른 신뢰할 만한 출처에서 같은 정보 확인</li></ul><div class="box-r"><b>주의</b>: "About Us" 페이지는 자기 홍보. 외부 검증 필수!</div>' }
+    ]},
+    { name: '설득과 수사', emoji: '🎯', duration: '', color: '#be185d', steps: [
+      { id: 'ethos', title: '에토스·파토스·로고스', overview: '신뢰·감정·논리', thought: '"어떻게 설득?"',
+        content: '<ul><li><b>에토스</b>: 화자 신뢰성</li><li><b>파토스</b>: 감정 호소</li><li><b>로고스</b>: 논리적 논증</li></ul><div class="box-y">효과적 설득 = 세 가지 적절한 조합</div>' },
+      { id: 'framing', title: '프레이밍', overview: '표현 방식의 힘', thought: '"어떻게 표현?"',
+        content: '<ul><li><b>이득 vs 손실</b></li><li><b>긍정 vs 부정</b>: "90% 성공" vs "10% 실패"</li><li><b>개인 vs 통계</b>: 이야기 > 숫자</li></ul>' },
+      { id: 'cialdini', title: 'Cialdini 6원리', overview: '설득의 심리학', thought: '"어떤 원리 작동?"',
+        content: '<ul><li><b>상호성</b>: 받으면 갚으려 함</li><li><b>일관성</b>: 이전과 일관되게</li><li><b>사회적 증거</b>: 남들 따라함</li><li><b>호감</b>: 좋아하는 사람</li><li><b>권위</b>: 전문가 따름</li><li><b>희소성</b>: 희귀하면 더 원함</li></ul><div class="box-r">이 원리들은 조작에도 사용됨!</div>' }
+    ]}
+  ]
+};
+
+// ========== SOS 데이터 ==========
+var SOS = [
+  { emoji: '😵', title: '이해가 안 돼', strategies: [
+    { action: '문장 쪼개기', hint: '긴 문장을 마침표로 끊어. 주어-동사 먼저.' },
+    { action: '첫 문장만 연결', hint: '각 문단 첫 문장만 읽고 전체 흐름 파악.' },
+    { action: '결론부터', hint: '마지막 문단부터 거슬러 올라가며 읽기.' },
+    { action: '쉬운 자료 먼저', hint: '위키, 유튜브 해설로 배경 채우고 다시.' },
+    { action: '용어 정리', hint: '모르는 용어가 벽. 먼저 정의 찾기.' }
+  ]},
+  { emoji: '🤔', title: '기억이 안 나', strategies: [
+    { action: '덮고 말하기', hint: '10초 안에 "핵심은..." 소리내어.' },
+    { action: '키워드 3개', hint: '가장 중요한 단어 3개만 떠올리기.' },
+    { action: '그림으로', hint: '마인드맵, 다이어그램으로 관계 표현.' },
+    { action: '가르쳐보기', hint: '"이건 말이야..." 혼잣말로 설명.' },
+    { action: '테스트', hint: '다시 읽지 말고 문제 풀어보기.' }
+  ]},
+  { emoji: '🤯', title: '집중이 안 돼', strategies: [
+    { action: '5분만 규칙', hint: '5분 타이머. 일단 시작하면 이어짐.' },
+    { action: '소리내어 읽기', hint: '눈+귀+입 = 강제 집중.' },
+    { action: '환경 리셋', hint: '폰 다른 방, 책상 정리, 2분 환기.' },
+    { action: '목표 축소', hint: '"1페이지만", "5분만". 작은 성공 쌓기.' },
+    { action: '몸 움직이기', hint: '2분 스트레칭, 10번 스쿼트.' }
+  ]},
+  { emoji: '🌲', title: '길을 잃었어', strategies: [
+    { action: '목차 확인', hint: '"지금 어디?" 전체에서 내 위치 확인.' },
+    { action: '여기까지 정리', hint: '"지금까지는..." 한 줄 요약.' },
+    { action: '구조 그리기', hint: '박스+화살표로 구조 그리기.' },
+    { action: '처음으로', hint: '서론 다시 읽기. 저자 의도 다시 확인.' }
+  ]},
+  { emoji: '😰', title: '너무 어려워', strategies: [
+    { action: '난이도 낮추기', hint: '입문서, 해설 영상 먼저.' },
+    { action: '건너뛰기', hint: '⭐ 표시하고 일단 넘기기.' },
+    { action: '부분만 목표', hint: '"전부" 포기. "핵심 3개만".' },
+    { action: '휴식', hint: '뇌도 처리 시간 필요. 자고 나면 이해될 수도.' },
+    { action: '질문 바꾸기', hint: '"이해해야 해" → "뭘 모르지?" 구체화.' }
+  ]}
+];
+
+// ========== 상태 ==========
+var state = {
+  tab: 'guide',
+  type: null,
+  genre: null,
+  mode: 'overview',
+  phaseIdx: 0,
+  stepIdx: 0,
+  completed: {},
+  checked: {},
+  showContent: true,
+  sosOpen: null,
+  timer: 25*60,
+  timerRunning: false,
+  timerPreset: 25,
+  justCompleted: false
+};
+var timerInterval = null;
+
+// localStorage 저장/복원
+function saveState() {
+  try {
+    localStorage.setItem('readingGuideV17', JSON.stringify({
+      type: state.type,
+      completed: state.completed,
+      checked: state.checked
+    }));
+  } catch(e) {}
+}
+function loadState() {
+  try {
+    var saved = localStorage.getItem('readingGuideV17');
+    if (saved) {
+      var s = JSON.parse(saved);
+      if (s.type) state.type = s.type;
+      if (s.completed) state.completed = s.completed;
+      if (s.checked) state.checked = s.checked;
     }
-    function renderTypeSelect() {
-      var html = '<div class="page"><div class="stats-bar"><div class="stat"><div class="stat-icon">📚</div><div class="stat-text">'+state.stats.sessions+' 세션</div></div><div class="stat"><div class="stat-icon">⭐</div><div class="stat-text">'+state.stats.points+' 점</div></div></div><h2>지금 뭘 읽으려고 해?</h2><div class="type-grid">';
-      for (var k in PROTOCOLS) { var p = PROTOCOLS[k]; html += '<button class="type-btn" style="background:'+p.bg+'" onclick="selectType(\''+k+'\')"><div class="type-icon" style="background:'+p.color+'20">'+p.icon+'</div><span class="type-name">'+p.name+'</span></button>'; }
-      return html + '</div></div>';
+  } catch(e) {}
+}
+loadState();
+
+// 스와이프 처리
+var touchStartX = 0, touchStartY = 0, isSwiping = false;
+
+function handleTouchStart(e) {
+  touchStartX = e.changedTouches[0].screenX;
+  touchStartY = e.changedTouches[0].screenY;
+  isSwiping = true;
+}
+
+function handleTouchMove(e) {
+  if (!isSwiping) return;
+  var card = document.querySelector('.detail-card');
+  if (card) {
+    var diffX = e.changedTouches[0].screenX - touchStartX;
+    if (Math.abs(diffX) > 15) {
+      card.classList.add('swiping');
+      card.style.transform = 'translateX(' + (diffX * 0.4) + 'px)';
     }
-    function renderOverview() {
-      var p = PROTOCOLS[state.type];
-      var html = '<div class="page"><div class="header-bar"><button class="header-btn" style="background:#f1f5f9;color:#64748b" onclick="resetGuide()">← 처음</button><button class="header-btn" style="border:2px solid '+p.color+';color:'+p.color+'" onclick="setView(\'detail\')">👁 세부</button></div><h2 style="color:'+p.color+';text-align:left;font-size:1.3rem">'+p.icon+' '+p.name+' 전체</h2>';
-      p.phases.forEach(function(ph, pi) {
-        html += '<div class="overview-card"><div class="overview-header" style="background:'+p.light+'"><span class="phase-emoji">'+ph.emoji+'</span><span class="phase-name">'+ph.name+'</span><span class="phase-duration" style="margin-left:auto">'+ph.duration+'</span></div><div class="overview-steps">';
-        ph.steps.forEach(function(st, si) {
-          var done = state.completed[pi+'-'+si];
-          html += '<div class="overview-step" style="background:'+(done?'#dcfce7':'#f8fafc')+'" onclick="goToStep('+pi+','+si+')"><div class="overview-step-num" style="background:'+(done?'#22c55e':p.color)+'">'+(done?'✓':(si+1))+'</div><div class="overview-step-info"><div class="overview-step-title">'+st.title+'</div><div class="overview-step-desc">'+st.overview+'</div></div><span style="padding:0.25rem 0.5rem;border-radius:6px;font-size:0.7rem;background:'+(st.type==='seq'?'#dbeafe':'#fef3c7')+';color:'+(st.type==='seq'?'#1d4ed8':'#92400e')+'">'+(st.type==='seq'?'순서':'선택')+'</span></div>';
-        });
-        html += '</div></div>';
+  }
+}
+
+function handleTouchEnd(e) {
+  if (!isSwiping) return;
+  isSwiping = false;
+  var touchEndX = e.changedTouches[0].screenX;
+  var touchEndY = e.changedTouches[0].screenY;
+  
+  var card = document.querySelector('.detail-card');
+  if (card) {
+    card.classList.remove('swiping');
+    card.style.transform = '';
+  }
+  
+  var diffX = touchEndX - touchStartX;
+  var diffY = touchEndY - touchStartY;
+  
+  // 수직 스와이프 (위→아래: 전체보기)
+  if (Math.abs(diffY) > Math.abs(diffX) && diffY > 80) {
+    setMode('overview');
+    return;
+  }
+  
+  // 수평 스와이프: ← 이전, → 다음
+  if (Math.abs(diffX) > 60) {
+    if (diffX > 0) {
+      goPrev(); // ← 이전 (오른쪽으로 스와이프)
+    } else {
+      goNext(); // → 다음 (왼쪽으로 스와이프)
+    }
+  }
+}
+
+// ========== 렌더링 ==========
+function render() {
+  var app = document.getElementById('app');
+  var tabs = document.getElementById('tabs');
+  var nav = document.getElementById('nav');
+  
+  tabs.innerHTML = [
+    { id: 'guide', icon: '📖', label: '가이드' },
+    { id: 'tools', icon: '🧠', label: '사고도구' },
+    { id: 'sos', icon: '🆘', label: 'SOS' },
+    { id: 'timer', icon: '⏱️', label: '타이머' }
+  ].map(function(t) {
+    return '<button class="tab-btn ' + (state.tab === t.id ? 'active' : '') + '" onclick="setTab(\'' + t.id + '\')"><span>' + t.icon + '</span><span>' + t.label + '</span></button>';
+  }).join('');
+  
+  nav.innerHTML = '';
+  
+  if (state.tab === 'guide') {
+    if (!state.type) {
+      app.innerHTML = renderTypeSelect();
+    } else if (state.mode === 'overview') {
+      app.innerHTML = renderOverview();
+    } else {
+      app.innerHTML = renderDetail();
+    }
+  } else if (state.tab === 'tools') {
+    if (state.mode === 'overview') {
+      app.innerHTML = renderCriticalOverview();
+    } else {
+      app.innerHTML = renderCriticalDetail();
+    }
+  } else if (state.tab === 'sos') {
+    app.innerHTML = renderSOS();
+  } else if (state.tab === 'timer') {
+    app.innerHTML = renderTimer();
+  }
+  
+  // 스와이프 이벤트 바인딩
+  var wrapper = document.querySelector('.detail-wrapper');
+  if (wrapper) {
+    wrapper.addEventListener('touchstart', handleTouchStart, { passive: true });
+    wrapper.addEventListener('touchmove', handleTouchMove, { passive: true });
+    wrapper.addEventListener('touchend', handleTouchEnd, { passive: true });
+  }
+}
+
+function renderTypeSelect() {
+  var h = '<h2>무엇을 읽으려고 해?</h2>';
+  h += '<div class="type-grid">';
+  var types = [
+    { id: 'academic', icon: '📚', name: '학술서/비문학', desc: '교과서·논설·역사·과학', bg: '#dbeafe' },
+    { id: 'fiction', icon: '📖', name: '소설/문학', desc: '서사·캐릭터·테마', bg: '#fce7f3' },
+    { id: 'paper', icon: '📑', name: '논문', desc: '읽기·비판·작성', bg: '#ecfdf5' },
+    { id: 'exam', icon: '🎯', name: '시험 공부', desc: '인지심리학 기반', bg: '#fef2f2' }
+  ];
+  types.forEach(function(t) {
+    h += '<button class="type-card" style="background:' + t.bg + '" onclick="selectType(\'' + t.id + '\')">';
+    h += '<div class="type-icon">' + t.icon + '</div>';
+    h += '<div class="type-name">' + t.name + '</div>';
+    h += '<div class="type-desc">' + t.desc + '</div>';
+    h += '</button>';
+  });
+  h += '</div>';
+  return h;
+}
+
+function renderOverview() {
+  var protocol = PROTOCOLS[state.type];
+  var h = '<div class="top-bar">';
+  h += '<button class="back-btn" onclick="goBack()">← 선택</button>';
+  h += '</div>';
+  h += '<h2>' + protocol.icon + ' ' + protocol.name + '</h2>';
+  
+  // 장르 선택 (학술서만)
+  if (state.type === 'academic') {
+    h += '<div class="genre-row">';
+    for (var k in GENRES) {
+      var g = GENRES[k];
+      h += '<button class="genre-btn ' + (state.genre === k ? 'active' : '') + '" onclick="selGenre(\'' + k + '\')">' + g.icon + ' ' + g.name + '</button>';
+    }
+    h += '</div>';
+    
+    if (state.genre && GENRES[state.genre]) {
+      var g = GENRES[state.genre];
+      h += '<div class="genre-box" style="border-color:' + g.color + '">';
+      h += '<h4>' + g.icon + ' ' + g.name + ' 읽기 전략</h4>';
+      g.tips.forEach(function(tip) {
+        h += '<div class="genre-tip"><strong style="color:' + g.color + '">' + tip.t + '</strong><p>' + tip.d + '</p></div>';
       });
-      return html + '</div>';
+      h += '</div>';
     }
-    function renderDetail() {
-      var p = PROTOCOLS[state.type], ph = p.phases[state.phase], st = ph.steps[state.step];
-      var total = 0, done = 0; p.phases.forEach(function(x) { total += x.steps.length; }); for (var k in state.completed) if (state.completed[k]) done++;
-      var key = state.phase + '-' + state.step, isCompleted = state.completed[key];
-      var detailsHTML = '';
-      if (state.showDetails) {
-        detailsHTML = '<div class="details-box">';
-        if (st.details) st.details.forEach(function(d) { detailsHTML += '<div class="detail-item bordered" style="border-color:'+p.color+'40">'+d+'</div>'; });
-        if (st.options) st.options.forEach(function(o, i) { detailsHTML += '<button class="option-btn '+(state.checked['opt'+i]?'checked':'')+'" onclick="toggleCheck(\'opt'+i+'\')"><div class="option-checkbox">'+(state.checked['opt'+i]?'✓':'')+'</div><div><div class="option-label" style="color:'+p.color+'">'+o+'</div></div></button>'; });
-        if (st.signals) st.signals.forEach(function(s) { detailsHTML += '<div class="detail-item" style="border-left:4px solid '+s.color+'"><strong style="color:'+s.color+'">'+s.word+'</strong> → '+s.action+'</div>'; });
-        if (st.useSignposts) FICTION_SIGNPOSTS.forEach(function(sp, i) { detailsHTML += '<button class="option-btn '+(state.checked['sp'+i]?'checked':'')+'" onclick="toggleCheck(\'sp'+i+'\')"><div class="option-checkbox">'+(state.checked['sp'+i]?'✓':'')+'</div><div><div class="option-label" style="color:'+p.color+'">'+sp.name+'</div><div class="option-hint">발견: '+sp.trigger+' / 질문: '+sp.question+'</div></div></button>'; });
-        if (st.useGenres) NONFICTION_GENRES.forEach(function(g, i) { detailsHTML += '<button class="option-btn '+(state.checked['g'+i]?'checked':'')+'" onclick="toggleCheck(\'g'+i+'\')"><div class="option-checkbox">'+(state.checked['g'+i]?'✓':'')+'</div><div><div class="option-label">'+g.icon+' '+g.name+'</div><div class="option-hint">'+g.focus+' - '+g.insight+'</div></div></button>'; });
-        if (st.useStrategies) detailsHTML += '<div class="detail-item"><strong>💪 자기계발:</strong> "~하라" 지시만</div><div class="detail-item"><strong>🧬 과학:</strong> 주장+증거 평가</div><div class="detail-item"><strong>💼 비즈니스:</strong> 프레임워크 도식화</div><div class="detail-item"><strong>✍️ 에세이:</strong> 주장+내 반응</div>';
-        if (st.marks) { detailsHTML += '<div style="display:flex;flex-wrap:wrap;gap:0.5rem">'; st.marks.forEach(function(m) { detailsHTML += '<span style="padding:0.25rem 0.5rem;background:white;border-radius:6px;font-size:0.8rem">'+m+'</span>'; }); detailsHTML += '</div>'; }
-        if (st.track) st.track.forEach(function(t) { detailsHTML += '<div class="detail-item">'+t+'</div>'; });
-        if (st.hints) st.hints.forEach(function(h) { detailsHTML += '<div class="detail-item">'+h+'</div>'; });
-        if (st.elements) st.elements.forEach(function(e) { detailsHTML += '<div class="detail-item">'+e+'</div>'; });
-        if (st.stages) st.stages.forEach(function(s, i) { detailsHTML += '<div class="detail-item">'+(i+1)+'. '+s+'</div>'; });
-        if (st.structure) st.structure.forEach(function(s) { detailsHTML += '<div class="detail-item">'+s+'</div>'; });
-        if (st.schedule) st.schedule.forEach(function(s) { detailsHTML += '<div class="detail-item">'+s+'</div>'; });
-        if (st.outputs) st.outputs.forEach(function(o) { detailsHTML += '<div class="detail-item">'+o+'</div>'; });
-        if (st.questions) st.questions.forEach(function(q) { detailsHTML += '<div class="detail-item">• '+q+'</div>'; });
-        if (st.rules) st.rules.forEach(function(r) { detailsHTML += '<div class="detail-item">• '+r+'</div>'; });
-        if (st.template) detailsHTML += '<div class="detail-item" style="border:2px dashed '+p.color+';border-radius:10px">📝 '+st.template+'</div>';
-        if (st.format) detailsHTML += '<div class="detail-item">📋 '+st.format+'</div>';
-        if (st.science) detailsHTML += '<div style="font-size:0.8rem;color:#64748b;font-style:italic">📊 '+st.science+'</div>';
-        if (st.tip) detailsHTML += '<div style="font-size:0.85rem;color:#f59e0b">💡 '+st.tip+'</div>';
-        if (st.warning) detailsHTML += '<div style="font-size:0.85rem;color:#dc2626">⚠️ '+st.warning+'</div>';
-        detailsHTML += '</div>';
+  }
+  
+  // 페이즈별 카드
+  protocol.phases.forEach(function(phase, pIdx) {
+    h += '<div class="phase-card">';
+    h += '<div class="phase-header" style="background:' + protocol.light + '">';
+    h += '<span class="phase-emoji">' + phase.emoji + '</span>';
+    h += '<span class="phase-name">' + phase.name + '</span>';
+    h += '<span class="phase-duration">' + phase.duration + '</span>';
+    h += '</div>';
+    h += '<div class="phase-body">';
+    phase.steps.forEach(function(step, sIdx) {
+      h += '<div class="step-item" onclick="goToDetail(' + pIdx + ',' + sIdx + ')">';
+      h += '<div class="step-num" style="background:' + protocol.color + '">' + (sIdx + 1) + '</div>';
+      h += '<div class="step-info"><div class="step-title">' + step.title + '</div><div class="step-overview">' + step.overview + '</div></div>';
+      h += '<span class="step-arrow">▶</span>';
+      h += '</div>';
+    });
+    h += '</div></div>';
+  });
+  
+  return h;
+}
+
+function renderDetail() {
+  var protocol = PROTOCOLS[state.type];
+  var phase = protocol.phases[state.phaseIdx];
+  var step = phase.steps[state.stepIdx];
+  
+  var h = '<div class="top-bar">';
+  h += '<button class="back-btn" onclick="setMode(\'overview\')">← 전체</button>';
+  h += '<button class="reset-btn" onclick="resetChk()">초기화</button>';
+  h += '</div>';
+  
+  // 카드
+  h += '<div class="detail-wrapper"><div class="detail-card" style="border:2px solid ' + protocol.color + '30">';
+  h += '<div class="detail-label" style="color:' + protocol.color + '">' + phase.emoji + ' ' + phase.name + '</div>';
+  h += '<div class="detail-title">' + step.title + '</div>';
+  h += '<div class="detail-thought" style="background:' + protocol.bg + '">';
+  h += '<div class="detail-thought-label">💭 스스로 물어보기</div>';
+  h += '<div class="detail-thought-text" style="color:' + protocol.color + '">' + step.thought + '</div>';
+  h += '</div>';
+  h += '<div class="detail-overview">📋 ' + step.overview + '</div>';
+  h += '<button class="toggle-btn" style="border:2px solid ' + protocol.color + ';background:' + (state.showContent ? protocol.color : 'white') + ';color:' + (state.showContent ? 'white' : protocol.color) + '" onclick="toggleContent()">📖 자세히 ' + (state.showContent ? '▲' : '▼') + '</button>';
+  
+  if (state.showContent) {
+    h += '<div class="detail-content">' + step.content + '</div>';
+    
+    // 체크리스트
+    if (step.chk) {
+      h += '<div class="chk">';
+      step.chk.forEach(function(c, i) {
+        var cid = step.id + '-c' + i;
+        h += '<div class="chk-item"><div class="chk-box ' + (state.checked[cid] ? 'on' : '') + '" onclick="toggleChk(\'' + cid + '\')">' + (state.checked[cid] ? '✓' : '') + '</div><span>' + c + '</span></div>';
+      });
+      h += '</div>';
+    }
+  }
+  
+  h += '</div></div>';
+  
+  return h;
+}
+
+function renderCriticalOverview() {
+  var h = '<h2>' + CRITICAL.icon + ' ' + CRITICAL.name + '</h2>';
+  h += '<p class="subtitle">글을 분석하고 평가할 때 활용</p>';
+  
+  CRITICAL.phases.forEach(function(phase, pIdx) {
+    h += '<div class="phase-card">';
+    h += '<div class="phase-header" style="background:' + (phase.color || CRITICAL.color) + '20">';
+    h += '<span class="phase-emoji">' + phase.emoji + '</span>';
+    h += '<span class="phase-name" style="color:' + (phase.color || CRITICAL.color) + '">' + phase.name + '</span>';
+    h += '</div>';
+    h += '<div class="phase-body">';
+    phase.steps.forEach(function(step, sIdx) {
+      h += '<div class="step-item" onclick="goToCriticalDetail(' + pIdx + ',' + sIdx + ')">';
+      h += '<div class="step-num" style="background:' + (phase.color || CRITICAL.color) + '">' + (sIdx + 1) + '</div>';
+      h += '<div class="step-info"><div class="step-title">' + step.title + '</div><div class="step-overview">' + step.overview + '</div></div>';
+      h += '<span class="step-arrow">▶</span>';
+      h += '</div>';
+    });
+    h += '</div></div>';
+  });
+  
+  return h;
+}
+
+function renderCriticalDetail() {
+  var phase = CRITICAL.phases[state.phaseIdx];
+  var step = phase.steps[state.stepIdx];
+  var color = phase.color || CRITICAL.color;
+  
+  var h = '<div class="top-bar">';
+  h += '<button class="back-btn" onclick="setMode(\'overview\')">← 전체</button>';
+  h += '</div>';
+  
+  h += '<div class="detail-wrapper"><div class="detail-card" style="border:2px solid ' + color + '30">';
+  h += '<div class="detail-label" style="color:' + color + '">' + phase.emoji + ' ' + phase.name + '</div>';
+  h += '<div class="detail-title">' + step.title + '</div>';
+  h += '<div class="detail-thought" style="background:' + color + '15">';
+  h += '<div class="detail-thought-label">💭</div>';
+  h += '<div class="detail-thought-text" style="color:' + color + '">' + step.thought + '</div>';
+  h += '</div>';
+  h += '<div class="detail-overview">📋 ' + step.overview + '</div>';
+  h += '<button class="toggle-btn" style="border:2px solid ' + color + ';background:' + (state.showContent ? color : 'white') + ';color:' + (state.showContent ? 'white' : color) + '" onclick="toggleContent()">📖 자세히 ' + (state.showContent ? '▲' : '▼') + '</button>';
+  
+  if (state.showContent) {
+    h += '<div class="detail-content">' + step.content + '</div>';
+  }
+  
+  h += '</div></div>';
+  
+  return h;
+}
+
+function renderSOS() {
+  var h = '<h2>🆘 막혔을 때</h2>';
+  h += '<p class="subtitle">상황에 맞는 카드 탭해서 열기</p>';
+  
+  SOS.forEach(function(item, idx) {
+    var isOpen = state.sosOpen === idx;
+    h += '<div class="sos-card">';
+    h += '<div class="sos-header" onclick="toggleSOS(' + idx + ')">';
+    h += '<span class="sos-emoji">' + item.emoji + '</span>';
+    h += '<span class="sos-title">' + item.title + '</span>';
+    h += '<span style="margin-left:auto;color:#94a3b8">' + (isOpen ? '▲' : '▼') + '</span>';
+    h += '</div>';
+    if (isOpen) {
+      h += '<div class="sos-body">';
+      item.strategies.forEach(function(s) {
+        h += '<div class="sos-strat">';
+        h += '<div class="sos-action">' + s.action + '</div>';
+        h += '<div class="sos-hint">' + s.hint + '</div>';
+        h += '</div>';
+      });
+      h += '</div>';
+    }
+    h += '</div>';
+  });
+  return h;
+}
+
+function renderTimer() {
+  var mins = Math.floor(state.timer / 60);
+  var secs = state.timer % 60;
+  var display = String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+  var color = state.timer === 0 ? '#ef4444' : (state.timerRunning ? '#3b82f6' : '#1e293b');
+  
+  var h = '<h2>⏱️ 집중 타이머</h2>';
+  h += '<div class="timer-display" style="color:' + color + '">' + display + '</div>';
+  
+  if (state.timer === 0) {
+    h += '<div style="text-align:center;padding:0.85rem;background:#ecfdf5;border-radius:12px;margin-bottom:0.85rem;color:#059669;font-weight:600">🎉 완료!</div>';
+  }
+  
+  h += '<div class="timer-presets">';
+  [5, 10, 15, 25, 45, 60].forEach(function(m) {
+    h += '<button class="preset-btn ' + (state.timerPreset === m ? 'active' : '') + '" onclick="setTimerPreset(' + m + ')">' + m + '분</button>';
+  });
+  h += '</div>';
+  
+  h += '<div class="timer-controls">';
+  h += '<button class="timer-main" style="background:' + (state.timerRunning ? '#f59e0b' : '#3b82f6') + '" onclick="toggleTimer()">' + (state.timerRunning ? '⏸ 일시정지' : '▶ 시작') + '</button>';
+  h += '<button class="timer-reset" onclick="resetTimer()">↺ 리셋</button>';
+  h += '</div>';
+  
+  h += '<div class="timer-info"><b>💡 포모도로</b>: 25분 집중 → 5분 휴식. 4세트 후 15-30분 긴 휴식.</div>';
+  
+  return h;
+}
+
+// ========== 이벤트 ==========
+window.setTab = function(t) {
+  state.tab = t;
+  state.mode = 'overview';
+  state.phaseIdx = 0;
+  state.stepIdx = 0;
+  render();
+};
+
+window.selectType = function(t) {
+  state.type = t;
+  state.mode = 'overview';
+  state.phaseIdx = 0;
+  state.stepIdx = 0;
+  state.genre = null;
+  saveState();
+  render();
+};
+
+window.goBack = function() {
+  state.type = null;
+  state.mode = 'overview';
+  state.genre = null;
+  render();
+};
+
+window.selGenre = function(g) {
+  state.genre = (state.genre === g) ? null : g;
+  render();
+};
+
+window.setMode = function(m) {
+  state.mode = m;
+  render();
+};
+
+window.goToDetail = function(pIdx, sIdx) {
+  state.phaseIdx = pIdx;
+  state.stepIdx = sIdx;
+  state.mode = 'detail';
+  state.showContent = true;
+  render();
+};
+
+window.goToCriticalDetail = function(pIdx, sIdx) {
+  state.phaseIdx = pIdx;
+  state.stepIdx = sIdx;
+  state.mode = 'detail';
+  render();
+};
+
+window.toggleContent = function() {
+  state.showContent = !state.showContent;
+  render();
+};
+
+window.toggleChk = function(id) {
+  state.checked[id] = !state.checked[id];
+  saveState();
+  render();
+};
+
+window.resetChk = function() {
+  state.checked = {};
+  render();
+};
+
+window.goPrev = function() {
+  var protocol = state.tab === 'guide' ? PROTOCOLS[state.type] : CRITICAL;
+  if (state.stepIdx > 0) {
+    state.stepIdx--;
+  } else if (state.phaseIdx > 0) {
+    state.phaseIdx--;
+    state.stepIdx = protocol.phases[state.phaseIdx].steps.length - 1;
+  }
+  state.showContent = false;
+  render();
+};
+
+window.goNext = function() {
+  var protocol = state.tab === 'guide' ? PROTOCOLS[state.type] : CRITICAL;
+  var phase = protocol.phases[state.phaseIdx];
+  
+  if (state.stepIdx < phase.steps.length - 1) {
+    state.stepIdx++;
+  } else if (state.phaseIdx < protocol.phases.length - 1) {
+    state.phaseIdx++;
+    state.stepIdx = 0;
+  }
+  state.showContent = false;
+  state.checked = {};
+  render();
+};
+
+window.toggleSOS = function(idx) {
+  state.sosOpen = state.sosOpen === idx ? null : idx;
+  render();
+};
+
+window.setTimerPreset = function(m) {
+  state.timerPreset = m;
+  state.timer = m * 60;
+  state.timerRunning = false;
+  if (timerInterval) clearInterval(timerInterval);
+  render();
+};
+
+window.toggleTimer = function() {
+  state.timerRunning = !state.timerRunning;
+  if (state.timerRunning) {
+    timerInterval = setInterval(function() {
+      if (state.timer > 0) {
+        state.timer--;
+        render();
+      } else {
+        state.timerRunning = false;
+        clearInterval(timerInterval);
+        render();
       }
-      var minimapHTML = '<div class="minimap"><div class="minimap-label">전체 진행</div><div class="minimap-phases">';
-      p.phases.forEach(function(ph2, pi) {
-        if (pi > 0) minimapHTML += '<span class="minimap-arrow">→</span>';
-        minimapHTML += '<div class="minimap-phase"><span>'+ph2.emoji+'</span>';
-        ph2.steps.forEach(function(_, si) { minimapHTML += '<div class="minimap-dot" style="background:'+(state.completed[pi+'-'+si]?'#10b981':(pi===state.phase&&si===state.step)?p.color:'#e2e8f0')+'" onclick="goToStep('+pi+','+si+')"></div>'; });
-        minimapHTML += '</div>';
-      });
-      minimapHTML += '</div></div>';
-      return '<div class="page"><div class="header-bar"><button class="header-btn" style="background:#f1f5f9;color:#64748b" onclick="resetGuide()">← 처음</button><button class="header-btn" style="border:2px solid '+p.color+';color:'+p.color+'" onclick="setView(\'overview\')">📋 전체</button></div><div class="progress-bar"><div class="progress-label"><span style="color:'+p.color+';font-weight:600">'+p.icon+' '+p.name+'</span><span>'+done+'/'+total+'</span></div><div class="progress-track"><div class="progress-fill" style="width:'+(done/total*100)+'%;background:'+p.color+'"></div></div></div><div class="phase-bar" style="background:'+p.light+'"><span class="phase-emoji">'+ph.emoji+'</span><span class="phase-name">'+ph.name+'</span><span class="phase-duration">('+ph.duration+')</span><span class="step-type-badge" style="background:'+(st.type==='seq'?'#dbeafe':'#fef3c7')+';color:'+(st.type==='seq'?'#1d4ed8':'#92400e')+'">'+(st.type==='seq'?'📍 순서':'☑️ 선택')+'</span></div><div class="card" style="border:2px solid '+p.color+'30"><div class="card-label" style="color:'+p.color+'">👉 지금 할 것</div><div class="card-title">'+st.title+'</div><div class="thought-box" style="background:'+p.bg+'"><div class="thought-label">💭</div><div class="thought-text" style="color:'+p.color+'">'+st.thought+'</div></div><div class="overview-box">📋 '+st.overview+'</div><button class="toggle-btn" style="border:2px solid '+p.color+';background:'+(state.showDetails?p.color:'white')+';color:'+(state.showDetails?'white':p.color)+'" onclick="toggleDetails()">📖 자세히 '+(state.showDetails?'▲':'▼')+'</button>'+(state.showDetails?detailsHTML:'')+(st.checkpoint?'<div class="checkpoint">⚠️ '+st.checkpoint+'</div>':'')+'</div><button class="complete-btn" style="background:'+(isCompleted?'#10b981':p.color)+'" onclick="completeAndNext()">'+(isCompleted?'✓ 완료! 다음 →':'✓ 완료하고 다음')+'</button><div class="nav-buttons"><button class="nav-btn prev" onclick="goPrev()" '+(state.phase===0&&state.step===0?'disabled style="color:#cbd5e1"':'')+'>← 이전</button><button class="nav-btn next" style="background:'+p.color+'" onclick="goNext()">다음 →</button></div>'+minimapHTML+'</div>';
-    }
-    function renderTools() {
-      var html = '<div class="page"><h2 style="text-align:left;font-size:1.3rem">🧰 읽기 도구</h2>';
-      html += '<details style="background:#dbeafe"><summary>📐 텍스트 구조 10가지</summary><div class="details-content"><div style="font-size:0.85rem;color:#64748b;margin-bottom:0.5rem">단순</div>';
-      TEXT_STRUCTURES.simple.forEach(function(s) { html += '<div class="tool-item"><div class="tool-title" style="color:#1d4ed8">'+s.icon+' '+s.name+'</div><div class="tool-sub">'+s.signals.join(', ')+'</div><div class="tool-hint">'+s.question+'</div></div>'; });
-      html += '<div style="font-size:0.85rem;color:#64748b;margin:1rem 0 0.5rem">복잡</div>';
-      TEXT_STRUCTURES.complex.forEach(function(s) { html += '<div class="tool-item"><div class="tool-title" style="color:#7c3aed">'+s.icon+' '+s.name+'</div><div class="tool-sub">'+s.signals.join(', ')+'</div><div class="tool-hint">'+s.question+'</div></div>'; });
-      html += '</div></details>';
-      html += '<details style="background:#fef3c7"><summary>🚦 신호어 가이드</summary><div class="details-content">';
-      SIGNAL_WORDS.forEach(function(sw) { html += '<div class="tool-item" style="border-left:4px solid '+sw.color+'"><div class="tool-title" style="color:'+sw.color+'">'+sw.category+'</div><div class="tool-sub">'+sw.words.join(', ')+'</div><div style="font-size:0.8rem">'+sw.meaning+'</div></div>'; });
-      html += '</div></details>';
-      html += '<details style="background:#fce7f3"><summary>📖 소설 도구</summary><div class="details-content"><div style="font-weight:600;color:#be185d;margin-bottom:0.5rem">🚦 문학 신호등</div>';
-      FICTION_SIGNPOSTS.forEach(function(sp) { html += '<div class="tool-item"><div class="tool-title" style="color:#be185d">'+sp.name+'</div><div class="tool-sub">발견: '+sp.trigger+'</div><div class="tool-hint">질문: '+sp.question+'</div></div>'; });
-      html += '</div></details>';
-      html += '<details style="background:#ecfdf5"><summary>📚 비문학 장르별</summary><div class="details-content">';
-      NONFICTION_GENRES.forEach(function(g) { html += '<div class="tool-item"><div class="tool-title" style="color:#059669">'+g.icon+' '+g.name+'</div><div style="font-size:0.85rem;color:#dc2626;background:#fef2f2;padding:0.5rem;border-radius:8px;margin-top:0.5rem">💡 '+g.insight+'</div></div>'; });
-      html += '</div></details>';
-      html += '<details style="background:#fef2f2"><summary>🧠 전문가 7가지</summary><div class="details-content">';
-      EXPERT_STRATEGIES.forEach(function(s) { html += '<div class="tool-item"><div class="tool-title" style="color:#dc2626">'+s.icon+' '+s.name+'</div><div class="tool-sub">'+s.what+'</div><div class="tool-hint">'+s.how+'</div></div>'; });
-      html += '</div></details></div>';
-      return html;
-    }
-    function renderEmergency() {
-      var html = '<div class="page"><h2 style="text-align:left;font-size:1.3rem">🆘 막혔을 때</h2>';
-      EMERGENCY.forEach(function(card) {
-        html += '<details style="background:#fffbeb;border:1px solid #fcd34d"><summary style="color:#92400e"><span style="font-size:1.5rem;margin-right:0.5rem">'+card.emoji+'</span>'+card.situation+'</summary><div class="details-content" style="background:#fef3c7">';
-        card.strategies.forEach(function(s) { html += '<div class="tool-item"><div style="font-weight:600;margin-bottom:0.5rem">'+s.action+'</div><div style="font-size:0.9rem;color:#475569;margin-bottom:0.5rem">'+s.how+'</div><div style="font-size:0.85rem;color:#059669;background:#ecfdf5;padding:0.5rem 0.75rem;border-radius:8px">예: '+s.example+'</div></div>'; });
-        html += '</div></details>';
-      });
-      return html + '</div>';
-    }
-    function renderTimer() {
-      var color = state.timer === 0 ? '#ef4444' : state.timerRunning ? '#2563eb' : '#1e293b';
-      var html = '<div class="page" style="text-align:center"><h2 style="font-size:1.3rem">⏱️ 집중 타이머</h2><div class="timer-display" style="color:'+color+'">'+formatTime(state.timer)+'</div>';
-      if (state.timer === 0) html += '<div style="background:#dcfce7;color:#16a34a;padding:1rem;border-radius:16px;font-weight:600;margin-bottom:1.5rem">🎉 완료! +10점</div>';
-      html += '<div class="timer-presets">';
-      [5, 15, 25, 45].forEach(function(m) { html += '<button class="preset-btn '+(state.timerPreset===m?'active':'')+'" onclick="setPreset('+m+')">'+m+'분</button>'; });
-      html += '</div><div class="timer-controls"><button class="timer-main-btn" style="background:'+(state.timerRunning?'#f59e0b':'#2563eb')+'" onclick="toggleTimer()">'+(state.timerRunning?'⏸ 일시정지':'▶ 시작')+'</button><button class="timer-reset-btn" onclick="resetTimer()">↺</button></div></div>';
-      return html;
-    }
-    window.setTab = function(tab) { state.tab = tab; render(); };
-    window.selectType = function(type) { state.type = type; state.phase = 0; state.step = 0; state.completed = {}; state.checked = {}; render(); };
-    window.resetGuide = function() { state.type = null; state.phase = 0; state.step = 0; state.completed = {}; state.checked = {}; state.view = 'detail'; render(); };
-    window.setView = function(v) { state.view = v; render(); };
-    window.toggleDetails = function() { state.showDetails = !state.showDetails; render(); };
-    window.toggleCheck = function(id) { state.checked[id] = !state.checked[id]; render(); };
-    window.goToStep = function(p, s) { state.phase = p; state.step = s; state.view = 'detail'; state.showDetails = true; state.checked = {}; render(); };
-    window.completeAndNext = function() { var key = state.phase + '-' + state.step; if (!state.completed[key]) { state.completed[key] = true; state.stats.points += 3; saveStats(); } goNext(); };
-    window.goNext = function() { var p = PROTOCOLS[state.type], ph = p.phases[state.phase]; if (state.step < ph.steps.length - 1) state.step++; else if (state.phase < p.phases.length - 1) { state.phase++; state.step = 0; } state.showDetails = true; state.checked = {}; render(); };
-    window.goPrev = function() { var p = PROTOCOLS[state.type]; if (state.step > 0) state.step--; else if (state.phase > 0) { state.phase--; state.step = p.phases[state.phase].steps.length - 1; } state.showDetails = true; state.checked = {}; render(); };
-    window.setPreset = function(m) { state.timerPreset = m; state.timer = m * 60; state.timerRunning = false; if (timerInterval) clearInterval(timerInterval); render(); };
-    window.resetTimer = function() { state.timer = state.timerPreset * 60; state.timerRunning = false; if (timerInterval) clearInterval(timerInterval); render(); };
-    window.toggleTimer = function() { state.timerRunning = !state.timerRunning; if (state.timerRunning) { timerInterval = setInterval(function() { if (state.timer > 0) { state.timer--; render(); } else { state.timerRunning = false; clearInterval(timerInterval); state.stats.sessions++; state.stats.points += 10; saveStats(); render(); } }, 1000); } else { if (timerInterval) clearInterval(timerInterval); } render(); };
-    render();
-  </script>
+    }, 1000);
+  } else {
+    if (timerInterval) clearInterval(timerInterval);
+  }
+  render();
+};
+
+window.resetTimer = function() {
+  state.timer = state.timerPreset * 60;
+  state.timerRunning = false;
+  if (timerInterval) clearInterval(timerInterval);
+  render();
+};
+
+render();
+</script>
 </body>
 </html>
