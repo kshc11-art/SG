@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="읽기 가이드">
+  <title>읽기 가이드 v5</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8fafc; min-height: 100vh; }
+    body { padding-bottom: env(safe-area-inset-bottom); }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+    button:active { opacity: 0.8; }
+    .container { max-width: 500px; margin: 0 auto; padding-bottom: 80px; }
+    .tab-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #e2e8f0; z-index: 100; padding-bottom: env(safe-area-inset-bottom); }
+    .tab-bar-inner { display: flex; max-width: 500px; margin: 0 auto; }
+    .tab-btn { flex: 1; padding: 0.75rem 0.5rem; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; }
+    .tab-btn span:first-child { font-size: 1.25rem; }
+    .tab-btn span:last-child { font-size: 0.75rem; }
+    .tab-btn.active span:last-child { color: #2563eb; font-weight: 600; }
+    .tab-btn:not(.active) span:last-child { color: #94a3b8; }
+    .page { padding: 1rem; }
+    .stats-bar { display: flex; justify-content: center; gap: 2rem; padding: 1rem; background: #fef3c7; border-radius: 16px; margin-bottom: 1.5rem; }
+    .stat { text-align: center; }
+    .stat-icon { font-size: 1.5rem; }
+    .stat-text { font-size: 0.8rem; color: #92400e; }
+    h2 { font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 1.5rem; color: #1e293b; }
+    .type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .type-btn { padding: 1.5rem 1rem; border-radius: 20px; display: flex; flex-direction: column; align-items: center; gap: 0.75rem; }
+    .type-icon { width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 2rem; }
+    .type-name { font-size: 1.1rem; font-weight: 600; color: #1e293b; }
+    .header-bar { display: flex; justify-content: space-between; margin-bottom: 1rem; }
+    .header-btn { padding: 0.5rem 1rem; border-radius: 10px; font-size: 0.9rem; }
+    .progress-bar { margin-bottom: 1rem; }
+    .progress-label { display: flex; justify-content: space-between; font-size: 0.85rem; color: #64748b; margin-bottom: 0.5rem; }
+    .progress-track { height: 6px; background: #e2e8f0; border-radius: 3px; }
+    .progress-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+    .phase-bar { display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem; border-radius: 12px; margin-bottom: 1rem; }
+    .phase-emoji { font-size: 1.25rem; }
+    .phase-name { font-weight: 700; }
+    .phase-duration { font-size: 0.8rem; color: #64748b; }
+    .step-type-badge { margin-left: auto; padding: 0.25rem 0.5rem; border-radius: 6px; font-size: 0.7rem; }
+    .card { background: white; border-radius: 24px; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 1rem; }
+    .card-label { font-size: 0.75rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .card-title { font-size: 1.4rem; font-weight: 700; color: #1e293b; margin-bottom: 1rem; }
+    .thought-box { border-radius: 16px; padding: 1rem; margin-bottom: 1rem; }
+    .thought-label { font-size: 0.75rem; color: #64748b; }
+    .thought-text { font-size: 1.1rem; font-weight: 500; font-style: italic; }
+    .overview-box { font-size: 0.95rem; color: #475569; padding: 0.75rem; background: #f8fafc; border-radius: 12px; margin-bottom: 1rem; }
+    .toggle-btn { width: 100%; padding: 0.75rem; border-radius: 12px; font-size: 1rem; font-weight: 600; margin-bottom: 1rem; }
+    .details-box { padding: 1rem; background: #f8fafc; border-radius: 16px; }
+    .detail-item { padding: 0.5rem 0.75rem; background: white; border-radius: 8px; margin-bottom: 0.5rem; font-size: 0.85rem; }
+    .detail-item.bordered { border-left: 3px solid; }
+    .checkpoint { padding: 0.75rem 1rem; background: #fef3c7; border-radius: 12px; font-size: 0.9rem; color: #92400e; margin-top: 1rem; }
+    .complete-btn { width: 100%; padding: 1.25rem; border-radius: 16px; color: white; font-size: 1.1rem; font-weight: 600; margin-top: 1rem; }
+    .nav-buttons { display: flex; gap: 0.75rem; margin-top: 1rem; }
+    .nav-btn { flex: 1; padding: 0.75rem; border-radius: 12px; font-size: 1rem; }
+    .nav-btn.prev { background: white; border: 1px solid #e2e8f0; color: #64748b; }
+    .nav-btn.next { color: white; font-weight: 600; }
+    .minimap { margin-top: 1rem; padding: 1rem; background: #f8fafc; border-radius: 16px; }
+    .minimap-label { font-size: 0.8rem; color: #64748b; margin-bottom: 0.75rem; }
+    .minimap-phases { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
+    .minimap-phase { display: flex; align-items: center; gap: 4px; }
+    .minimap-dot { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; }
+    .minimap-arrow { color: #cbd5e1; }
+    details { border-radius: 16px; margin-bottom: 0.75rem; overflow: hidden; }
+    summary { padding: 1rem; font-weight: 600; cursor: pointer; list-style: none; }
+    summary::-webkit-details-marker { display: none; }
+    .details-content { padding: 0 1rem 1rem; }
+    .tool-item { background: white; border-radius: 10px; padding: 0.75rem; margin-bottom: 0.5rem; }
+    .tool-title { font-weight: 600; }
+    .tool-sub { font-size: 0.8rem; color: #64748b; }
+    .tool-hint { font-size: 0.8rem; color: #059669; }
+    .timer-display { font-size: 5rem; font-weight: 700; font-family: monospace; margin-bottom: 1.5rem; }
+    .timer-presets { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.5rem; }
+    .preset-btn { padding: 0.75rem 1.25rem; border-radius: 25px; font-size: 1rem; }
+    .preset-btn.active { border: 2px solid #2563eb; background: #eff6ff; color: #2563eb; }
+    .preset-btn:not(.active) { border: 2px solid #e2e8f0; background: white; color: #64748b; }
+    .timer-controls { display: flex; gap: 1rem; justify-content: center; }
+    .timer-main-btn { padding: 1rem 3rem; border-radius: 50px; color: white; font-size: 1.1rem; font-weight: 600; }
+    .timer-reset-btn { padding: 1rem 1.5rem; border-radius: 50px; border: 1px solid #e2e8f0; background: white; color: #64748b; font-size: 1.1rem; }
+    .option-btn { width: 100%; text-align: left; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.75rem; }
+    .option-btn.checked { background: #dcfce7; border-color: #86efac; }
+    .option-checkbox { width: 22px; height: 22px; border-radius: 6px; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.8rem; flex-shrink: 0; }
+    .option-btn.checked .option-checkbox { background: #22c55e; border-color: #22c55e; }
+    .option-label { font-weight: 600; }
+    .option-hint { font-size: 0.8rem; color: #64748b; }
+    .overview-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin-bottom: 1rem; }
+    .overview-header { padding: 1rem; display: flex; align-items: center; gap: 0.5rem; }
+    .overview-steps { padding: 0.75rem; }
+    .overview-step { padding: 0.75rem; border-radius: 10px; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.75rem; cursor: pointer; }
+    .overview-step-num { width: 24px; height: 24px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; flex-shrink: 0; }
+    .overview-step-info { flex: 1; }
+    .overview-step-title { font-weight: 600; font-size: 0.95rem; }
+    .overview-step-desc { font-size: 0.8rem; color: #64748b; }
+  </style>
+</head>
+<body>
+  <div class="container" id="app"></div>
+  <div class="tab-bar">
+    <div class="tab-bar-inner" id="tabs"></div>
+  </div>
+  <script>
+    var TEXT_STRUCTURES = {
+      simple: [
+        { name: '나열/설명', icon: '📋', signals: ['예를 들어', '특징은', '포함하여'], question: '이것의 특징은?' },
+        { name: '순서/과정', icon: '1️⃣', signals: ['첫째', '다음으로', '마지막으로'], question: '어떤 순서로?' },
+        { name: '시간순', icon: '📅', signals: ['처음에', '나중에', '그때'], question: '언제 무슨 일이?' },
+        { name: '정의', icon: '📖', signals: ['~란', '~은/는', '정의하면'], question: '이것은 무엇?' },
+        { name: '비교/대조', icon: '⚖️', signals: ['그러나', '반면', '~와 달리'], question: '어떻게 다른가?' }
+      ],
+      complex: [
+        { name: '원인/결과', icon: '🔗', signals: ['때문에', '따라서', '~로 인해'], question: '왜? 결과는?' },
+        { name: '문제/해결', icon: '💡', signals: ['문제는', '해결책은', '방법은'], question: '문제와 해결책?' },
+        { name: '주장/근거', icon: '⚔️', signals: ['주장하건대', '연구에 따르면'], question: '주장과 근거?' },
+        { name: '평가/비평', icon: '⭐', signals: ['평가하면', '장단점은'], question: '어떤 기준?' },
+        { name: '귀납/연역', icon: '🔺', signals: ['일반적으로', '구체적으로'], question: '논리 흐름?' }
+      ]
+    };
+    var SIGNAL_WORDS = [
+      { category: '추가/강조', words: ['또한', '게다가', '특히'], meaning: '"특히"=⭐중요', color: '#22c55e' },
+      { category: '대조/전환', words: ['그러나', '하지만', '반면'], meaning: '⚠️ 핵심일 확률 높음', color: '#ef4444' },
+      { category: '인과', words: ['따라서', '그러므로', '때문에'], meaning: '논리 흐름 핵심', color: '#3b82f6' },
+      { category: '예시', words: ['예를 들어', '가령', '즉'], meaning: '이해했으면 스킵 가능', color: '#8b5cf6' },
+      { category: '결론', words: ['결론적으로', '요약하면', '결국'], meaning: '✅ 반드시 집중', color: '#10b981' }
+    ];
+    var FICTION_SIGNPOSTS = [
+      { name: '대조/모순', trigger: '예상과 다른 행동', question: '왜?' },
+      { name: '깨달음', trigger: '"알았다"', question: '뭘 바꿀까?' },
+      { name: '어려운 질문', trigger: '힘든 자문', question: '무슨 갈등?' },
+      { name: '조언자', trigger: '경험자 조언', question: '교훈?' },
+      { name: '반복', trigger: '같은 것 반복', question: '왜?' },
+      { name: '회상', trigger: '과거 장면', question: '왜 지금?' }
+    ];
+    var NONFICTION_GENRES = [
+      { icon: '💪', name: '자기계발', focus: '액션만', insight: '90% filler' },
+      { icon: '🧬', name: '과학교양', focus: '주장vs증거', insight: '비판적으로' },
+      { icon: '💼', name: '비즈니스', focus: '프레임워크', insight: '하나만' },
+      { icon: '✍️', name: '에세이', focus: '관점/논리', insight: '내 생각 비교' }
+    ];
+    var EXPERT_STRATEGIES = [
+      { icon: '🔓', name: '활성화', what: '사전지식 떠올리기', how: '"아는 건?" 30초' },
+      { icon: '🔮', name: '추론', what: '글에 없는 것 채우기', how: '"이건 ~겠지"' },
+      { icon: '🔍', name: '점검', what: '이해 여부 확인', how: '"이해하나?" 매 문단' },
+      { icon: '❓', name: '질문', what: '글에 질문', how: '"왜?" "어떻게?"' },
+      { icon: '📝', name: '요약', what: '내 말로 표현', how: '"핵심은..." 한 문장' },
+      { icon: '🎨', name: '시각화', what: '머릿속 그림', how: '다이어그램 상상' },
+      { icon: '🔗', name: '연결', what: '다른 것과 연결', how: '"~와 비슷하네"' }
+    ];
+    var EMERGENCY = [
+      { emoji: '😵', situation: '이해 안 돼', strategies: [{ action: '문장 쪼개기', how: '긴 문장 끊기', example: '"A는 B다" 먼저' }, { action: '첫 문장만', how: '각 문단 첫 문장', example: '연결해서 읽기' }, { action: '결론부터', how: '마지막 먼저', example: '결론→본론→서론' }, { action: '쉬운 자료', how: '위키, 유튜브', example: '10분 영상 후' }] },
+      { emoji: '🤔', situation: '기억 안 나', strategies: [{ action: '덮고 말하기', how: '소리내어', example: '10초 안에 핵심' }, { action: '키워드 3개', how: '중요한 것만', example: '[수면][기억][통합]' }, { action: '그림으로', how: '다이어그램', example: '원인→결과' }, { action: '설명해보기', how: '누군가에게', example: '"이건 말이야..."' }] },
+      { emoji: '🤯', situation: '집중 안 돼', strategies: [{ action: '5분만', how: '타이머 5분', example: '그 후 결정' }, { action: '소리내어', how: '입으로 읽기', example: '중얼중얼' }, { action: '손가락', how: '줄 추적', example: '눈 고정' }, { action: '환경 리셋', how: '폰 치우기', example: '2분 환기' }] },
+      { emoji: '🌲', situation: '전체가 안 보여', strategies: [{ action: '목차로', how: '현재 위치', example: '"3장 중 2번째"' }, { action: '한 줄 정리', how: '"여기까지는..."', example: '"문제→원인→해결"' }, { action: '지도 그리기', how: '박스+화살표', example: '[서론]→[본론]' }] },
+      { emoji: '😰', situation: '너무 어려워', strategies: [{ action: '난이도 낮추기', how: '쉬운 자료', example: '입문서' }, { action: '건너뛰기', how: '표시+넘기기', example: '⭐ → 나중에' }, { action: '목표 축소', how: '오늘 1페이지', example: '작은 성공' }] }
+    ];
+    var PROTOCOLS = {
+      academic: { name: '학술서/논문', icon: '🎓', color: '#1d4ed8', bg: '#dbeafe', light: '#bfdbfe', phases: [
+        { name: '큰 그림', duration: '3분', emoji: '🗺️', steps: [
+          { title: '30초 스캔', type: 'seq', thought: '"전체 지형은?"', overview: '제목→소제목→첫/끝 문단', details: ['① 제목', '② 소제목들', '③ 첫+끝 문단', '④ 그림/표'], checkpoint: '큰 그림 그려져?' },
+          { title: '구조 판별', type: 'opt', thought: '"어떤 패턴?"', overview: '구조 찾기', options: ['주장-근거', '문제-해결', '원인-결과', '비교-대조', '순서'], checkpoint: '구조 정했어?' },
+          { title: '목적 설정', type: 'seq', thought: '"뭘 얻을까?"', overview: '목표 한 문장', template: '"읽고 나면 [____] 알게 될 것"', checkpoint: '목적 완성?' }
+        ]},
+        { name: '정독', duration: '문단당 2-3분', emoji: '📖', steps: [
+          { title: '문단 읽기', type: 'seq', thought: '"역할은?"', overview: '기능 파악', details: ['🎯 주제 제시', '📊 근거/예시', '⚡ 반론', '➡️ 전환', '📋 요약'], tip: '첫 문장에 80%', checkpoint: '역할 파악?' },
+          { title: '덮고 말하기', type: 'seq', thought: '"방금 건..."', overview: '인출 연습', details: ['① 가리기', '② "핵심은..." 말하기', '③ 확인'], science: '재읽기보다 50% 효과', checkpoint: '말할 수 있어?' },
+          { title: '신호어 반응', type: 'opt', thought: '"뭘 알려주지?"', overview: '신호어 반응', signals: [{ word: '그러나', action: '⚠️ 집중!', color: '#ef4444' }, { word: '따라서', action: '결론!', color: '#3b82f6' }, { word: '특히', action: '⭐ 강조', color: '#f59e0b' }], checkpoint: '신호어 반응?' },
+          { title: '키워드 메모', type: 'opt', thought: '"이걸로 기억"', overview: '1-2개만', format: '[섹션] - 키워드', checkpoint: '키워드 적었어?' }
+        ]},
+        { name: '마무리', duration: '3분', emoji: '✅', steps: [
+          { title: '3문장 요약', type: 'seq', thought: '"핵심만..."', overview: '3문장 압축', structure: ['1️⃣ 주제', '2️⃣ 핵심', '3️⃣ 이유'], checkpoint: '3문장 완성?' },
+          { title: '내 반응', type: 'opt', thought: '"나는..."', overview: '반응 한 줄', options: ['동의', '의문', '적용', '연결'], checkpoint: '반응 적었어?' },
+          { title: '복습 일정', type: 'seq', thought: '"언제 다시?"', overview: '간격 반복', schedule: ['내일', '3일 후', '1주 후'], checkpoint: '일정 정했어?' }
+        ]}
+      ]},
+      fiction: { name: '소설/문학', icon: '📚', color: '#be185d', bg: '#fce7f3', light: '#fbcfe8', phases: [
+        { name: '준비', duration: '1분', emoji: '📚', steps: [
+          { title: '표지/제목 분석', type: 'seq', thought: '"뭘 다룰까?"', overview: '힌트 얻기', details: ['표지→분위기', '제목→주제', '소개→갈등'], checkpoint: '예측해봤어?' },
+          { title: '추적 준비', type: 'opt', thought: '"기록하면서"', overview: '메모 방식', marks: ['?=질문', '!=중요', '★=명문장', 'C=변화', 'F=복선'], checkpoint: '방식 정했어?' }
+        ]},
+        { name: '몰입', duration: '자유', emoji: '🌙', steps: [
+          { title: '장면 시각화', type: 'opt', thought: '"영화처럼"', overview: '머릿속 재현', elements: ['공간', '인물', '분위기'], checkpoint: '그려져?' },
+          { title: '인물 추적', type: 'opt', thought: '"뭘 알게 됐지?"', overview: '기록', track: ['이름/외모', '관계', '동기', '갈등', '변화'], checkpoint: '파악하고 있어?' },
+          { title: '문학 신호등', type: 'opt', thought: '"중요한 순간?"', overview: '6가지 신호', useSignposts: true, checkpoint: '포착해?' },
+          { title: '주제 힌트', type: 'opt', thought: '"뭘 말하려는 걸까?"', overview: '힌트 수집', hints: ['반복', '갈등', '변화', '제목'], checkpoint: '모으고 있어?' }
+        ]},
+        { name: '멈출 때', duration: '30초', emoji: '🔖', steps: [
+          { title: '상황 메모', type: 'seq', thought: '"이어가려면"', overview: '한 줄로', format: '[장소]-[누가]-[뭐 하는 중]', checkpoint: '메모했어?' }
+        ]},
+        { name: '다 읽은 후', duration: '5-10분', emoji: '🏆', steps: [
+          { title: '플롯 정리', type: 'seq', thought: '"흐름은..."', overview: '6단계', stages: ['발단', '사건발생', '상승', '절정', '하강', '결말'], checkpoint: '정리했어?' },
+          { title: '인물 변화', type: 'seq', thought: '"어떻게 변했지?"', overview: '변화 아크', template: '[인물]은 [A]→[B]로 변했다', checkpoint: '변화 정리?' },
+          { title: '주제 결론', type: 'seq', thought: '"말하려는 건..."', overview: '주제 도출', template: '"이 작품은 [____]에 대해 [____]을 말한다"', checkpoint: '주제 한 문장?' }
+        ]}
+      ]},
+      nonfiction: { name: '대중 비문학', icon: '💡', color: '#059669', bg: '#ecfdf5', light: '#a7f3d0', phases: [
+        { name: '장르 파악', duration: '1분', emoji: '🔍', steps: [
+          { title: '유형 판별', type: 'opt', thought: '"어떤 종류?"', overview: '장르마다 다름', useGenres: true, checkpoint: '유형 정했어?' },
+          { title: '내 목적', type: 'seq', thought: '"뭘 얻지?"', overview: '구체적 목적', tip: '목적 없으면 다 까먹음', checkpoint: '목적 정했어?' },
+          { title: '목차 선별', type: 'seq', thought: '"어디가 유용?"', overview: '관련 챕터', details: ['① 목차 훑기', '② 2-3개 표시', '③ 그것부터'], checkpoint: '챕터 골랐어?' }
+        ]},
+        { name: '전략적 읽기', duration: '자유', emoji: '📚', steps: [
+          { title: '장르별 전략', type: 'opt', thought: '"이 유형은..."', overview: '유형에 맞게', useStrategies: true, checkpoint: '장르에 맞게?' },
+          { title: '최소 표시', type: 'seq', thought: '"다 중요하면 다 X"', overview: '5-10개만', tip: '이것만 보고 복습', checkpoint: '선별적?' },
+          { title: '적용 생각', type: 'opt', thought: '"내 상황에..."', overview: '적용 가능성', questions: ['가능?', '뭘 해야?', '장애물?', '내일 당장?'], checkpoint: '적용 생각?' }
+        ]},
+        { name: '마무리', duration: '3분', emoji: '✨', steps: [
+          { title: '핵심 추출', type: 'opt', thought: '"건진 건..."', overview: '장르별 정리', outputs: ['자기계발→액션 1-2개', '과학→주장+증거', '비즈니스→프레임워크', '에세이→주장+내 입장'], checkpoint: '정리했어?' },
+          { title: '비판적 평가', type: 'opt', thought: '"한계는..."', overview: '맹목 수용 방지', questions: ['빈틈?', '반대?', '안 통할 때?'], checkpoint: '비판적으로?' },
+          { title: '실행 계획', type: 'seq', thought: '"언제, 뭘..."', overview: '날짜 있는 계획', template: '"[날짜]까지 [행동]"', warning: '날짜 없음 = 안 함', checkpoint: '실행 계획?' }
+        ]}
+      ]},
+      exam: { name: '시험공부', icon: '🎯', color: '#dc2626', bg: '#fef2f2', light: '#fecaca', phases: [
+        { name: '문제 먼저', duration: '5분', emoji: '🎯', steps: [
+          { title: '문제 훑기', type: 'seq', thought: '"뭘 물어보지?"', overview: '풀지 말고 분석', details: ['① 문제만 읽기', '② 유형 파악', '③ 모르는 것 ⭐', '④ 키워드 ○'], checkpoint: '유형 파악?' },
+          { title: '추측하기', type: 'seq', thought: '"틀려도 돼"', overview: '생성 효과', details: ['① ⭐ 선택', '② 30초 추측', '③ 확신도 %'], science: '틀려도 학습에 도움', checkpoint: '추측 적었어?' }
+        ]},
+        { name: '역방향 학습', duration: '25분', emoji: '📚', steps: [
+          { title: '관련 부분 찾기', type: 'seq', thought: '"뭘 알아야?"', overview: '문제→교재', details: ['① 키워드 파악', '② 목차에서 찾기', '③ 그 부분만'], checkpoint: '찾았어?' },
+          { title: '읽고 덮고 말하기', type: 'seq', thought: '"핵심은..."', overview: '인출 연습', details: ['① 읽기', '② 덮기', '③ 말하기', '④ 확인'], checkpoint: '인출 연습?' },
+          { title: '다시 풀기', type: 'seq', thought: '"이제 풀 수 있어?"', overview: '학습 확인', details: ['① 다시 풀기', '② 확인', '③ 틀리면 "왜?"'], tip: '오답 이유 = 가장 중요', checkpoint: '다시 풀었어?' },
+          { title: '플래시카드', type: 'opt', thought: '"까먹지 말자"', overview: '핵심만', rules: ['질문1=답1', '자기 말로', '그림 추가'], checkpoint: '카드 만들었어?' }
+        ]},
+        { name: '마무리', duration: '2분', emoji: '🏁', steps: [
+          { title: '오늘 복습', type: 'seq', thought: '"방금 배운 거"', overview: '첫 복습', details: ['① 카드 전부', '② 3초 안에', '③ 못 떠올린 거 표시'], checkpoint: '복습 했어?' },
+          { title: '복습 일정', type: 'seq', thought: '"망각 이기자"', overview: '간격 반복', schedule: ['내일', '3일 후', '1주 후'], tip: '캘린더에!', checkpoint: '일정 정했어?' }
+        ]}
+      ]}
+    };
+
+    var state = { tab: 'guide', type: null, phase: 0, step: 0, completed: {}, checked: {}, view: 'detail', showDetails: true, timer: 25*60, timerRunning: false, timerPreset: 25, stats: JSON.parse(localStorage.getItem('lgStats') || '{"sessions":0,"points":0}') };
+    var timerInterval = null;
+    function saveStats() { localStorage.setItem('lgStats', JSON.stringify(state.stats)); }
+    function formatTime(s) { return String(Math.floor(s/60)).padStart(2,'0') + ':' + String(s%60).padStart(2,'0'); }
+    function render() {
+      var app = document.getElementById('app');
+      var tabs = document.getElementById('tabs');
+      tabs.innerHTML = [{ id: 'guide', icon: '📖', label: '가이드' }, { id: 'tools', icon: '🧰', label: '도구' }, { id: 'emergency', icon: '🆘', label: '비상' }, { id: 'timer', icon: '⏱️', label: '타이머' }].map(function(t) { return '<button class="tab-btn '+(state.tab===t.id?'active':'')+'" onclick="setTab(\''+t.id+'\')"><span>'+t.icon+'</span><span>'+t.label+'</span></button>'; }).join('');
+      if (state.tab === 'guide') {
+        if (!state.type) app.innerHTML = renderTypeSelect();
+        else if (state.view === 'overview') app.innerHTML = renderOverview();
+        else app.innerHTML = renderDetail();
+      } else if (state.tab === 'tools') app.innerHTML = renderTools();
+      else if (state.tab === 'emergency') app.innerHTML = renderEmergency();
+      else if (state.tab === 'timer') app.innerHTML = renderTimer();
+    }
+    function renderTypeSelect() {
+      var html = '<div class="page"><div class="stats-bar"><div class="stat"><div class="stat-icon">📚</div><div class="stat-text">'+state.stats.sessions+' 세션</div></div><div class="stat"><div class="stat-icon">⭐</div><div class="stat-text">'+state.stats.points+' 점</div></div></div><h2>지금 뭘 읽으려고 해?</h2><div class="type-grid">';
+      for (var k in PROTOCOLS) { var p = PROTOCOLS[k]; html += '<button class="type-btn" style="background:'+p.bg+'" onclick="selectType(\''+k+'\')"><div class="type-icon" style="background:'+p.color+'20">'+p.icon+'</div><span class="type-name">'+p.name+'</span></button>'; }
+      return html + '</div></div>';
+    }
+    function renderOverview() {
+      var p = PROTOCOLS[state.type];
+      var html = '<div class="page"><div class="header-bar"><button class="header-btn" style="background:#f1f5f9;color:#64748b" onclick="resetGuide()">← 처음</button><button class="header-btn" style="border:2px solid '+p.color+';color:'+p.color+'" onclick="setView(\'detail\')">👁 세부</button></div><h2 style="color:'+p.color+';text-align:left;font-size:1.3rem">'+p.icon+' '+p.name+' 전체</h2>';
+      p.phases.forEach(function(ph, pi) {
+        html += '<div class="overview-card"><div class="overview-header" style="background:'+p.light+'"><span class="phase-emoji">'+ph.emoji+'</span><span class="phase-name">'+ph.name+'</span><span class="phase-duration" style="margin-left:auto">'+ph.duration+'</span></div><div class="overview-steps">';
+        ph.steps.forEach(function(st, si) {
+          var done = state.completed[pi+'-'+si];
+          html += '<div class="overview-step" style="background:'+(done?'#dcfce7':'#f8fafc')+'" onclick="goToStep('+pi+','+si+')"><div class="overview-step-num" style="background:'+(done?'#22c55e':p.color)+'">'+(done?'✓':(si+1))+'</div><div class="overview-step-info"><div class="overview-step-title">'+st.title+'</div><div class="overview-step-desc">'+st.overview+'</div></div><span style="padding:0.25rem 0.5rem;border-radius:6px;font-size:0.7rem;background:'+(st.type==='seq'?'#dbeafe':'#fef3c7')+';color:'+(st.type==='seq'?'#1d4ed8':'#92400e')+'">'+(st.type==='seq'?'순서':'선택')+'</span></div>';
+        });
+        html += '</div></div>';
+      });
+      return html + '</div>';
+    }
+    function renderDetail() {
+      var p = PROTOCOLS[state.type], ph = p.phases[state.phase], st = ph.steps[state.step];
+      var total = 0, done = 0; p.phases.forEach(function(x) { total += x.steps.length; }); for (var k in state.completed) if (state.completed[k]) done++;
+      var key = state.phase + '-' + state.step, isCompleted = state.completed[key];
+      var detailsHTML = '';
+      if (state.showDetails) {
+        detailsHTML = '<div class="details-box">';
+        if (st.details) st.details.forEach(function(d) { detailsHTML += '<div class="detail-item bordered" style="border-color:'+p.color+'40">'+d+'</div>'; });
+        if (st.options) st.options.forEach(function(o, i) { detailsHTML += '<button class="option-btn '+(state.checked['opt'+i]?'checked':'')+'" onclick="toggleCheck(\'opt'+i+'\')"><div class="option-checkbox">'+(state.checked['opt'+i]?'✓':'')+'</div><div><div class="option-label" style="color:'+p.color+'">'+o+'</div></div></button>'; });
+        if (st.signals) st.signals.forEach(function(s) { detailsHTML += '<div class="detail-item" style="border-left:4px solid '+s.color+'"><strong style="color:'+s.color+'">'+s.word+'</strong> → '+s.action+'</div>'; });
+        if (st.useSignposts) FICTION_SIGNPOSTS.forEach(function(sp, i) { detailsHTML += '<button class="option-btn '+(state.checked['sp'+i]?'checked':'')+'" onclick="toggleCheck(\'sp'+i+'\')"><div class="option-checkbox">'+(state.checked['sp'+i]?'✓':'')+'</div><div><div class="option-label" style="color:'+p.color+'">'+sp.name+'</div><div class="option-hint">발견: '+sp.trigger+' / 질문: '+sp.question+'</div></div></button>'; });
+        if (st.useGenres) NONFICTION_GENRES.forEach(function(g, i) { detailsHTML += '<button class="option-btn '+(state.checked['g'+i]?'checked':'')+'" onclick="toggleCheck(\'g'+i+'\')"><div class="option-checkbox">'+(state.checked['g'+i]?'✓':'')+'</div><div><div class="option-label">'+g.icon+' '+g.name+'</div><div class="option-hint">'+g.focus+' - '+g.insight+'</div></div></button>'; });
+        if (st.useStrategies) detailsHTML += '<div class="detail-item"><strong>💪 자기계발:</strong> "~하라" 지시만</div><div class="detail-item"><strong>🧬 과학:</strong> 주장+증거 평가</div><div class="detail-item"><strong>💼 비즈니스:</strong> 프레임워크 도식화</div><div class="detail-item"><strong>✍️ 에세이:</strong> 주장+내 반응</div>';
+        if (st.marks) { detailsHTML += '<div style="display:flex;flex-wrap:wrap;gap:0.5rem">'; st.marks.forEach(function(m) { detailsHTML += '<span style="padding:0.25rem 0.5rem;background:white;border-radius:6px;font-size:0.8rem">'+m+'</span>'; }); detailsHTML += '</div>'; }
+        if (st.track) st.track.forEach(function(t) { detailsHTML += '<div class="detail-item">'+t+'</div>'; });
+        if (st.hints) st.hints.forEach(function(h) { detailsHTML += '<div class="detail-item">'+h+'</div>'; });
+        if (st.elements) st.elements.forEach(function(e) { detailsHTML += '<div class="detail-item">'+e+'</div>'; });
+        if (st.stages) st.stages.forEach(function(s, i) { detailsHTML += '<div class="detail-item">'+(i+1)+'. '+s+'</div>'; });
+        if (st.structure) st.structure.forEach(function(s) { detailsHTML += '<div class="detail-item">'+s+'</div>'; });
+        if (st.schedule) st.schedule.forEach(function(s) { detailsHTML += '<div class="detail-item">'+s+'</div>'; });
+        if (st.outputs) st.outputs.forEach(function(o) { detailsHTML += '<div class="detail-item">'+o+'</div>'; });
+        if (st.questions) st.questions.forEach(function(q) { detailsHTML += '<div class="detail-item">• '+q+'</div>'; });
+        if (st.rules) st.rules.forEach(function(r) { detailsHTML += '<div class="detail-item">• '+r+'</div>'; });
+        if (st.template) detailsHTML += '<div class="detail-item" style="border:2px dashed '+p.color+';border-radius:10px">📝 '+st.template+'</div>';
+        if (st.format) detailsHTML += '<div class="detail-item">📋 '+st.format+'</div>';
+        if (st.science) detailsHTML += '<div style="font-size:0.8rem;color:#64748b;font-style:italic">📊 '+st.science+'</div>';
+        if (st.tip) detailsHTML += '<div style="font-size:0.85rem;color:#f59e0b">💡 '+st.tip+'</div>';
+        if (st.warning) detailsHTML += '<div style="font-size:0.85rem;color:#dc2626">⚠️ '+st.warning+'</div>';
+        detailsHTML += '</div>';
+      }
+      var minimapHTML = '<div class="minimap"><div class="minimap-label">전체 진행</div><div class="minimap-phases">';
+      p.phases.forEach(function(ph2, pi) {
+        if (pi > 0) minimapHTML += '<span class="minimap-arrow">→</span>';
+        minimapHTML += '<div class="minimap-phase"><span>'+ph2.emoji+'</span>';
+        ph2.steps.forEach(function(_, si) { minimapHTML += '<div class="minimap-dot" style="background:'+(state.completed[pi+'-'+si]?'#10b981':(pi===state.phase&&si===state.step)?p.color:'#e2e8f0')+'" onclick="goToStep('+pi+','+si+')"></div>'; });
+        minimapHTML += '</div>';
+      });
+      minimapHTML += '</div></div>';
+      return '<div class="page"><div class="header-bar"><button class="header-btn" style="background:#f1f5f9;color:#64748b" onclick="resetGuide()">← 처음</button><button class="header-btn" style="border:2px solid '+p.color+';color:'+p.color+'" onclick="setView(\'overview\')">📋 전체</button></div><div class="progress-bar"><div class="progress-label"><span style="color:'+p.color+';font-weight:600">'+p.icon+' '+p.name+'</span><span>'+done+'/'+total+'</span></div><div class="progress-track"><div class="progress-fill" style="width:'+(done/total*100)+'%;background:'+p.color+'"></div></div></div><div class="phase-bar" style="background:'+p.light+'"><span class="phase-emoji">'+ph.emoji+'</span><span class="phase-name">'+ph.name+'</span><span class="phase-duration">('+ph.duration+')</span><span class="step-type-badge" style="background:'+(st.type==='seq'?'#dbeafe':'#fef3c7')+';color:'+(st.type==='seq'?'#1d4ed8':'#92400e')+'">'+(st.type==='seq'?'📍 순서':'☑️ 선택')+'</span></div><div class="card" style="border:2px solid '+p.color+'30"><div class="card-label" style="color:'+p.color+'">👉 지금 할 것</div><div class="card-title">'+st.title+'</div><div class="thought-box" style="background:'+p.bg+'"><div class="thought-label">💭</div><div class="thought-text" style="color:'+p.color+'">'+st.thought+'</div></div><div class="overview-box">📋 '+st.overview+'</div><button class="toggle-btn" style="border:2px solid '+p.color+';background:'+(state.showDetails?p.color:'white')+';color:'+(state.showDetails?'white':p.color)+'" onclick="toggleDetails()">📖 자세히 '+(state.showDetails?'▲':'▼')+'</button>'+(state.showDetails?detailsHTML:'')+(st.checkpoint?'<div class="checkpoint">⚠️ '+st.checkpoint+'</div>':'')+'</div><button class="complete-btn" style="background:'+(isCompleted?'#10b981':p.color)+'" onclick="completeAndNext()">'+(isCompleted?'✓ 완료! 다음 →':'✓ 완료하고 다음')+'</button><div class="nav-buttons"><button class="nav-btn prev" onclick="goPrev()" '+(state.phase===0&&state.step===0?'disabled style="color:#cbd5e1"':'')+'>← 이전</button><button class="nav-btn next" style="background:'+p.color+'" onclick="goNext()">다음 →</button></div>'+minimapHTML+'</div>';
+    }
+    function renderTools() {
+      var html = '<div class="page"><h2 style="text-align:left;font-size:1.3rem">🧰 읽기 도구</h2>';
+      html += '<details style="background:#dbeafe"><summary>📐 텍스트 구조 10가지</summary><div class="details-content"><div style="font-size:0.85rem;color:#64748b;margin-bottom:0.5rem">단순</div>';
+      TEXT_STRUCTURES.simple.forEach(function(s) { html += '<div class="tool-item"><div class="tool-title" style="color:#1d4ed8">'+s.icon+' '+s.name+'</div><div class="tool-sub">'+s.signals.join(', ')+'</div><div class="tool-hint">'+s.question+'</div></div>'; });
+      html += '<div style="font-size:0.85rem;color:#64748b;margin:1rem 0 0.5rem">복잡</div>';
+      TEXT_STRUCTURES.complex.forEach(function(s) { html += '<div class="tool-item"><div class="tool-title" style="color:#7c3aed">'+s.icon+' '+s.name+'</div><div class="tool-sub">'+s.signals.join(', ')+'</div><div class="tool-hint">'+s.question+'</div></div>'; });
+      html += '</div></details>';
+      html += '<details style="background:#fef3c7"><summary>🚦 신호어 가이드</summary><div class="details-content">';
+      SIGNAL_WORDS.forEach(function(sw) { html += '<div class="tool-item" style="border-left:4px solid '+sw.color+'"><div class="tool-title" style="color:'+sw.color+'">'+sw.category+'</div><div class="tool-sub">'+sw.words.join(', ')+'</div><div style="font-size:0.8rem">'+sw.meaning+'</div></div>'; });
+      html += '</div></details>';
+      html += '<details style="background:#fce7f3"><summary>📖 소설 도구</summary><div class="details-content"><div style="font-weight:600;color:#be185d;margin-bottom:0.5rem">🚦 문학 신호등</div>';
+      FICTION_SIGNPOSTS.forEach(function(sp) { html += '<div class="tool-item"><div class="tool-title" style="color:#be185d">'+sp.name+'</div><div class="tool-sub">발견: '+sp.trigger+'</div><div class="tool-hint">질문: '+sp.question+'</div></div>'; });
+      html += '</div></details>';
+      html += '<details style="background:#ecfdf5"><summary>📚 비문학 장르별</summary><div class="details-content">';
+      NONFICTION_GENRES.forEach(function(g) { html += '<div class="tool-item"><div class="tool-title" style="color:#059669">'+g.icon+' '+g.name+'</div><div style="font-size:0.85rem;color:#dc2626;background:#fef2f2;padding:0.5rem;border-radius:8px;margin-top:0.5rem">💡 '+g.insight+'</div></div>'; });
+      html += '</div></details>';
+      html += '<details style="background:#fef2f2"><summary>🧠 전문가 7가지</summary><div class="details-content">';
+      EXPERT_STRATEGIES.forEach(function(s) { html += '<div class="tool-item"><div class="tool-title" style="color:#dc2626">'+s.icon+' '+s.name+'</div><div class="tool-sub">'+s.what+'</div><div class="tool-hint">'+s.how+'</div></div>'; });
+      html += '</div></details></div>';
+      return html;
+    }
+    function renderEmergency() {
+      var html = '<div class="page"><h2 style="text-align:left;font-size:1.3rem">🆘 막혔을 때</h2>';
+      EMERGENCY.forEach(function(card) {
+        html += '<details style="background:#fffbeb;border:1px solid #fcd34d"><summary style="color:#92400e"><span style="font-size:1.5rem;margin-right:0.5rem">'+card.emoji+'</span>'+card.situation+'</summary><div class="details-content" style="background:#fef3c7">';
+        card.strategies.forEach(function(s) { html += '<div class="tool-item"><div style="font-weight:600;margin-bottom:0.5rem">'+s.action+'</div><div style="font-size:0.9rem;color:#475569;margin-bottom:0.5rem">'+s.how+'</div><div style="font-size:0.85rem;color:#059669;background:#ecfdf5;padding:0.5rem 0.75rem;border-radius:8px">예: '+s.example+'</div></div>'; });
+        html += '</div></details>';
+      });
+      return html + '</div>';
+    }
+    function renderTimer() {
+      var color = state.timer === 0 ? '#ef4444' : state.timerRunning ? '#2563eb' : '#1e293b';
+      var html = '<div class="page" style="text-align:center"><h2 style="font-size:1.3rem">⏱️ 집중 타이머</h2><div class="timer-display" style="color:'+color+'">'+formatTime(state.timer)+'</div>';
+      if (state.timer === 0) html += '<div style="background:#dcfce7;color:#16a34a;padding:1rem;border-radius:16px;font-weight:600;margin-bottom:1.5rem">🎉 완료! +10점</div>';
+      html += '<div class="timer-presets">';
+      [5, 15, 25, 45].forEach(function(m) { html += '<button class="preset-btn '+(state.timerPreset===m?'active':'')+'" onclick="setPreset('+m+')">'+m+'분</button>'; });
+      html += '</div><div class="timer-controls"><button class="timer-main-btn" style="background:'+(state.timerRunning?'#f59e0b':'#2563eb')+'" onclick="toggleTimer()">'+(state.timerRunning?'⏸ 일시정지':'▶ 시작')+'</button><button class="timer-reset-btn" onclick="resetTimer()">↺</button></div></div>';
+      return html;
+    }
+    window.setTab = function(tab) { state.tab = tab; render(); };
+    window.selectType = function(type) { state.type = type; state.phase = 0; state.step = 0; state.completed = {}; state.checked = {}; render(); };
+    window.resetGuide = function() { state.type = null; state.phase = 0; state.step = 0; state.completed = {}; state.checked = {}; state.view = 'detail'; render(); };
+    window.setView = function(v) { state.view = v; render(); };
+    window.toggleDetails = function() { state.showDetails = !state.showDetails; render(); };
+    window.toggleCheck = function(id) { state.checked[id] = !state.checked[id]; render(); };
+    window.goToStep = function(p, s) { state.phase = p; state.step = s; state.view = 'detail'; state.showDetails = true; state.checked = {}; render(); };
+    window.completeAndNext = function() { var key = state.phase + '-' + state.step; if (!state.completed[key]) { state.completed[key] = true; state.stats.points += 3; saveStats(); } goNext(); };
+    window.goNext = function() { var p = PROTOCOLS[state.type], ph = p.phases[state.phase]; if (state.step < ph.steps.length - 1) state.step++; else if (state.phase < p.phases.length - 1) { state.phase++; state.step = 0; } state.showDetails = true; state.checked = {}; render(); };
+    window.goPrev = function() { var p = PROTOCOLS[state.type]; if (state.step > 0) state.step--; else if (state.phase > 0) { state.phase--; state.step = p.phases[state.phase].steps.length - 1; } state.showDetails = true; state.checked = {}; render(); };
+    window.setPreset = function(m) { state.timerPreset = m; state.timer = m * 60; state.timerRunning = false; if (timerInterval) clearInterval(timerInterval); render(); };
+    window.resetTimer = function() { state.timer = state.timerPreset * 60; state.timerRunning = false; if (timerInterval) clearInterval(timerInterval); render(); };
+    window.toggleTimer = function() { state.timerRunning = !state.timerRunning; if (state.timerRunning) { timerInterval = setInterval(function() { if (state.timer > 0) { state.timer--; render(); } else { state.timerRunning = false; clearInterval(timerInterval); state.stats.sessions++; state.stats.points += 10; saveStats(); render(); } }, 1000); } else { if (timerInterval) clearInterval(timerInterval); } render(); };
+    render();
+  </script>
+</body>
+</html>
