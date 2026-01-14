@@ -105,11 +105,17 @@
     /* Step 아이템 */
     .step-item { padding: 0.7rem; border-radius: 10px; margin-bottom: 0.4rem; background: #f8fafc; display: flex; align-items: center; gap: 0.65rem; cursor: pointer; }
     .step-item:active { background: #e2e8f0; }
+    .step-item.last-viewed { background: #fef3c7; border: 2px solid #f59e0b; }
     .step-num { width: 22px; height: 22px; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; flex-shrink: 0; }
     .step-info { flex: 1; }
     .step-title { font-weight: 600; font-size: 0.9rem; }
     .step-overview { font-size: 0.75rem; color: #64748b; }
     .step-arrow { color: #94a3b8; font-size: 0.7rem; }
+    .last-badge { font-size: 0.65rem; background: #f59e0b; color: white; padding: 0.1rem 0.4rem; border-radius: 6px; margin-left: 0.3rem; }
+    
+    /* 이어서 보기 버튼 */
+    .continue-btn { width: 100%; padding: 0.85rem 1rem; margin-bottom: 0.85rem; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; border-radius: 12px; font-size: 0.95rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; box-shadow: 0 4px 12px rgba(59,130,246,0.3); }
+    .continue-btn:active { transform: scale(0.98); }
     
     /* 세부 보기 카드 */
     .detail-wrapper { user-select: none; }
@@ -133,6 +139,7 @@
     
     .detail-content { padding: 0.85rem; background: #f8fafc; border-radius: 14px; font-size: 0.85rem; line-height: 1.55; margin-bottom: 0.65rem; }
     .detail-extra { padding: 0.85rem; background: #fefce8; border-radius: 14px; font-size: 0.82rem; line-height: 1.5; border: 1px dashed #facc15; }
+    .detail-evidence { padding: 0.65rem 0.85rem; background: #f0f9ff; border-radius: 10px; font-size: 0.75rem; line-height: 1.5; color: #0369a1; margin-top: 0.85rem; border-left: 3px solid #38bdf8; }
     .detail-content ul { padding-left: 1.1rem; margin: 0.4rem 0; }
     .detail-content li { margin-bottom: 0.35rem; }
     .detail-content b { color: #1e293b; }
@@ -164,7 +171,10 @@
     .sos-header { padding: 0.7rem 0.9rem; display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
     .sos-emoji { font-size: 1.2rem; }
     .sos-title { font-weight: 600; font-size: 0.95rem; }
+    .sos-first { padding: 0.6rem 0.9rem; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); font-size: 0.9rem; color: #78350f; cursor: pointer; border-top: 1px solid #fcd34d; font-weight: 500; }
+    .sos-first-label { font-weight: 700; color: #b45309; }
     .sos-body { padding: 0.65rem 0.9rem; background: white; border-top: 1px solid #fcd34d; }
+    .sos-more-label { font-size: 0.75rem; color: #94a3b8; margin-bottom: 0.5rem; font-weight: 600; }
     .sos-strat { background: #fef3c7; border-radius: 8px; padding: 0.5rem 0.65rem; margin-bottom: 0.4rem; }
     .sos-action { font-weight: 600; color: #b45309; font-size: 0.85rem; }
     .sos-hint { font-size: 0.75rem; color: #78350f; margin-top: 0.1rem; }
@@ -187,6 +197,12 @@
     
     /* 리셋 버튼 */
     .reset-btn { padding: 0.25rem 0.5rem; border-radius: 6px; background: #fee2e2; color: #dc2626; font-size: 0.65rem; }
+    
+    /* 핵심 모드 */
+    .detail-core { padding: 1rem; background: linear-gradient(135deg, #fef9c3 0%, #fef3c7 100%); border-radius: 14px; margin-bottom: 0.85rem; border-left: 4px solid #f59e0b; }
+    .detail-core-label { font-size: 0.7rem; color: #b45309; font-weight: 600; margin-bottom: 0.4rem; }
+    .detail-core-text { font-size: 0.95rem; font-weight: 500; color: #78350f; line-height: 1.6; }
+    .ref-link { display: inline-block; margin-top: 0.5rem; padding: 0.3rem 0.6rem; background: #dbeafe; color: #1d4ed8; border-radius: 8px; font-size: 0.75rem; font-weight: 500; text-decoration: none; }
   </style>
 </head>
 <body>
@@ -233,59 +249,75 @@ var PROTOCOLS = {
     name: '학술서/비문학', icon: '📚', color: '#1d4ed8', bg: '#dbeafe', light: '#bfdbfe',
     phases: [
       { name: '시작 전', emoji: '🚀', duration: '3분', steps: [
-        { id: 'survey', title: '30초 서베이', overview: '전체 지형 파악하기', thought: '"이 글의 전체 모양이 어떻게 생겼지?"',
+        { id: 'survey', title: '30초 서베이', overview: '⭐ 전체 지형 파악하기', thought: '"이 글의 전체 모양이 어떻게 생겼지?"',
+          core: '① 제목+목차 3초씩 훑기 ② 첫 문단+끝 문단 읽기 ③ 그림/표 위치만 확인. 이해하려 하지 말 것!',
           content: '<ul><li><b>제목·부제</b> 읽기 (핵심 키워드)</li><li><b>목차·소제목</b> 훑기 (각 3-5초)</li><li><b>첫 문단</b> 읽기 (저자 의도)</li><li><b>마지막 문단</b> 읽기 (결론)</li><li><b>시각 자료</b> 스캔 (그림, 표, 박스)</li></ul><p>이 단계에서는 <b>이해하려 하지 말 것</b>. 지도만 그리기.</p><div class="box-b">"이 글은 <b>[주제]</b>에 대해 <b>[N개]</b> 파트로 <b>[구조]</b> 방식으로 전개된다"</div>',
           chk: ['주제 파악', '구조 파악', '분량 확인'] },
-        { id: 'structure', title: '글 구조 판별', overview: '8가지 패턴 중 어떤 것?', thought: '"어떤 패턴으로 전개되지?"',
-          content: '<ul><li><b>주장-근거</b>: 논설문, 사설</li><li><b>문제-해결</b>: 정책, 제안</li><li><b>원인-결과</b>: 분석, 설명</li><li><b>비교-대조</b>: 분류, 평가</li><li><b>순서-과정</b>: 절차, 역사</li><li><b>정의-설명</b>: 개념 소개</li><li><b>질문-답변</b>: 탐구, 연구</li><li><b>분류-범주</b>: 분류학</li></ul><div class="box-y"><b>신호어 사전</b><br>전환: 그러나, 하지만, 반면<br>결론: 따라서, 그러므로, 요컨대<br>강조: 특히, 중요한 것은, 핵심은<br>예시: 예를 들어, 가령, 구체적으로<br>인과: 왜냐하면, ~때문에, 그 결과</div><div class="box-c">텍스트 구조 인식은 이해도와 기억력을 유의미하게 향상 (Meyer & Ray, 2011)</div>',
+        { id: 'structure', title: '글 구조 판별', overview: '○ 8가지 패턴 중 어떤 것?', thought: '"어떤 패턴으로 전개되지?"',
+          content: '<ul><li><b>주장-근거</b>: 논설문, 사설</li><li><b>문제-해결</b>: 정책, 제안</li><li><b>원인-결과</b>: 분석, 설명</li><li><b>비교-대조</b>: 분류, 평가</li><li><b>순서-과정</b>: 절차, 역사</li><li><b>정의-설명</b>: 개념 소개</li><li><b>질문-답변</b>: 탐구, 연구</li><li><b>분류-범주</b>: 분류학</li></ul><div class="box-y"><b>신호어 사전</b><br>전환: 그러나, 하지만, 반면<br>결론: 따라서, 그러므로, 요컨대<br>강조: 특히, 중요한 것은, 핵심은<br>예시: 예를 들어, 가령, 구체적으로<br>인과: 왜냐하면, ~때문에, 그 결과</div>',
+          detail: '<p><b>📚 연구 근거</b></p><p>텍스트 구조 인식은 이해도와 기억력을 유의미하게 향상시킴 (Meyer & Ray, 2011)</p>',
           chk: ['구조 유형 파악', '신호어 발견'] },
-        { id: 'purpose', title: '읽기 목적 설정', overview: '구체적 목표 한 문장', thought: '"읽고 나면 뭘 할 수 있지?"',
-          content: '<p><b>Bloom 6단계</b></p><ul><li><b>기억</b>: 핵심 내용 떠올리기</li><li><b>이해</b>: 자기 말로 설명하기</li><li><b>적용</b>: 실제 상황에 활용하기</li><li><b>분석</b>: 논증의 강점/약점 파악</li><li><b>평가</b>: 찬반 의견 형성</li><li><b>창조</b>: 새로운 아이디어 만들기</li></ul><div class="box-b">"읽고 나면 나는 <b>[____]</b>을/를 할 수 있을 것이다"</div><div class="box-c">목표 지향적 읽기는 관련 정보에 주의를 집중시킨다 (Rouet & Britt, 2011)</div>',
+        { id: 'purpose', title: '읽기 목적 설정', overview: '⭐ 구체적 목표 한 문장', thought: '"읽고 나면 뭘 할 수 있지?"',
+          content: '<p><b>Bloom 6단계</b></p><ul><li><b>기억</b>: 핵심 내용 떠올리기</li><li><b>이해</b>: 자기 말로 설명하기</li><li><b>적용</b>: 실제 상황에 활용하기</li><li><b>분석</b>: 논증의 강점/약점 파악</li><li><b>평가</b>: 찬반 의견 형성</li><li><b>창조</b>: 새로운 아이디어 만들기</li></ul><div class="box-b">"읽고 나면 나는 <b>[____]</b>을/를 할 수 있을 것이다"</div>',
+          detail: '<p><b>📚 연구 근거</b></p><p>목표 지향적 읽기는 관련 정보에 주의를 집중시킨다 (Rouet & Britt, 2011)</p>',
           chk: ['구체적 목표 문장'] },
-        { id: 'activate', title: '사전지식 활성화', overview: '아는 것 3개 + 궁금한 것 2개', thought: '"이 주제에 대해 뭘 알지?"',
-          content: '<ul><li>타이머 30초 설정</li><li><b>아는 것 3가지</b> 빠르게 적기 (틀려도 OK!)</li><li><b>궁금한 것 2가지</b> 질문 형태로</li><li>읽으면서 확인하고 수정</li></ul><div class="box-g"><b>예시 (주제: 인지 부조화)</b><br>아는 것: 1) 믿음과 행동 다를 때 불편 2) 페스팅거? 3) 합리화<br>궁금: 1) 어떻게 해소? 2) 모든 사람에게?</div><div class="box-c"><b>생성 효과</b>: 스스로 만든 정보는 더 잘 기억. 틀린 추측도 수정하면 오히려 더 잘 기억됨(Hypercorrection Effect)</div>',
+        { id: 'activate', title: '사전지식 활성화', overview: '○ 아는 것 3개 + 궁금한 것 2개', thought: '"이 주제에 대해 뭘 알지?"',
+          content: '<ul><li>타이머 30초 설정</li><li><b>아는 것 3가지</b> 빠르게 적기 (틀려도 OK!)</li><li><b>궁금한 것 2가지</b> 질문 형태로</li><li>읽으면서 확인하고 수정</li></ul><div class="box-g"><b>예시 (주제: 인지 부조화)</b><br>아는 것: 1) 믿음과 행동 다를 때 불편 2) 페스팅거? 3) 합리화<br>궁금: 1) 어떻게 해소? 2) 모든 사람에게?</div>',
+          detail: '<p><b>📚 연구 근거</b></p><p><b>생성 효과</b>: 스스로 만든 정보는 더 잘 기억됨. 틀린 추측도 수정하면 오히려 더 잘 기억됨 (Hypercorrection Effect)</p>',
           chk: ['아는 것 3개', '궁금한 것 2개'] }
       ]},
       { name: '읽는 중', emoji: '📖', duration: '문단당 2-3분', steps: [
-        { id: 'para', title: '문단 역할 파악', overview: '이 문단이 뭐 하는 거지?', thought: '"주제? 근거? 반론? 요약?"',
-          content: '<ul><li>🎯 <b>주제 제시</b>: 핵심 주장 (보통 첫 문장)</li><li>📊 <b>근거/예시</b>: 주장 뒷받침</li><li>⚡ <b>반론/전환</b>: "그러나"</li><li>📋 <b>요약/정리</b></li><li>🔗 <b>연결/전이</b></li><li>❓ <b>문제 제기</b></li></ul><div class="box-y">첫 문장 + 마지막 문장에 80% 정보!</div><div class="box-b">"이 문단은 <b>[역할]</b>이다. 왜냐하면 <b>[근거]</b>"</div>',
+        { id: 'para', title: '문단 역할 파악', overview: '○ 이 문단이 뭐 하는 거지?', thought: '"주제? 근거? 반론? 요약?"',
+          content: '<ul><li>🎯 <b>주제 제시</b>: 핵심 주장 (보통 첫 문장)</li><li>📊 <b>근거/예시</b>: 주장 뒷받침</li><li>⚡ <b>반론/전환</b>: "그러나"</li><li>📋 <b>요약/정리</b></li><li>🔗 <b>연결/전이</b></li><li>❓ <b>문제 제기</b></li></ul><div class="box-y">첫 문장 + 마지막 문장에 핵심 정보 집중!</div><div class="box-b">"이 문단은 <b>[역할]</b>이다. 왜냐하면 <b>[근거]</b>"</div>',
           chk: ['핵심 문단 태깅'] },
-        { id: 'retrieve', title: '덮고 → 말하기', overview: '인출 연습 (가장 효과적!)', thought: '"방금 읽은 건..."',
-          content: '<ul><li>한 섹션 읽고 <b>책/화면 가리기</b></li><li><b>10초 안에</b> "핵심은..." 소리내어</li><li>책 열어서 <b>확인</b></li><li>빠뜨린 것에 <b>⭐ 표시</b></li><li>⭐ 표시된 것 나중에 집중 복습</li></ul><div class="box-p"><b>대안</b>: 키워드 3개만 / 글로 쓰기 / 마인드맵</div><div class="box-c"><b>인출 연습</b>: 재읽기보다 50% 더 효과적. 어려워야 효과 = "바람직한 어려움" (Roediger & Karpicke, 2006)</div>',
+        { id: 'retrieve', title: '덮고 → 말하기', overview: '⭐ 인출 연습 (가장 효과적!)', thought: '"방금 읽은 건..."',
+          core: '① 한 섹션 읽고 책 가리기 ② 10초 안에 "핵심은..." 소리내어 말하기 ③ 확인 후 빠진 것에 ⭐표시',
+          content: '<ul><li>한 섹션 읽고 <b>책/화면 가리기</b></li><li><b>10초 안에</b> "핵심은..." 소리내어</li><li>책 열어서 <b>확인</b></li><li>빠뜨린 것에 <b>⭐ 표시</b></li><li>⭐ 표시된 것 나중에 집중 복습</li></ul><div class="box-p"><b>대안</b>: 키워드 3개만 / 글로 쓰기 / 마인드맵</div>',
+          detail: '<p><b>📚 연구 근거</b></p><p><b>인출 연습</b>: 재읽기보다 장기 기억에 훨씬 효과적. 어려워야 효과 있음 = "바람직한 어려움" (Roediger & Karpicke, 2006)</p>',
           chk: ['인출 연습 실행', '빠진 것 확인'] },
-        { id: 'elaborate', title: '정교화 질문', overview: '왜? 어떻게? 연결은?', thought: '"더 깊이 파보면..."',
-          content: '<ul><li>🔍 <b>왜</b>: "이게 왜 그럴까?"</li><li>🔗 <b>연결</b>: "내가 아는 X와 어떻게?"</li><li>🔄 <b>비교</b>: "Y와 뭐가 다르지?"</li><li>📍 <b>예시</b>: "실제 예는 뭐가 있지?"</li><li>❓ <b>반례</b>: "이게 틀린 경우는?"</li><li>🎯 <b>적용</b>: "이걸 어디에 쓰지?"</li></ul><div class="box-r">"모르겠다"로 끝내지 말고 <b>틀려도 추측</b>하라!</div><div class="box-c"><b>정교화 질문</b>: 효과 크기 d=0.5-0.8 (Dunlosky et al., 2013)</div>',
+        { id: 'elaborate', title: '정교화 질문', overview: '○ 왜? 어떻게? 연결은?', thought: '"더 깊이 파보면..."',
+          content: '<ul><li>🔍 <b>왜</b>: "이게 왜 그럴까?"</li><li>🔗 <b>연결</b>: "내가 아는 X와 어떻게?"</li><li>🔄 <b>비교</b>: "Y와 뭐가 다르지?"</li><li>📍 <b>예시</b>: "실제 예는 뭐가 있지?"</li><li>❓ <b>반례</b>: "이게 틀린 경우는?"</li><li>🎯 <b>적용</b>: "이걸 어디에 쓰지?"</li></ul><div class="box-r">"모르겠다"로 끝내지 말고 <b>틀려도 추측</b>하라!</div>',
+          detail: '<p><b>📚 연구 근거</b></p><p><b>정교화 질문</b>: 효과 크기 d=0.5-0.8 (Dunlosky et al., 2013)</p>',
           chk: ['질문 1개+', '나만의 답변'] },
-        { id: 'visualize', title: '시각화/도식화', overview: '그림으로 그리기', thought: '"이걸 그림으로 그린다면?"',
-          content: '<ul><li><b>순서/과정</b> → 플로우차트 (□→□→□)</li><li><b>비교</b> → 벤다이어그램 또는 표</li><li><b>계층/분류</b> → 트리 구조</li><li><b>원인-결과</b> → 화살표 (A→B→C)</li><li><b>관계</b> → 마인드맵</li><li><b>시간순</b> → 타임라인</li><li><b>대립</b> → 양쪽 화살표 (↔)</li></ul><div class="box-c"><b>이중 부호화</b>: 언어+시각 = 2가지 경로로 기억 (Paivio, 1971)</div>',
+        { id: 'visualize', title: '시각화/도식화', overview: '△ 그림으로 그리기', thought: '"이걸 그림으로 그린다면?"',
+          content: '<ul><li><b>순서/과정</b> → 플로우차트 (□→□→□)</li><li><b>비교</b> → 벤다이어그램 또는 표</li><li><b>계층/분류</b> → 트리 구조</li><li><b>원인-결과</b> → 화살표 (A→B→C)</li><li><b>관계</b> → 마인드맵</li><li><b>시간순</b> → 타임라인</li><li><b>대립</b> → 양쪽 화살표 (↔)</li></ul>',
+          detail: '<p><b>📚 연구 근거</b></p><p><b>이중 부호화</b>: 언어+시각 = 2가지 경로로 기억 (Paivio, 1971)</p>',
           chk: ['핵심 관계 도식화'] },
-        { id: 'selfexp', title: '자기 설명', overview: '스스로에게 설명하기', thought: '"이 부분이 의미하는 건..."',
-          content: '<ul><li>새 정보마다 <b>멈추기</b></li><li>"이건 ~라는 뜻이다" <b>혼잣말</b></li><li>왜 저자가 여기에 넣었나</li><li>이해 안 되면 <b>? 표시</b>하고 넘기기</li></ul><div class="box-b"><b>패턴</b>:<br>• "이 문장은 앞 문장을 ~한다"<br>• "이건 ~의 예시/근거/반례다"<br>• "저자가 이걸 말하는 이유는..."</div><div class="box-c"><b>자기설명 효과</b>: 메타분석 g=0.61 (Bisra et al., 2018)</div>',
+        { id: 'selfexp', title: '자기 설명', overview: '○ 스스로에게 설명하기', thought: '"이 부분이 의미하는 건..."',
+          content: '<ul><li>새 정보마다 <b>멈추기</b></li><li>"이건 ~라는 뜻이다" <b>혼잣말</b></li><li>왜 저자가 여기에 넣었나</li><li>이해 안 되면 <b>? 표시</b>하고 넘기기</li></ul><div class="box-b"><b>패턴</b>:<br>• "이 문장은 앞 문장을 ~한다"<br>• "이건 ~의 예시/근거/반례다"<br>• "저자가 이걸 말하는 이유는..."</div>',
+          detail: '<p><b>📚 연구 근거</b></p><p><b>자기설명 효과</b>: 메타분석 g=0.61 (Bisra et al., 2018)</p>',
           chk: ['자기설명 실행'] },
-        { id: 'monitor', title: '이해도 점검', overview: '메타인지 체크', thought: '"나 지금 이해하고 있나?"',
+        { id: 'monitor', title: '이해도 점검', overview: '⭐ 메타인지 체크', thought: '"나 지금 이해하고 있나?"',
           content: '<p><b>🔴 이해 안 됨 신호</b>:</p><ul><li>읽었는데 뭔 말인지 모름</li><li>다음 문장과 연결 안 됨</li><li>예시가 떠오르지 않음</li><li>요약하라면 못 함</li></ul><p><b>🟢 이해됨 신호</b>:</p><ul><li>자기 말로 바꿀 수 있음</li><li>예시를 만들 수 있음</li><li>다음 내용 예측 가능</li></ul><div class="box-y"><b>대처</b>: 재읽기 / 쪼개기 / 용어 확인 / 연결 찾기 / 일단 스킵</div>',
           chk: ['막힘없이 설명 가능'] }
       ]},
       { name: '마무리', emoji: '✅', duration: '3분', steps: [
-        { id: 'summary', title: '단계별 요약', overview: '1문장 → 3문장 → 1문단', thought: '"핵심만 추리면..."',
+        { id: 'summary', title: '단계별 요약', overview: '⭐ 1문장 → 3문장 → 1문단', thought: '"핵심만 추리면..."',
           content: '<div class="box-b"><b>1문장</b>: 핵심 주장<br><b>3문장</b>: 주요 근거/논점<br><b>1문단</b>: 종합 + 의의</div><ul><li>자기 말로 바꿔서</li><li>원문 안 보고</li><li>빠뜨린 것 확인</li></ul>',
           chk: ['1문장 요약', '3문장 요약'] },
-        { id: 'critique', title: '비판적 평가', overview: '강점/약점/숨은 가정', thought: '"이 글의 한계는?"',
+        { id: 'notetaking', title: '노트 정리법', overview: '○ Cornell 등 체계적 정리', thought: '"어떻게 정리하지?"',
+          core: 'Cornell: 오른쪽=필기, 왼쪽=키워드/질문, 아래=요약. 필기 후 당일 왼쪽+아래 채우기!',
+          content: '<p><b>Cornell 노트법</b>:</p><div class="box-b">┌─────┬────────────┐<br>│ 단서 │ 필기 영역 │<br>│키워드│ (수업/읽기 중)│<br>│ 질문 │ │<br>├─────┴────────────┤<br>│ 요약 (나중에 작성) │<br>└──────────────────┘</div><ul><li><b>오른쪽(필기)</b>: 읽으면서 핵심 기록</li><li><b>왼쪽(단서)</b>: 나중에 키워드/질문 추가</li><li><b>아래(요약)</b>: 전체 내용 2-3문장</li></ul><div class="box-y"><b>✅ 핵심</b>: 필기 후 24시간 내 왼쪽+아래 채우기!<br>왼쪽 가리고 복습 → 인출 연습 효과</div><p><b>다른 방법</b>:</p><ul><li><b>아웃라인</b>: 위계 구조 (1. → 1.1 → 1.1.1)</li><li><b>마인드맵</b>: 관계 중심, 시각적</li><li><b>차팅</b>: 비교 대상 많을 때 표로</li></ul><div class="box-r"><b>❌ 피할 것</b>: 그대로 베끼기, 모든 것 적기<br><b>✓ 할 것</b>: 자기 말로, 핵심만</div>',
+          chk: ['노트 방식 선택', '요약 작성'] },
+        { id: 'critique', title: '비판적 평가', overview: '△ 강점/약점/숨은 가정', thought: '"이 글의 한계는?"',
           content: '<ul><li>강점은? 약점은?</li><li>증거 충분?</li><li>대안 가능성?</li><li>숨겨진 가정?</li><li>편향 있나?</li><li>다른 관점에서 보면?</li></ul>',
           chk: ['비판점 1개+'] },
-        { id: 'test', title: '자기 테스트', overview: '문제 만들고 풀기', thought: '"시험에 나온다면..."',
-          content: '<p><b>문제 유형 (Bloom)</b>:</p><ul><li>📝 <b>기억</b>: "X는 무엇?"</li><li>🤔 <b>이해</b>: "X는 왜?"</li><li>🔗 <b>적용</b>: "이 상황에 X를 적용하면?"</li><li>🔄 <b>분석</b>: "X와 Y의 관계?"</li><li>⚖️ <b>평가</b>: "X의 장단점?"</li></ul><div class="box-c"><b>테스트 효과</b>: 테스트 자체가 학습. 문제 만드는 과정에서도 학습 (Roediger & Karpicke, 2006)</div>',
+        { id: 'test', title: '자기 테스트', overview: '⭐ 문제 만들고 풀기', thought: '"시험에 나온다면..."',
+          content: '<p><b>문제 유형 (Bloom)</b>:</p><ul><li>📝 <b>기억</b>: "X는 무엇?"</li><li>🤔 <b>이해</b>: "X는 왜?"</li><li>🔗 <b>적용</b>: "이 상황에 X를 적용하면?"</li><li>🔄 <b>분석</b>: "X와 Y의 관계?"</li><li>⚖️ <b>평가</b>: "X의 장단점?"</li></ul>',
+          detail: '<p><b>📚 연구 근거</b></p><p><b>테스트 효과</b>: 테스트 자체가 학습. 문제 만드는 과정에서도 학습 (Roediger & Karpicke, 2006)</p>',
           chk: ['문제 3개+', '답변 작성'] }
       ]},
       { name: '복습', emoji: '🔄', duration: '간격 두고', steps: [
-        { id: 'spaced', title: '간격 복습', overview: '망각 곡선 이기기', thought: '"언제 다시 볼까?"',
-          content: '<p><b>최적 간격</b>: 1일 → 3일 → 7일 → 21일 → 2개월</p><p><b>앱</b>: Anki, Quizlet, RemNote</p><div class="box-c"><b>간격 효과</b>: 같은 시간 투자해도 분산하면 효과 2배</div>',
+        { id: 'spaced', title: '간격 복습', overview: '⭐ 망각 곡선 이기기', thought: '"언제 다시 볼까?"',
+          content: '<p><b>권장 간격</b>: 1일 → 3일 → 7일 → 21일 → 2개월</p><p><b>앱</b>: Anki, Quizlet, RemNote</p>',
+          detail: '<p><b>📚 연구 근거</b></p><p><b>간격 효과</b>: 같은 시간 투자해도 분산하면 훨씬 효과적 (Cepeda et al., 2006)</p>',
           chk: ['복습 일정'] },
-        { id: 'teach', title: '가르치기', overview: '파인만 기법', thought: '"초등학생에게 설명하면..."',
+        { id: 'teach', title: '가르치기', overview: '○ 파인만 기법', thought: '"초등학생에게 설명하면..."',
           content: '<ul><li>1. 초등학생에게 설명하듯</li><li>2. 막히는 부분 = 약점</li><li>3. 다시 공부</li><li>4. 단순화해서 재설명</li></ul><div class="box-y">설명 못하면 이해 못한 것!</div>',
           chk: ['가르치기 연습'] },
-        { id: 'interleave', title: '섞어서 복습', overview: '인터리빙', thought: '"다른 것과 섞으면..."',
-          content: '<p><b>❌ 블로킹 (나쁨)</b>:<br>A→A→A→B→B→B→C→C→C</p><p><b>✓ 인터리빙 (좋음)</b>:<br>A→B→C→A→C→B→A→B→C</p><div class="box-y"><b>🤔 언제 써야 하나?</b></div><ul><li><b>인터리빙 ⭕</b>: 유형 구분이 중요할 때 (수학 문제 유형, 예술 사조, 진단)</li><li><b>인터리빙 ❌</b>: 완전 새로운 개념 처음 배울 때 → 먼저 블로킹으로 기초 잡기</li></ul><div class="box-b"><b>실행 규칙</b>:<br>1. 기초 단계 = 블로킹 (한 유형 집중)<br>2. 기초 잡히면 = 인터리빙 (섞기)<br>3. "이건 어떤 유형?" 구분 연습</div><div class="box-c">효과크기 d=0.42. 유형 구분력 향상 (Rohrer & Taylor, 2007)</div>',
+        { id: 'interleave', title: '섞어서 복습', overview: '○ 인터리빙', thought: '"다른 것과 섞으면..."',
+          content: '<p><b>❌ 블로킹 (나쁨)</b>:<br>A→A→A→B→B→B→C→C→C</p><p><b>✓ 인터리빙 (좋음)</b>:<br>A→B→C→A→C→B→A→B→C</p><div class="box-y"><b>🤔 언제 써야 하나?</b></div><ul><li><b>인터리빙 ⭕</b>: 유형 구분이 중요할 때 (수학 문제 유형, 예술 사조, 진단)</li><li><b>인터리빙 ❌</b>: 완전 새로운 개념 처음 배울 때 → 먼저 블로킹으로 기초 잡기</li></ul><div class="box-b"><b>실행 규칙</b>:<br>1. 기초 단계 = 블로킹 (한 유형 집중)<br>2. 기초 잡히면 = 인터리빙 (섞기)<br>3. "이건 어떤 유형?" 구분 연습</div>',
+          detail: '<p><b>📚 연구 근거</b></p><p>효과크기 d=0.42. 유형 구분력 향상 (Rohrer & Taylor, 2007)</p>',
           chk: ['기초 잡힌 후 섞기'] }
       ]}
     ]
@@ -294,47 +326,52 @@ var PROTOCOLS = {
     name: '소설/문학', icon: '📖', color: '#be185d', bg: '#fce7f3', light: '#fbcfe8',
     phases: [
       { name: '읽기 준비', emoji: '📚', duration: '1분', steps: [
-        { id: 'preview', title: '표지/제목 분석', overview: '장르·분위기·갈등 예측', thought: '"뭘 다룰까?"',
+        { id: 'preview', title: '표지/제목 분석', overview: '○ 장르·분위기·갈등 예측', thought: '"뭘 다룰까?"',
           content: '<ul><li><b>표지 이미지</b>: 색감, 분위기, 인물, 배경</li><li><b>제목</b>: 상징, 은유, 주제 암시</li><li><b>뒷표지</b>: 중심 갈등, 주인공, 배경</li><li><b>작가 소개</b>: 시대, 국가, 경향</li></ul><div class="box-b"><b>기록</b><br>장르: [____]<br>분위기: [밝음/어두움/긴장/따뜻...]<br>예상 갈등: [____] vs [____]</div><div class="box-y">예측이 틀려도 OK! 예측하고 읽으면 능동적</div>',
           chk: ['장르·분위기 예측'] },
-        { id: 'tracking', title: '추적 시스템', overview: '기록 방식 정하기', thought: '"뭘 기록하지?"',
+        { id: 'tracking', title: '추적 시스템', overview: '○ 기록 방식 정하기', thought: '"뭘 기록하지?"',
           content: '<p><b>추적 항목</b>:</p><ul><li><b>인물</b>: 이름, 관계, 특징</li><li><b>플롯</b>: 주요 사건, 전환점</li><li><b>의문점</b>: 복선? 떡밥?</li><li><b>상징/반복</b>: 계속 나오는 것</li><li><b>명문장</b></li></ul><div class="box-p"><b>주석 기호</b><br>? = 질문 | ! = 중요 | ★ = 명문장<br>→ = 변화 | ~ = 반복 | ⚡ = 갈등</div>',
           chk: ['추적 방식 결정'] }
       ]},
       { name: '읽는 중', emoji: '🌙', duration: '자유', steps: [
-        { id: 'signpost', title: '문학 신호등', overview: 'Notice & Note 6가지', thought: '"이게 왜 중요하지?"',
-          content: '<ul><li><b>대조/모순</b>: 예상과 다르게 행동 → "왜 이렇게 했지?"</li><li><b>깨달음</b>: 갑자기 무언가 깨달음 → "이게 뭘 바꿀까?"</li><li><b>어려운 질문</b>: 자신에게 힘든 질문 → "내적 갈등"</li><li><b>조언자의 말</b>: 경험 많은 인물 조언 → "주제 힌트"</li><li><b>반복</b>: 같은 것 반복 → "왜 반복?"</li><li><b>회상</b>: 과거 장면 삽입 → "왜 지금 이 기억?"</li></ul><div class="box-c">Notice & Note: Beers & Probst가 개발한 문학 읽기 전략</div>',
+        { id: 'signpost', title: '문학 신호등', overview: '○ Notice & Note 6가지', thought: '"이게 왜 중요하지?"',
+          content: '<ul><li><b>대조/모순</b>: 예상과 다르게 행동 → "왜 이렇게 했지?"</li><li><b>깨달음</b>: 갑자기 무언가 깨달음 → "이게 뭘 바꿀까?"</li><li><b>어려운 질문</b>: 자신에게 힘든 질문 → "내적 갈등"</li><li><b>조언자의 말</b>: 경험 많은 인물 조언 → "주제 힌트"</li><li><b>반복</b>: 같은 것 반복 → "왜 반복?"</li><li><b>회상</b>: 과거 장면 삽입 → "왜 지금 이 기억?"</li></ul>',
+          detail: '<p><b>📚 출처</b></p><p>Notice & Note: Beers & Probst가 개발한 문학 읽기 전략</p>',
           chk: ['신호 1개+ 발견'] },
-        { id: 'character', title: '인물 분석', overview: '5차원 입체적 이해', thought: '"이 인물은 어떤 사람?"',
+        { id: 'character', title: '인물 분석', overview: '⭐ 5차원 입체적 이해', thought: '"이 인물은 어떤 사람?"',
+          core: '① 원하는 것(want) ② 필요한 것(need) ③ 두려운 것 ④ 변화 방향 파악',
           content: '<ul><li><b>외면</b>: 외모, 행동, 말투, 습관</li><li><b>내면</b>: 원하는 것(want), 필요한 것(need), 두려움</li><li><b>관계</b>: 다른 인물과</li><li><b>갈등</b>: 외적 vs 내적</li><li><b>변화</b>: 처음 → 나중</li></ul><div class="box-b"><b>인물 카드</b><br>이름: [____]<br>역할: 주인공/조력자/적대자<br>원하는 것: [____]<br>두려운 것: [____]</div><div class="box-y"><b>동적</b>: 변화함 (보통 주인공)<br><b>정적</b>: 변화 없음 (대조 역할)</div>',
           chk: ['주인공 분석 완료'] },
-        { id: 'narrator', title: '시점/화자 분석', overview: '누가 이야기하나', thought: '"믿을 수 있는 화자인가?"',
+        { id: 'narrator', title: '시점/화자 분석', overview: '○ 누가 이야기하나', thought: '"믿을 수 있는 화자인가?"',
           content: '<ul><li><b>1인칭</b>: "나" - 주관적, 제한적, 편향 가능</li><li><b>3인칭 제한</b>: 한 인물 관점만</li><li><b>3인칭 전지</b>: 모든 인물 접근</li><li><b>다중/교차</b>: 여러 인물 번갈아</li></ul><div class="box-r"><b>신뢰도 체크</b><br>□ 숨기는 게 있나?<br>□ 편향된 시각?<br>□ 의도적으로 속이나?</div>',
           chk: ['시점 파악'] },
-        { id: 'symbol', title: '상징/이미지 추적', overview: '반복되는 것', thought: '"왜 계속 나오지?"',
+        { id: 'symbol', title: '상징/이미지 추적', overview: '△ 반복되는 것', thought: '"왜 계속 나오지?"',
           content: '<p><b>찾을 것</b>:</p><ul><li>반복되는 <b>사물</b> (거울, 문, 새...)</li><li>반복되는 <b>색/빛</b></li><li>반복되는 <b>날씨/계절</b></li><li>반복되는 <b>동작</b></li></ul><div class="box-y">✅ 질문: 왜 반복? 뭘 상징? 처음과 나중에 의미 달라지나?</div>',
           chk: ['반복 요소 발견'] },
-        { id: 'style', title: '문체/톤 분석', overview: '어떻게 쓰여 있나', thought: '"왜 이렇게 썼지?"',
-          content: '<ul><li><b>문장 길이</b>: 짧고 끊김 vs 길고 유려</li><li><b>어휘</b>: 격식/비격식, 시대, 계층</li><li><b>톤</b>: 유머/진지/냉소/따뜻</li><li><b>속도</b>: 빠름(액션) vs 느림(묘사)</li><li><b>대화 비율</b></li></ul><div class="box-c">✅ 긴장 장면 → 짧은 문장<br>사색 장면 → 긴 문장</div>',
+        { id: 'style', title: '문체/톤 분석', overview: '△ 어떻게 쓰여 있나', thought: '"왜 이렇게 썼지?"',
+          content: '<ul><li><b>문장 길이</b>: 짧고 끊김 vs 길고 유려</li><li><b>어휘</b>: 격식/비격식, 시대, 계층</li><li><b>톤</b>: 유머/진지/냉소/따뜻</li><li><b>속도</b>: 빠름(액션) vs 느림(묘사)</li><li><b>대화 비율</b></li></ul>',
+          detail: '<p><b>💡 팁</b></p><p>긴장 장면 → 짧은 문장<br>사색 장면 → 긴 문장</p>',
           chk: ['문체 특징 파악'] },
-        { id: 'setting', title: '배경 분석', overview: '시간과 공간', thought: '"배경이 어떤 역할?"',
+        { id: 'setting', title: '배경 분석', overview: '○ 시간과 공간', thought: '"배경이 어떤 역할?"',
           content: '<ul><li><b>시간</b>: 시대, 계절, 시간대</li><li><b>공간</b>: 장소 특징, 분위기</li><li><b>사회</b>: 문화, 계층, 규범</li></ul><div class="box-y">✅ 배경이 인물에 어떤 영향?<br>배경이 갈등을 만들거나 심화?</div>',
           chk: ['배경 특징 파악'] }
       ]},
       { name: '다 읽은 후', emoji: '🏆', duration: '5분', steps: [
-        { id: 'arc', title: '인물 변화 정리', overview: '캐릭터 아크', thought: '"어떻게 달라졌나?"',
+        { id: 'arc', title: '인물 변화 정리', overview: '⭐ 캐릭터 아크', thought: '"어떻게 달라졌나?"',
+          core: '"[인물]은 처음에 [A]였는데, [사건]을 겪고, [B]로 변했다" 한 문장으로!',
           content: '<div class="box-b"><b>[인물]</b>은 처음에 <b>[A 상태]</b>였는데,<br><b>[핵심 사건]</b>을 겪고,<br><b>[B 상태]</b>로 변했다.</div><ul><li>뭘 배웠나?</li><li>어떤 선택을 했나? 왜?</li><li>대가/희생은?</li><li>변화가 주제와 어떻게 연결?</li></ul>',
           chk: ['주인공 변화 정리'] },
-        { id: 'plot', title: '플롯 구조', overview: '3막 구조', thought: '"전체 흐름은..."',
+        { id: 'plot', title: '플롯 구조', overview: '○ 3막 구조', thought: '"전체 흐름은..."',
           content: '<ul><li><b>1막 (Setup)</b>: 일상 → 촉발 사건 → 결심</li><li><b>2막 (Confrontation)</b>: 시련들 → 중간점 → 최악의 순간</li><li><b>3막 (Resolution)</b>: 클라이맥스 → 결말</li></ul><div class="box-y"><b>핵심 전환점</b>: 촉발 사건, 1막 전환점, 중간점, 2막 전환점, 클라이맥스</div>',
           chk: ['플롯 정리'] },
-        { id: 'theme', title: '주제 도출', overview: '의미 종합', thought: '"결국 하고 싶은 말은..."',
+        { id: 'theme', title: '주제 도출', overview: '⭐ 의미 종합', thought: '"결국 하고 싶은 말은..."',
+          core: '"이 작품은 [주제]에 대해 [저자 입장]을 말한다" 한 문장으로! 소재≠주제',
           content: '<ul><li><b>반복</b>: 반복된 것이 주제 힌트</li><li><b>갈등 해결</b>: 어떻게 해결? 그 방식이 주제</li><li><b>인물 변화</b>: 뭘 배웠나?</li><li><b>제목 연결</b>: 제목이 왜 이건가?</li></ul><div class="box-b">"이 작품은 <b>[주제]</b>에 대해 <b>[저자 입장]</b>을 말한다"</div><div class="box-r"><b>소재</b>: 무엇에 관한 것 (전쟁, 사랑...)<br><b>주제</b>: 그것에 대해 무엇을 말하는지</div>',
           chk: ['주제 한 문장'] },
-        { id: 'conflict', title: '갈등 분석', overview: '어떤 갈등이었나', thought: '"핵심 대립은..."',
+        { id: 'conflict', title: '갈등 분석', overview: '○ 어떤 갈등이었나', thought: '"핵심 대립은..."',
           content: '<ul><li><b>인물 vs 인물</b>: 가장 흔함</li><li><b>인물 vs 자신</b>: 내적 갈등</li><li><b>인물 vs 사회</b>: 규범, 제도</li><li><b>인물 vs 자연</b>: 환경, 생존</li><li><b>인물 vs 운명</b>: 피할 수 없는 것</li><li><b>인물 vs 기술</b>: AI, 기계, 디스토피아</li></ul><div class="box-y">어떻게 해결? 완전히? 부분적? 열린 결말?</div>',
           chk: ['갈등 유형 파악'] },
-        { id: 'response', title: '개인적 반응', overview: '나와 연결', thought: '"나에게 어떤 의미?"',
+        { id: 'response', title: '개인적 반응', overview: '△ 나와 연결', thought: '"나에게 어떤 의미?"',
           content: '<ul><li>가장 기억에 남는 장면/문장?</li><li>가장 공감한 인물? 왜?</li><li>새롭게 알게 된 것?</li><li>내 생각/가치관에 영향?</li><li>추천한다면 누구에게?</li></ul>',
           chk: ['개인 반응 기록'] }
       ]}
@@ -344,57 +381,61 @@ var PROTOCOLS = {
     name: '논문', icon: '📑', color: '#059669', bg: '#ecfdf5', light: '#d1fae5',
     phases: [
       { name: '1st Pass', emoji: '👀', duration: '5-10분', steps: [
-        { id: 'pass1', title: '읽을 가치 판단', overview: '5Cs 평가', thought: '"이 논문 읽어야 할까?"',
+        { id: 'pass1', title: '읽을 가치 판단', overview: '⭐ 5Cs 평가', thought: '"이 논문 읽어야 할까?"',
           content: '<p><b>읽을 것</b>: 제목, 초록, 키워드, 서론 마지막, 소제목, 결론 첫 문단, 참고문헌</p><div class="box-b"><b>5Cs 평가</b><br><b>Category</b>: 어떤 유형? (실험/리뷰/이론)<br><b>Context</b>: 어떤 분야/맥락?<br><b>Correctness</b>: 가정이 합리적?<br><b>Contributions</b>: 새로운 점?<br><b>Clarity</b>: 잘 쓰였나?</div><div class="box-y"><b>결정</b>: 중단 / 2nd Pass / 나중에</div>',
           chk: ['5Cs 평가', '계속/중단 결정'] }
       ]},
       { name: '2nd Pass', emoji: '🔍', duration: '~1시간', steps: [
-        { id: 'pass2', title: 'Figure First', overview: '그래프/표 먼저', thought: '"데이터가 뭘 말해주지?"',
+        { id: 'pass2', title: 'Figure First', overview: '⭐ 그래프/표 먼저', thought: '"데이터가 뭘 말해주지?"',
           content: '<p><b>읽기 순서</b>:</p><ul><li>1. <b>Figure/Table 먼저</b> (가장 중요!)<br>- 축, 범례, 오차막대<br>- 핵심 숫자</li><li>2. <b>서론</b> 꼼꼼히</li><li>3. <b>방법</b> 빠르게</li><li>4. <b>결과</b> 꼼꼼히</li><li>5. <b>논의</b> 빠르게</li></ul>',
           chk: ['Figure 이해', '핵심 논증 파악'] },
-        { id: 'template', title: '기록 템플릿', overview: '체계적 정리', thought: '"뭘 기록해야 하지?"',
+        { id: 'template', title: '기록 템플릿', overview: '○ 체계적 정리', thought: '"뭘 기록해야 하지?"',
           content: '<div class="box-b"><b>필수 기록 항목</b>:</div><ul><li><b>연구 질문</b>: 무엇을 알고자?</li><li><b>가설</b>: 예상한 결과는?</li><li><b>방법</b>: 어떻게 검증?</li><li><b>핵심 결과</b>: 주요 수치/발견</li><li><b>결론</b>: 저자 주장</li><li><b>한계</b>: 저자 인정 or 내가 발견</li><li><b>의문점</b>: 이해 안 되는 것</li><li><b>후속 연구</b>: 다음에 뭘 해야?</li></ul><div class="box-y">논문마다 동일 양식 사용 → 비교 쉬움</div>',
           chk: ['템플릿 작성'] },
-        { id: 'method', title: '방법론 평가', overview: '인과 강도 판단', thought: '"연구 설계가 적절?"',
-          content: '<p><b>🔍 연구 유형 → 인과 강도</b>:</p><ul><li><b>RCT</b> (무작위 배정+대조군) → 인과 주장 ⭕ 가능</li><li><b>준실험</b> (무작위 없음) → 인과 주장 △ 주의</li><li><b>관찰 연구</b> → 인과 주장 ❌ 상관만</li></ul><div class="box-y"><b>실행</b>: Methods에서 "random" 검색 → 있으면 RCT, 없으면 관찰</div><p><b>📋 체크리스트</b>:</p><ul><li>표본 크기 N=? (작으면 검정력↓)</li><li>통제 변수 뭐 있나? (없으면 교란↑)</li><li>블라인딩 했나? (없으면 기대효과↑)</li><li>탈락률? (높으면 선택편향↑)</li></ul><div class="box-r"><b>주의</b>: "관찰 연구"인데 "~때문에"라고 인과 주장하면 의심!</div>',
+        { id: 'method', title: '방법론 평가', overview: '⭐ 인과 강도 판단', thought: '"연구 설계가 적절?"',
+          core: '① Methods에서 "random" 검색 → 있으면 RCT, 없으면 관찰 ② RCT면 인과 주장 OK, 관찰이면 "상관"만',
+          content: '<p><b>🔍 연구 유형 → 인과 강도</b>:</p><ul><li><b>RCT</b> (무작위 배정+대조군) → 인과 주장 ⭕ 가능</li><li><b>준실험</b> (무작위 없음) → 인과 주장 △ 주의</li><li><b>관찰 연구</b> → 인과 주장 ❌ 상관만</li></ul><p><b>📋 체크리스트</b>:</p><ul><li>표본 크기 N=? (작으면 검정력↓)</li><li>통제 변수 뭐 있나? (없으면 교란↑)</li><li>블라인딩 했나? (없으면 기대효과↑)</li><li>탈락률? (높으면 선택편향↑)</li></ul><div class="box-r"><b>주의</b>: "관찰 연구"인데 "~때문에"라고 인과 주장하면 의심!</div><div class="ref-link">📚 상세: 심화탭 → 연구 타당도</div>',
           chk: ['연구 유형 확인', '통제 변수 확인'] },
-        { id: 'stats', title: '통계 검증', overview: 'p-value 넘어서', thought: '"통계가 말해주는 건?"',
+        { id: 'stats', title: '통계 검증', overview: '○ p-value 넘어서', thought: '"통계가 말해주는 건?"',
           content: '<div class="box-r"><b>p-value 오해</b><br>p=0.05 ≠ 틀릴 확률 5%<br>p>0.05 ≠ 효과 없음<br>p<0.05 ≠ 중요함</div><p><b>🔍 대신 이것 찾기</b>:</p><ul><li><b>효과 크기 (d)</b>: 0.2=소, 0.5=중, 0.8=대<br><span style="color:#059669">→ d < 0.2이면 통계적 유의해도 실질적 의미 작음</span></li><li><b>신뢰구간 (CI)</b>: 폭 좁을수록 정밀<br><span style="color:#059669">→ CI가 0 포함하면 효과 불확실</span></li><li><b>표본 크기 (N)</b>: 클수록 작은 효과도 유의<br><span style="color:#dc2626">→ N>1000인데 d<0.1이면 "통계적으로만 유의"</span></li></ul><div class="box-y"><b>실행</b>: Results에서 d=, r=, Cohen, CI 검색</div>',
           chk: ['효과 크기 확인', 'CI 확인'] },
-        { id: 'pass3', title: '3rd Pass (선택)', overview: '가상 재구현', thought: '"내가 이 연구를 했다면?"',
+        { id: 'pass3', title: '3rd Pass (선택)', overview: '△ 가상 재구현', thought: '"내가 이 연구를 했다면?"',
           content: '<p><b>목표</b>: 이 연구를 내가 재현할 수 있나?</p><ul><li><b>가정 나열</b>: 모든 암묵적 가정 명시</li><li><b>증거 추적</b>: 각 주장의 증거 찾기</li><li><b>문제점 식별</b>: 방법론, 분석, 해석 문제</li><li><b>대안 제시</b>: 다른 방법/해석 가능?</li><li><b>후속 연구</b>: 다음 연구 아이디어</li></ul><div class="box-y"><b>언제 필요</b>: 직접 연구 분야, 리뷰 작성 시</div>',
           chk: ['가정 나열', '문제점 식별'] }
       ]},
       { name: '비판', emoji: '⚡', duration: '', steps: [
-        { id: 'toulmin', title: 'Toulmin 논증 분석', overview: '논리 구조', thought: '"주장-근거-보증은?"',
-          content: '<ul><li><b>Claim</b>: 저자가 주장하는 것</li><li><b>Grounds</b>: 데이터, 증거</li><li><b>Warrant</b>: 근거→주장 연결 (종종 숨겨짐!)</li><li><b>Qualifier</b>: "아마", "대체로"</li><li><b>Rebuttal</b>: 예외, 한계</li></ul><div class="box-y"><b>Warrant가 핵심</b>. "왜 이 근거가 저 주장을 지지?"라고 물으면 발견.</div>',
-          chk: ['Claim·Warrant 식별'] },
-        { id: 'bias', title: '편향 체크', overview: '5가지 질문', thought: '"뭘 놓쳤을까?"',
-          content: '<p><b>🔍 5가지 편향 점검 질문</b>:</p><ul><li><b>후원자</b>: 연구비 출처 어디? → Acknowledgments/Funding 확인<br><span style="color:#dc2626">⚠️ 결과가 후원자에게 유리하면 주의</span></li><li><b>표본</b>: 누구를 연구? → Methods의 Participants 확인<br><span style="color:#dc2626">⚠️ WEIRD(서구/대학생) 편중이면 일반화 주의</span></li><li><b>사전등록</b>: 가설 미리 정했나? → 논문에 "preregistered" 검색<br><span style="color:#dc2626">⚠️ 없으면 HARKing 가능성</span></li><li><b>부정적 결과</b>: 안 된 것도 보고? → Results에서 "non-significant" 검색<br><span style="color:#dc2626">⚠️ 긍정만 있으면 선택적 보고 의심</span></li><li><b>저자 이해관계</b>: 저자가 득볼 게? → Conflict of Interest 확인<br><span style="color:#dc2626">⚠️ 제약회사 연구자+약 효과 논문 = 주의</span></li></ul><div class="box-y"><b>✅ 실행</b>: 5개 중 2개 이상 ⚠️이면 "비판적으로 읽기"</div>',
+        { id: 'toulmin_paper', title: '논증 구조 분석', overview: '○ 주장-근거-연결', thought: '"주장-근거-연결은?"',
+          core: '① 주장(결론) 찾기 ② 근거(데이터) 찾기 ③ 숨은 연결 질문: "왜 이 근거가 저 주장을?"',
+          content: '<p><b>빠른 체크:</b></p><ul><li><b>주장</b>: 저자가 결론으로 말하는 것</li><li><b>근거</b>: 데이터, 실험 결과</li><li><b>연결</b>: 근거→주장 잇는 논리 (종종 숨겨짐)</li></ul><div class="box-y"><b>핵심 질문</b>: "왜 이 데이터가 저 결론을 지지하지?"</div><div class="ref-link">📚 상세: 사고탭 → 주장 분석</div>',
+          chk: ['주장·근거 식별'] },
+        { id: 'bias', title: '편향 체크', overview: '⭐ 5가지 질문', thought: '"뭘 놓쳤을까?"',
+          core: '① 후원자 확인 (Funding) ② 표본 확인 (WEIRD?) ③ 사전등록 여부 ④ 부정적 결과 보고? ⑤ 이해관계?',
+          content: '<p><b>🔍 5가지 편향 점검 질문</b>:</p><ul><li><b>후원자</b>: 연구비 출처 어디? → Acknowledgments/Funding 확인<br><span style="color:#dc2626">⚠️ 결과가 후원자에게 유리하면 주의</span></li><li><b>표본</b>: 누구를 연구? → Methods의 Participants 확인<br><span style="color:#dc2626">⚠️ WEIRD(서구/대학생) 편중이면 일반화 주의</span></li><li><b>사전등록</b>: 가설 미리 정했나? → 논문에 "preregistered" 검색<br><span style="color:#dc2626">⚠️ 없으면 HARKing(결과 보고 가설 만들기) 가능성</span></li><li><b>부정적 결과</b>: 안 된 것도 보고? → Results에서 "non-significant" 검색<br><span style="color:#dc2626">⚠️ 긍정만 있으면 선택적 보고 의심</span></li><li><b>저자 이해관계</b>: 저자가 득볼 게? → Conflict of Interest 확인<br><span style="color:#dc2626">⚠️ 제약회사 연구자+약 효과 논문 = 주의</span></li></ul><div class="box-y"><b>✅ 실행</b>: 5개 중 2개 이상 ⚠️이면 "비판적으로 읽기"</div>',
           chk: ['후원자 확인', '사전등록 확인'] },
-        { id: 'validity', title: '4가지 타당도', overview: '타당도 평가', thought: '"연구가 타당한가?"',
-          content: '<p><b>🔍 4가지 타당도 체크 질문</b>:</p><ul><li><b>구성 타당도</b>: 측정 도구가 개념 반영?<br><span style="color:#64748b">→ "행복"을 어떻게 측정? 설문? 뇌 스캔?</span></li><li><b>내적 타당도</b>: 진짜 A→B 인과?<br><span style="color:#64748b">→ "다른 요인 통제? RCT? 교란변수?"</span></li><li><b>외적 타당도</b>: 다른 상황에도 적용?<br><span style="color:#64748b">→ "대학생 표본 → 일반인에게도?"</span></li><li><b>통계적 결론 타당도</b>: 통계 적절?<br><span style="color:#64748b">→ "표본 크기 충분? 다중비교 보정?"</span></li></ul><div class="box-y"><b>트레이드오프</b>: 실험실(내적↑, 외적↓) vs 현장(내적↓, 외적↑)</div><div class="box-b"><b>✅ 실행</b>: Limitations 섹션에서 저자가 인정한 타당도 문제 확인</div>',
+        { id: 'validity_paper', title: '타당도 빠른 체크', overview: '○ 4가지 질문', thought: '"연구가 타당한가?"',
+          core: '① 측정이 개념 반영? (구성) ② 진짜 인과? (내적) ③ 일반화 가능? (외적) ④ 통계 적절? (통계적)',
+          content: '<p><b>4가지 타당도 빠른 질문:</b></p><ul><li><b>구성</b>: "행복"을 어떻게 측정? 그게 진짜 행복?</li><li><b>내적</b>: 다른 요인 통제했나? RCT인가?</li><li><b>외적</b>: 대학생 표본 → 일반인에게도?</li><li><b>통계적</b>: 표본 충분? 다중비교 보정?</li></ul><div class="box-y"><b>트레이드오프</b>: 실험실(내적↑, 외적↓) vs 현장(내적↓, 외적↑)</div><div class="ref-link">📚 상세: 심화탭 → 연구 타당도</div>',
           chk: ['내적 타당도', '외적 타당도'] }
       ]},
       { name: '문헌 정리', emoji: '📚', duration: '', steps: [
-        { id: 'search', title: '문헌 검색', overview: '체계적으로 찾기', thought: '"어떻게 찾지?"',
+        { id: 'search', title: '문헌 검색', overview: '⭐ 체계적으로 찾기', thought: '"어떻게 찾지?"',
           content: '<ul><li><b>키워드 조합</b>: (A AND B) OR C</li><li><b>DB</b>: Google Scholar, PubMed, JSTOR</li><li><b>Forward</b>: 이 논문 인용한 후속</li><li><b>Backward</b>: 이 논문이 인용한 선행</li><li><b>저자 추적</b>: 핵심 저자의 다른 논문</li></ul><div class="box-y">✅ 최신 <b>리뷰/메타분석</b>에서 시작!</div>',
           chk: ['핵심 논문 10개+'] },
-        { id: 'matrix', title: '문헌 매트릭스', overview: '체계적 정리', thought: '"어떻게 정리?"',
+        { id: 'matrix', title: '문헌 매트릭스', overview: '○ 체계적 정리', thought: '"어떻게 정리?"',
           content: '<p><b>표 구성</b>:</p><p>행: 각 논문<br>열: 저자/연도 | 연구질문 | 방법론 | 표본 | 핵심결과 | 한계점 | 내 연구 관련성</p><div class="box-p">스프레드시트 활용<br>태그/색 코딩<br>별점으로 중요도</div>',
           chk: ['매트릭스 작성'] },
-        { id: 'synthesize', title: '종합하기', overview: '나열 → 통합', thought: '"공통점/차이점은?"',
+        { id: 'synthesize', title: '종합하기', overview: '⭐ 나열 → 통합', thought: '"공통점/차이점은?"',
           content: '<div class="box-r"><b>❌ 나쁜 예</b>: "A(2020)는 X를 발견. B(2021)는 Y를 발견."<br>→ 이건 요약이지 종합 아님</div><div class="box-g"><b>✓ 좋은 예</b>: "X 주제에 대해 A,B,C는 대체로 일치하나, Y 측면에서 상충. 이는 방법론 차이 때문. Z 영역은 연구 부족."</div>',
           chk: ['테마별 종합', '갭 식별'] }
       ]},
       { name: '작성', emoji: '✍️', duration: '', steps: [
-        { id: 'outline', title: 'IMRaD 구조', overview: '아웃라인', thought: '"어떤 순서로?"',
+        { id: 'outline', title: 'IMRaD 구조', overview: '⭐ 아웃라인', thought: '"어떤 순서로?"',
           content: '<ul><li><b>Introduction</b>: 왜 중요? 기존 한계? 연구 질문?</li><li><b>Methods</b>: 어떻게? (재현 가능하게)</li><li><b>Results</b>: 뭘 발견? (해석 없이 사실만)</li><li><b>Discussion</b>: 의미? 한계? 함의?</li><li><b>Abstract</b>: 전체 요약 (마지막에!)</li></ul>',
           chk: ['아웃라인 완성'] },
-        { id: 'draft', title: '초고 작성', overview: '완벽 금지!', thought: '"일단 쓰자"',
+        { id: 'draft', title: '초고 작성', overview: '⭐ 완벽 금지!', thought: '"일단 쓰자"',
           content: '<p><b>추천 순서</b>:</p><p>Methods → Results → Intro → Discussion → Abstract</p><div class="box-y"><b>규칙</b>:<br>25분 쓰기 → 5분 휴식<br><b>완벽주의 금지</b><br>막히면 [TODO] 표시하고 넘기기</div>',
           chk: ['초고 완성'] },
-        { id: 'revise', title: '수정하기', overview: '큰 것 → 작은 것', thought: '"어떤 순서로 고치지?"',
+        { id: 'revise', title: '수정하기', overview: '⭐ 큰 것 → 작은 것', thought: '"어떤 순서로 고치지?"',
           content: '<p><b>수정 순서 5단계</b>:</p><div class="num-list"><div>① <b>구조</b>: 논리 흐름, 섹션 순서</div><div>② <b>단락</b>: 하나의 아이디어?</div><div>③ <b>문장</b>: 명확, 간결, 능동태</div><div>④ <b>단어</b>: 정확한 용어</div><div>⑤ <b>형식</b>: 인용, 참고문헌</div></div><div class="box-p">✅ 하루 지나고 다시<br>소리내어 읽기<br>프린트해서 읽기</div>',
           chk: ['구조→문장→형식 순서로 수정'] }
       ]}
@@ -404,41 +445,52 @@ var PROTOCOLS = {
     name: '시험 공부', icon: '🎯', color: '#dc2626', bg: '#fef2f2', light: '#fecaca',
     phases: [
       { name: '준비', emoji: '🎯', duration: '시작 전', steps: [
-        { id: 'pretest', title: '문제 먼저 보기', overview: '사전 질문 효과', thought: '"뭘 물어볼까?"',
-          content: '<ul><li>교재 읽기 전 <b>기출/챕터 문제</b> 먼저 훑기</li><li>모르는 것에 ⭐ 표시 (풀지 말고!)</li><li>어떤 유형? 어떤 깊이?</li><li>이제 교재 읽으며 ⭐ 해결</li></ul><div class="box-c"><b>사전 질문 효과</b>: 문제 먼저 보면 관련 정보에 주의 집중 (Pressley et al., 1990)</div>',
+        { id: 'pretest', title: '문제 먼저 보기', overview: '⭐ 사전 질문 효과', thought: '"뭘 물어볼까?"',
+          core: '① 기출/챕터 문제 먼저 훑기 (풀지 말고!) ② 모르는 것에 ⭐표시 ③ 교재 읽으며 ⭐해결',
+          content: '<ul><li>교재 읽기 전 <b>기출/챕터 문제</b> 먼저 훑기</li><li>모르는 것에 ⭐ 표시 (풀지 말고!)</li><li>어떤 유형? 어떤 깊이?</li><li>이제 교재 읽으며 ⭐ 해결</li></ul>',
+          detail: '<p><b>📚 연구 근거</b></p><p><b>사전 질문 효과</b>: 문제 먼저 보면 관련 정보에 주의 집중 (Pressley et al., 1990)</p>',
           chk: ['문제 유형 파악'] },
-        { id: 'predict', title: '먼저 추측하기', overview: '생성 효과', thought: '"답이 뭘까?"',
-          content: '<ul><li>답 보기 전 <b>30초 추측</b></li><li>확신도 표시 (30%? 70%?)</li><li>틀려도 OK! 수정이 학습</li></ul><div class="box-c"><b>과잉수정 효과</b>: 자신있게 틀린 후 정답 보면 오히려 더 잘 기억 (Butterfield & Metcalfe, 2001)</div>',
+        { id: 'predict', title: '먼저 추측하기', overview: '○ 생성 효과', thought: '"답이 뭘까?"',
+          content: '<ul><li>답 보기 전 <b>30초 추측</b></li><li>확신도 표시 (30%? 70%?)</li><li>틀려도 OK! 수정이 학습</li></ul>',
+          detail: '<p><b>📚 연구 근거</b></p><p><b>과잉수정 효과</b>: 자신있게 틀린 후 정답 보면 오히려 더 잘 기억 (Butterfield & Metcalfe, 2001)</p>',
           chk: ['추측 기록'] }
       ]},
       { name: '학습', emoji: '📖', duration: '핵심', steps: [
-        { id: 'retrieval', title: '덮고 → 말하기', overview: '인출 연습', thought: '"방금 뭘 배웠지?"',
-          content: '<ul><li>한 섹션 읽고 <b>책 가리기</b></li><li><b>10초 안에</b> 핵심 말하기</li><li>책 열어서 확인</li><li>빠진 것 = 약점 → 집중</li></ul><div class="box-c">재읽기보다 50% 더 효과적</div>',
+        { id: 'retrieval', title: '덮고 → 말하기', overview: '⭐ 인출 연습', thought: '"방금 뭘 배웠지?"',
+          core: '① 한 섹션 읽고 책 가리기 ② 10초 안에 핵심 말하기 ③ 확인 후 빠진 것 = 약점 → 집중!',
+          content: '<ul><li>한 섹션 읽고 <b>책 가리기</b></li><li><b>10초 안에</b> 핵심 말하기</li><li>책 열어서 확인</li><li>빠진 것 = 약점 → 집중</li></ul>',
+          detail: '<p><b>📚 연구 근거</b></p><p>재읽기보다 장기 기억에 훨씬 효과적</p>',
           chk: ['인출 연습'] },
-        { id: 'elaborate', title: '정교화 질문', overview: '왜? 어떻게?', thought: '"더 깊이..."',
-          content: '<ul><li>"이게 왜 그럴까?"</li><li>"X와 어떻게 연결?"</li><li>"실제 예는?"</li><li>"틀린 경우는?"</li></ul><div class="box-c">효과 크기 d=0.5-0.8</div>',
+        { id: 'elaborate', title: '정교화 질문', overview: '○ 왜? 어떻게?', thought: '"더 깊이..."',
+          content: '<ul><li>"이게 왜 그럴까?"</li><li>"X와 어떻게 연결?"</li><li>"실제 예는?"</li><li>"틀린 경우는?"</li></ul>',
+          detail: '<p><b>📚 연구 근거</b></p><p>효과 크기 d=0.5-0.8</p>',
           chk: ['정교화 질문'] },
-        { id: 'interleave', title: '섞어서 연습', overview: '인터리빙', thought: '"다른 것과 섞으면..."',
-          content: '<p><b>❌ 블로킹</b>: A→A→A→B→B→B</p><p><b>✓ 인터리빙</b>: A→B→C→A→C→B</p><div class="box-y"><b>핵심 질문</b>: "이건 어떤 유형?" 구분력 훈련</div><p><b>🔍 언제 쓰나?</b></p><ul><li><b>⭕ 인터리빙</b>: 문제 유형 구분이 어려울 때, 비슷한 개념 헷갈릴 때</li><li><b>❌ 블로킹</b>: 완전 새 개념, 기초 익히는 중</li></ul><div class="box-b"><b>실행</b>: 오답 패턴 보고 헷갈리는 유형끼리 섞어서 연습</div><div class="box-c">효과크기 d=0.42. 유형 구분력 향상</div>',
+        { id: 'interleave', title: '섞어서 연습', overview: '○ 인터리빙', thought: '"다른 것과 섞으면..."',
+          content: '<p><b>❌ 블로킹</b>: A→A→A→B→B→B</p><p><b>✓ 인터리빙</b>: A→B→C→A→C→B</p><div class="box-y"><b>핵심 질문</b>: "이건 어떤 유형?" 구분력 훈련</div><p><b>🔍 언제 쓰나?</b></p><ul><li><b>⭕ 인터리빙</b>: 문제 유형 구분이 어려울 때, 비슷한 개념 헷갈릴 때</li><li><b>❌ 블로킹</b>: 완전 새 개념, 기초 익히는 중</li></ul><div class="box-b"><b>실행</b>: 오답 패턴 보고 헷갈리는 유형끼리 섞어서 연습</div>',
+          detail: '<p><b>📚 연구 근거</b></p><p>효과크기 d=0.42. 유형 구분력 향상</p>',
           chk: ['헷갈리는 유형 섞기'] },
-        { id: 'flashcard', title: '플래시카드 규칙', overview: '효과적인 카드', thought: '"카드를 잘 만들려면?"',
+        { id: 'flashcard', title: '플래시카드 규칙', overview: '○ 효과적인 카드', thought: '"카드를 잘 만들려면?"',
           content: '<p><b>✓ 좋은 카드</b>:</p><ul><li>한 카드 = <b>한 개념</b></li><li>앞면: 질문 (정답 보이면 안됨)</li><li>뒷면: <b>간결한</b> 답</li><li><b>양방향</b>: A→B도, B→A도</li><li>이미지 추가 (이중 부호화)</li></ul><p><b>✗ 나쁜 카드</b>:</p><ul><li>너무 긴 답 (문단 전체)</li><li>앞면에 힌트 있음</li><li>한 카드에 여러 개념</li><li>그냥 복붙 (자기 말 아님)</li></ul>',
           chk: ['카드 규칙 준수'] }
       ]},
       { name: '복습', emoji: '🔄', duration: '간격 두고', steps: [
-        { id: 'spacing', title: '간격 반복', overview: '망각 곡선', thought: '"언제 다시?"',
-          content: '<p><b>최적 간격</b>: 1일 → 3일 → 7일 → 21일 → 2개월</p><p><b>앱</b>: Anki, Quizlet, RemNote</p><div class="box-c">같은 시간 투자해도 분산하면 효과 2배</div>',
+        { id: 'spacing', title: '간격 반복', overview: '⭐ 망각 곡선', thought: '"언제 다시?"',
+          core: '복습 간격: 1일 → 3일 → 7일 → 21일 → 2개월. 앱 추천: Anki, Quizlet',
+          content: '<p><b>권장 간격</b>: 1일 → 3일 → 7일 → 21일 → 2개월</p><p><b>앱</b>: Anki, Quizlet, RemNote</p>',
+          detail: '<p><b>📚 연구 근거</b></p><p>같은 시간 투자해도 분산하면 훨씬 효과적</p>',
           chk: ['복습 일정'] },
-        { id: 'errorlog', title: '오답 분석', overview: '패턴 찾기', thought: '"왜 틀렸지?"',
+        { id: 'errorlog', title: '오답 분석', overview: '⭐ 패턴 찾기', thought: '"왜 틀렸지?"',
+          core: '① 오답 유형 분류: 몰랐음/헷갈림/실수/함정 ② 패턴 발견 → 유형별 대책',
           content: '<p><b>오답 유형</b>:</p><ul><li><b>몰랐음</b>: 지식 부족 → 보충</li><li><b>헷갈림</b>: 유사 개념 혼동 → 비교표</li><li><b>실수</b>: 주의 부족 → 체크리스트</li><li><b>함정</b>: 출제 의도 파악 실패</li></ul><div class="box-y">✅ 오답 노트에 기록하고 패턴 분석</div>',
           chk: ['오답 패턴 인식'] },
-        { id: 'distractor', title: '오답 함정 7가지', overview: '선택지 함정', thought: '"출제자 의도는?"',
+        { id: 'distractor', title: '오답 함정 7가지', overview: '○ 선택지 함정', thought: '"출제자 의도는?"',
           content: '<p><b>7가지 함정 유형</b>:</p><ul><li><b>부분적 사실</b>: 일부만 맞고 나머지 틀림</li><li><b>무관한 사실</b>: 참이지만 질문과 무관</li><li><b>극단적 표현</b>: "항상", "절대", "모든"</li><li><b>단어 함정</b>: 비슷한 용어로 혼동 유발</li><li><b>범위 초과</b>: 지문에 없는 내용 추론</li><li><b>인과 뒤집기</b>: 원인↔결과 바꿈</li><li><b>정도 왜곡</b>: "조금"→"매우"로 과장</li></ul><div class="box-y">✅ 오답에 유형 태그 달아서 패턴 파악!</div>',
           chk: ['함정 유형 태그'] },
-        { id: 'time', title: '시간 관리', overview: '실전 전략', thought: '"시간 배분은?"',
+        { id: 'time', title: '시간 관리', overview: '⭐ 실전 전략', thought: '"시간 배분은?"',
           content: '<ul><li>문제당 시간 = 총시간 ÷ 문제수</li><li><b>1.5배 넘으면 넘어가기</b></li><li>체크포인트: 25%, 50%, 75%</li><li>쉬운 것 먼저, 어려운 것 나중</li><li>마지막 5분 = 검토</li></ul>',
           chk: ['시간 배분 계획'] },
-        { id: 'meta', title: '메타인지 체크', overview: '유창성 환상', thought: '"정말 아는 건가?"',
+        { id: 'meta', title: '메타인지 체크', overview: '⭐ 유창성 환상', thought: '"정말 아는 건가?"',
+          core: '"정말 아나" vs "익숙한 건가"? 안 보고 설명할 수 있나? 형광펜/밑줄 = 학습 착각!',
           content: '<ul><li>이거 <b>정말</b> 아는가 vs <b>익숙한</b> 건가?</li><li>안 보고 설명할 수 있나?</li><li>비슷한 문제 풀 수 있나?</li></ul><div class="box-r"><b>유창성 환상</b>: 읽기 쉬우면 안다고 착각<br>형광펜, 밑줄 = 학습 착각 유발<br>→ <b>테스트</b>로 확인!</div>',
           chk: ['메타인지 점검'] }
       ]}
@@ -450,55 +502,48 @@ var PROTOCOLS = {
 var THINKING = {
   name: '사고도구', icon: '🧠', color: '#7c3aed', bg: '#f3e8ff', light: '#e9d5ff',
   phases: [
-    { name: '논증 분석', emoji: '⚖️', color: '#7c3aed', steps: [
-      { id: 'toulmin', title: 'Toulmin 모델', overview: '논증의 6요소 분해', thought: '"이 주장의 구조는?"',
-        content: '<p><b>6요소</b>:</p><ul><li><b>주장(Claim)</b>: 결론</li><li><b>근거(Grounds)</b>: 데이터, 증거</li><li><b>보증(Warrant)</b>: 근거→주장 연결 <span style="color:#dc2626">(보통 암묵적!)</span></li><li><b>보강(Backing)</b>: 보증 뒷받침</li><li><b>한정어(Qualifier)</b>: "아마", "대체로"</li><li><b>반박(Rebuttal)</b>: 예외 조건</li></ul>',
-        detail: '<p><b>✅ 체크리스트</b>:</p><ul><li>□ 주장 찾았나?</li><li>□ 근거 찾았나?</li><li>□ 숨은 Warrant는?</li><li>□ 한정어 있나? (없으면 과장!)</li><li>□ 예외 인정하나?</li></ul>' },
-      { id: 'stasis', title: '주장 유형 (Stasis)', overview: '사실/정의/가치/정책', thought: '"어떤 종류의 주장?"',
-        content: '<ul><li><b>사실</b>: X가 일어났는가? → 관찰, 데이터 필요</li><li><b>정의</b>: X는 무엇인가? → 기준, 분류 필요</li><li><b>가치</b>: X는 좋은가/나쁜가? → 평가 기준 필요</li><li><b>정책</b>: 무엇을 해야 하나? → 문제+해결책+실행가능성</li></ul><div class="box-y"><b>✅ 체크</b>: 주장 유형 파악 → 어떤 증거가 필요한지 앎</div>' },
-      { id: 'walton', title: 'Walton 논증 도식', overview: '60+ 논증 패턴', thought: '"어떤 논증 패턴?"',
-        content: '<p><b>주요 도식 + 비판적 질문(CQ)</b>:</p><ul><li><b>전문가 호소</b>: E가 전문가 → A 참<div class="box-y">CQ: 그 분야? 합의? 이해관계?</div></li><li><b>유추</b>: A≈B → A의 X가 B에도<div class="box-y">CQ: 유사점이 관련? 결정적 차이?</div></li><li><b>결과</b>: X→Y, Y 나쁨 → X 하지마<div class="box-y">CQ: Y가 정말 일어나나?</div></li><li><b>미끄러운 경사</b>: A→B→...→Z<div class="box-y">CQ: 각 단계 불가피?</div></li></ul>',
-        detail: '<p><b>✅ 사용법</b>:</p><ol><li>논증 유형 식별</li><li>해당 CQ로 약점 탐색</li><li>CQ에 답 못하면 → 논증 약함</li></ol>' },
-      { id: 'paulElder', title: 'Paul & Elder', overview: '사고의 8요소', thought: '"사고를 분해하면?"',
-        content: '<p><b>8요소</b>:</p><ul><li><b>목적</b>: 왜 생각하나?</li><li><b>질문</b>: 답하려는 문제?</li><li><b>정보</b>: 데이터/증거?</li><li><b>개념</b>: 이론/정의?</li><li><b>가정</b>: 당연시하는 것?</li><li><b>추론</b>: 어떻게 결론?</li><li><b>관점</b>: 어디서 보나?</li><li><b>함의</b>: 결과/영향?</li></ul>',
-        detail: '<p><b>지적 기준 9가지</b>:</p><ul><li>명확성 · 정확성 · 정밀성</li><li>관련성 · 깊이 · 넓이</li><li>논리성 · 유의미성 · 공정성</li></ul><div class="box-y"><b>✅ 실행</b>: 각 요소에 기준 적용해서 점검</div>' },
-      { id: 'socratic', title: '소크라테스 질문', overview: '6가지 심층 질문', thought: '"깊이 파고들면?"',
-        content: '<p><b>6가지 질문 유형</b>:</p><ul><li><b>명확화</b>: "무슨 뜻?"</li><li><b>가정</b>: "당연하게 여기는 것?"</li><li><b>이유</b>: "왜 그렇게 생각?"</li><li><b>관점</b>: "다른 관점에서 보면?"</li><li><b>함의</b>: "사실이라면 무슨 일이?"</li><li><b>메타</b>: "왜 이 질문이 중요?"</li></ul><div class="box-y"><b>✅ 핵심 3가지</b>: "왜?", "어떻게 아나?", "그래서?"</div>' },
-      { id: 'enthymeme', title: '암묵적 전제', overview: '생략된 가정 복원', thought: '"숨겨진 전제는?"',
-        content: '<p><b>생략삼단논법</b>: 일상 논증은 전제가 생략됨</p><p><b>찾는 법</b>:</p><ol><li>"이 결론이 성립하려면?"</li><li>자선의 원칙: 가장 합리적 해석</li><li>논증 도식 빈 칸 채우기</li></ol><div class="box-g"><b>예</b>: "비가 오니 우산 챙겨"<br>숨은 전제: "비 오면 우산 필요"</div>' }
+    { name: '주장 분석', emoji: '⚖️', color: '#7c3aed', steps: [
+      { id: 'argument_skeleton', title: '주장의 뼈대 찾기', overview: '주장-근거-연결 3요소', thought: '"뭘 주장? 근거는? 어떻게 연결?"',
+        content: '<p><b>모든 논증은 3가지로 분해:</b></p><div class="box-b"><b>① 주장</b>: 결론. "~이다", "~해야 한다"<br><b>② 근거</b>: 데이터, 사례, 증거<br><b>③ 연결</b>: 근거→주장 잇는 다리 <span style="color:#dc2626">(보통 숨겨져 있음!)</span></div><p><b>🔍 숨겨진 연결 찾기:</b></p><div class="box-g"><b>예</b>: "비가 오니까 우산 챙겨"<br>• 주장: 우산 챙겨라<br>• 근거: 비가 온다<br>• <b>숨은 연결</b>: "비 오면 우산이 필요하다"</div><div class="box-y"><b>✅ 핵심 질문</b>: "이 근거가 왜 저 주장을 뒷받침하지?"<br>→ 대답이 바로 \'숨은 연결\'</div>',
+        detail: '<p><b>Toulmin 6요소 (심화)</b>:</p><ul><li><b>주장(Claim)</b>: 결론</li><li><b>근거(Grounds)</b>: 데이터</li><li><b>보증(Warrant)</b>: 숨은 연결</li><li><b>보강(Backing)</b>: 보증 뒷받침</li><li><b>한정어(Qualifier)</b>: "아마", "대체로" → 없으면 과장!</li><li><b>반박(Rebuttal)</b>: 예외 조건</li></ul><p><b>흔한 논증 패턴의 비판적 질문:</b></p><ul><li><b>전문가 호소</b>: 그 분야 전문가? 학계 합의? 이해관계?</li><li><b>유추</b>: 유사점이 관련? 결정적 차이는?</li><li><b>결과 논증</b>: 그 결과가 정말 일어나나?</li><li><b>미끄러운 경사</b>: 각 단계가 불가피한가?</li></ul>' },
+      { id: 'claim_types', title: '주장의 종류 구분', overview: '사실/가치/정책 중 뭐지?', thought: '"사실 주장? 가치 판단? 행동 제안?"',
+        content: '<p><b>주장은 3가지 종류:</b></p><ul><li><b>🔍 사실 주장</b>: "X가 일어났다/존재한다"<div class="box-g">→ 데이터, 관찰, 증거로 검증</div></li><li><b>⚖️ 가치 주장</b>: "X는 좋다/나쁘다/옳다"<div class="box-g">→ 평가 기준이 뭔지 확인</div></li><li><b>📋 정책 주장</b>: "X를 해야 한다"<div class="box-g">→ 문제 + 해결책 + 실행가능성 필요</div></li></ul><div class="box-y"><b>✅ 왜 중요?</b> 주장 종류에 따라 필요한 증거가 다름!<br>사실 주장에 감정 호소 → 부적절<br>가치 주장에 데이터만 → 불충분</div>',
+        detail: '<p><b>4번째 유형: 정의 주장</b></p><ul><li><b>📖 정의 주장</b>: "X는 Y에 해당한다"<div class="box-g">예: "이 행위는 범죄인가?" → 기준, 분류 필요</div></li></ul><p><b>복합 주장 분해 예시:</b></p><div class="box-b">"기본소득을 도입해야 한다" (정책)<br>├─ "빈곤이 심각하다" (사실)<br>├─ "빈곤은 나쁘다" (가치)<br>└─ "기본소득이 빈곤 해결" (사실+정책)</div>' },
+      { id: 'deep_questions', title: '깊이 파고드는 질문', overview: '왜? 어떻게 아나? 그래서?', thought: '"왜? 어떻게 아나? 그래서?"',
+        content: '<p><b>핵심 질문 3가지만 기억:</b></p><div class="box-b" style="font-size:1.05rem"><b>① "왜?"</b> - 이유와 근거 요구<br><b>② "어떻게 아나?"</b> - 증거와 출처 요구<br><b>③ "그래서?"</b> - 결과와 의미 요구</div><p><b>사용 예시:</b></p><div class="box-g">주장: "AI가 일자리를 빼앗을 것이다"<br><br>• <b>왜?</b> → "자동화가 인간 노동 대체하니까"<br>• <b>어떻게 아나?</b> → "어떤 연구/데이터 기반?"<br>• <b>그래서?</b> → "우리가 뭘 해야 하는데?"</div><div class="box-y"><b>💡 팁</b>: 3번 연속 "왜?"를 물으면 핵심 가정에 도달</div>',
+        detail: '<p><b>6가지 질문 유형 (소크라테스식)</b>:</p><ul><li><b>명확화</b>: "정확히 무슨 뜻?"</li><li><b>가정</b>: "당연하게 여기는 게 뭐지?"</li><li><b>이유</b>: "왜 그렇게 생각해?"</li><li><b>관점</b>: "다른 관점에서 보면?"</li><li><b>함의</b>: "이게 사실이면 어떤 일이?"</li><li><b>메타</b>: "왜 이 질문이 중요하지?"</li></ul><p><b>Paul & Elder 8요소 체크:</b></p><ul><li>목적 · 질문 · 정보 · 개념</li><li>가정 · 추론 · 관점 · 함의</li></ul>' }
     ]},
-    { name: '인과 추론', emoji: '🔗', color: '#059669', steps: [
-      { id: 'causal_signal', title: '인과/상관 구분', overview: '신호어로 판별', thought: '"인과 주장인가?"',
+    { name: '원인-결과 따지기', emoji: '🔗', color: '#059669', steps: [
+      { id: 'causal_signal', title: '인과 vs 상관 구분', overview: '"~때문에" 발견시 주의!', thought: '"정말 원인일까?"',
+        core: '"~때문에, causes" = 인과 주장 → 증거 확인! / "~와 관련" = 상관일 뿐',
         content: '<p><b>🔴 인과 신호어</b>:</p><ul><li>causes, leads to, ~때문에, ~야기</li></ul><p><b>🟡 상관 신호어</b> (인과 아님):</p><ul><li>associated with, ~와 관련, ~경향</li></ul><div class="box-y"><b>✅ 발견시</b>: 인과 신호어 → 연구설계 확인!</div>' },
-      { id: 'mill', title: 'Mill의 5가지 방법', overview: '관찰로 인과 추론', thought: '"어떻게 원인 찾나?"',
-        content: '<ul><li><b>일치법</b>: 모든 사례 공통점 = 원인</li><li><b>차이법</b>: 유일한 차이점 = 원인 <span style="color:#dc2626">(가장 강력)</span></li><li><b>일치차이병용</b>: 둘 다 적용</li><li><b>공변법</b>: X 변하면 Y도 변함</li><li><b>잔여법</b>: 알려진 원인 제외 후 나머지</li></ul><div class="box-y"><b>✅ 핵심</b>: 차이법 = RCT의 논리적 기반</div>' },
-      { id: 'dag', title: 'DAG (인과 그래프)', overview: '변수 관계 시각화', thought: '"숨은 변수?"',
-        content: '<ul><li><b>교란(Confounder)</b>: X와 Y 모두에 영향 → 통제해야<div class="box-g">커피↔폐암? 교란=흡연</div></li><li><b>매개(Mediator)</b>: X→M→Y → 통제하면 안됨</li><li><b>충돌(Collider)</b>: X→C←Y → 통제하면 안됨</li></ul>',
-        detail: '<p><b>✅ 체크</b>:</p><ul><li>□ 교란변수 통제했나?</li><li>□ 매개변수 잘못 통제?</li><li>□ 충돌변수로 가짜상관?</li></ul>' },
-      { id: 'counterfactual', title: '반사실적 사고', overview: '"만약 ~였다면?"', thought: '"달랐다면?"',
-        content: '<ul><li><b>상향적</b>: "더 나았을 텐데" → 후회, 개선</li><li><b>하향적</b>: "더 나빴을 수도" → 안도</li></ul><div class="box-y"><b>✅ 인과 통찰</b>: "결과가 달랐으려면 뭐가 달라야?"<br>→ 핵심 원인 변수 식별</div>' },
-      { id: 'causal_judge', title: '인과 판정 조건', overview: '필수+강화', thought: '"인과 얼마나 확실?"',
-        content: '<p><b>필수조건</b> (없으면 인과 ❌):</p><ul><li>□ 시간 선후</li><li>□ 공변</li></ul><p><b>강화조건</b>:</p><ul><li>□ 용량-반응</li><li>□ 메커니즘 설명</li><li>□ RCT 확인</li><li>□ 반복 재현</li></ul>',
+      { id: 'third_variable', title: '숨은 제3변수 찾기', overview: '진짜 원인이 따로?', thought: '"다른 원인은?"',
+        core: '아이스크림↔익사? 숨은 원인 = 더운 날씨! "둘 다 영향주는 게 뭐지?" 질문하기',
+        content: '<ul><li><b>교란변수</b>: X와 Y 모두에 영향 → 가짜 상관 만듦<div class="box-g">아이스크림↔익사? 교란=더운 날씨<br>(더우면 아이스크림↑, 수영↑→익사↑)</div></li><li><b>매개변수</b>: X→M→Y (중간 경로)</li><li><b>역인과</b>: Y가 X의 원인일 수도</li></ul><div class="box-y"><b>✅ 질문</b>: "X와 Y 둘 다에 영향주는 게 뭐지?"</div>',
+        detail: '<p><b>DAG (인과 그래프) 용어</b>:</p><ul><li>교란(Confounder): 통제해야</li><li>매개(Mediator): 통제하면 안됨</li><li>충돌(Collider): 통제하면 안됨</li></ul>' },
+      { id: 'causal_check', title: '인과 판정 체크', overview: '정말 인과인가?', thought: '"확신할 수 있나?"',
+        core: '필수: ① 시간 선후 ② 같이 변함. 강화: ③ 용량-반응 ④ 메커니즘 ⑤ RCT',
+        content: '<p><b>필수조건</b> (없으면 인과 ❌):</p><ul><li>□ 시간 선후 (원인이 먼저)</li><li>□ 공변 (같이 변함)</li></ul><p><b>강화조건</b>:</p><ul><li>□ 용량-반응 (많을수록 강함)</li><li>□ 메커니즘 설명 가능</li><li>□ RCT로 확인됨</li><li>□ 반복 재현됨</li></ul>',
         detail: '<div class="box-g">필수2 + 강화3↑ = 인과 가능성 높음</div><div class="box-y">필수2 + 강화1-2 = 추가 연구 필요</div><div class="box-r">필수 미충족 = 상관일 뿐</div>' }
     ]},
-    { name: '논리적 오류', emoji: '🚫', color: '#ef4444', steps: [
-      { id: 'formal', title: '형식 오류', overview: '논리 구조 오류', thought: '"형식이 맞아?"',
-        content: '<p><b>✓ 타당</b>: 전건긍정(P→Q, P ∴ Q), 후건부정(P→Q, ¬Q ∴ ¬P)</p><div class="box-r"><b>✗ 오류</b>:<br>전건부정: P→Q, ¬P ∴ ¬Q ❌<br>후건긍정: P→Q, Q ∴ P ❌</div>' },
-      { id: 'adhominem', title: '인신공격/허수아비', overview: '논증 대신 공격', thought: '"논증을 공격하나?"',
-        content: '<p><b>인신공격 (Ad Hominem)</b>:</p><ul><li><b>직접</b>: "전과자니까 틀림"</li><li><b>정황</b>: "이해관계 있으니 못 믿어"</li><li><b>피장파장</b>: "너도 마찬가지"</li></ul><div class="box-r">주장 진위 ≠ 주장자 속성</div><p><b>허수아비 (Straw Man)</b>:</p><ul><li>상대 주장 왜곡해서 공격</li></ul><div class="box-y"><b>✅ 체크</b>: 상대가 실제로 그렇게 주장했나?</div>' },
-      { id: 'appeals', title: '부당한 호소', overview: '권위/대중/감정', thought: '"논리 외에 뭘?"',
-        content: '<ul><li><b>권위</b>: 그 분야 전문가 아님</li><li><b>대중</b>: 많이 믿으니까</li><li><b>전통</b>: 오래됐으니 옳다</li><li><b>자연</b>: 자연적=좋음 (독버섯도 자연)</li><li><b>감정</b>: 공포/동정으로 설득</li><li><b>무지</b>: 증명 안 됐으니 반대가 참<div class="box-r">증거 부재 ≠ 부재의 증거</div></li><li><b>결과</b>: 믿으면 좋은 결과니까 참</li></ul>',
-        detail: '<p><b>✅ 정당한 호소 조건</b>:</p><ul><li>권위: 해당 분야, 합의, 증거</li><li>감정: 논리 보완(대체 아님)</li></ul>' },
-      { id: 'premise', title: '전제/가정 오류', overview: '숨겨진 문제', thought: '"전제가 맞아?"',
-        content: '<ul><li><b>거짓 딜레마</b>: 둘만 제시 (더 있는데)<div class="box-g">"내 편 아니면 적" (중립은?)</div></li><li><b>순환 논증</b>: 결론을 전제로<div class="box-g">"성경이 참 ∵ 신의 말씀 ∵ 성경에 그렇게"</div></li><li><b>복합 질문</b>: 가정 숨긴 질문<div class="box-g">"언제부터 부정행위 그만뒀나요?"</div></li><li><b>미끄러운 경사</b>: 근거 없이 극단으로<div class="box-y">체크: 각 단계가 불가피한가?</div></li></ul>' },
-      { id: 'induction', title: '귀납/인과 오류', overview: '성급한 일반화', thought: '"귀납이 건전?"',
-        content: '<p><b>귀납 오류</b>:</p><ul><li><b>성급한 일반화</b>: 적은 사례로 전체 결론<div class="box-g">"내가 만난 3명 다 그래 → 그 집단 다 그래"</div></li><li><b>체리피킹</b>: 유리한 증거만 선택</li></ul><p><b>인과 오류</b>:</p><ul><li><b>Post Hoc</b>: 시간순서만으로 인과<div class="box-g">"닭 울고 해 뜸 → 닭이 원인?" ❌</div></li><li><b>상관=인과</b>: 같이 변한다고 인과<div class="box-g">"아이스크림↑ 범죄↑" (공통원인=더위)</div></li><li><b>역인과</b>: 원인-결과 뒤바꿈</li></ul><div class="box-y"><b>✅ 인과 표현 발견시</b>: "~때문에", "~야기" → 인과 조건 점검!</div>' },
-      { id: 'misc_fallacy', title: '기타 중요 오류', overview: '놓치기 쉬운 것들', thought: '"더 있나?"',
-        content: '<ul><li><b>Fallacy Fallacy</b>: 논증 오류 있다고 결론도 거짓?<div class="box-r">논증↓ ≠ 결론↓ (결론은 따로 맞을 수 있음)</div></li><li><b>Appeal to Stone</b>: "말도 안 돼"로 일축 (반박 없이)</li><li><b>Historian\'s Fallacy</b>: 당시 몰랐던 정보로 비난</li><li><b>Relative Privation</b>: 더 큰 문제 들어 무시<div class="box-g">"아프리카 애들은 굶는데"</div></li><li><b>No True Scotsman</b>: 반례 나오면 정의 바꿔 회피</li></ul>' }
+    { name: '논리 함정 피하기', emoji: '🚫', color: '#ef4444', steps: [
+      { id: 'attack_person', title: '사람 공격 vs 주장 공격', overview: '인신공격/허수아비', thought: '"논증을 공격하나, 사람을?"',
+        core: '주장 진위 ≠ 주장자 속성. "누가 말했나"가 아니라 "뭘 말했나" 보기!',
+        content: '<p><b>인신공격</b>:</p><ul><li>"전과자니까 틀림" → 주장 자체는?</li><li>"이해관계 있으니 못 믿어" → 그래도 맞을 수 있음</li><li>"너도 마찬가지" → 논점 회피</li></ul><div class="box-r">주장 진위 ≠ 주장자 속성</div><p><b>허수아비</b>:</p><ul><li>상대 주장 왜곡해서 공격</li></ul><div class="box-y"><b>✅ 체크</b>: 상대가 실제로 그렇게 주장했나?</div>' },
+      { id: 'bad_appeals', title: '그럴듯한 호소 구분', overview: '권위/다수/감정에 의존?', thought: '"논리 대신 뭘 쓰나?"',
+        core: '전문가도 틀릴 수 있고, 다수도 틀릴 수 있고, 감정적으로 맞는 것 같아도 틀릴 수 있음',
+        content: '<ul><li><b>권위</b>: 그 분야 전문가 맞나?</li><li><b>대중</b>: 많이 믿으면 참? (19세기 의사들도 손 안 씻고 수술함)</li><li><b>전통</b>: 오래됐으니 옳다?</li><li><b>자연</b>: 자연적=좋음? (독버섯도 자연)</li><li><b>감정</b>: 공포/동정만으로 설득</li><li><b>무지</b>: 증명 안 됐으니 반대가 참?<div class="box-r">증거 부재 ≠ 부재의 증거</div></li></ul>',
+        detail: '<p><b>✅ 정당한 호소 조건</b>:</p><ul><li>권위: 해당 분야, 합의, 증거 있을 때</li><li>감정: 논리를 보완할 때 (대체 아님)</li></ul>' },
+      { id: 'hidden_tricks', title: '숨겨진 전제 함정', overview: '거짓 딜레마/순환논증', thought: '"전제가 맞아?"',
+        core: '선택지가 2개뿐? 더 있을 수도! / 결론으로 결론 증명? 순환!',
+        content: '<ul><li><b>거짓 딜레마</b>: 둘만 제시 (더 있는데)<div class="box-g">"내 편 아니면 적" (중립은?)</div></li><li><b>순환 논증</b>: 결론을 전제로<div class="box-g">"성경이 참 ∵ 신의 말씀 ∵ 성경에 그렇게"</div></li><li><b>복합 질문</b>: 가정 숨긴 질문<div class="box-g">"언제부터 부정행위 그만뒀나요?"</div></li><li><b>미끄러운 경사</b>: 근거 없이 극단으로<div class="box-y">✅ 체크: 각 단계가 불가피한가?</div></li></ul>' },
+      { id: 'hasty_general', title: '성급한 일반화', overview: '몇 개 보고 전체 판단?', thought: '"사례가 충분?"',
+        core: '3명 만나고 "그 집단 다 그래"? 유리한 증거만 골라서 보진 않았나?',
+        content: '<p><b>귀납 오류</b>:</p><ul><li><b>성급한 일반화</b>: 적은 사례로 전체 결론<div class="box-g">"내가 만난 3명 다 그래 → 그 집단 다 그래"</div></li><li><b>체리피킹</b>: 유리한 증거만 선택</li></ul><p><b>인과 오류</b>:</p><ul><li><b>시간순서 = 인과?</b>: "닭 울고 해 뜸 → 닭이 원인?" ❌</li><li><b>상관 = 인과?</b>: "아이스크림↑ 범죄↑" (공통원인=더위)</li></ul><div class="box-y"><b>✅ "~때문에" 발견시</b> → 인과 조건 점검!</div>' }
     ]},
     { name: '인지 편향', emoji: '🧠', color: '#f59e0b', steps: [
       { id: 'system12', title: 'System 1/2', overview: 'Kahneman 이중처리', thought: '"빠른/느린 생각?"',
-        content: '<p><b>System 1</b>: 자동적, 직관적, 편향 취약</p><p><b>System 2</b>: 의식적, 분석적, 노력 필요</p><div class="box-y"><b>WYSIATI</b>: "보이는 것이 전부다"<br>가용한 정보만으로 판단</div><div class="box-b"><b>✅ 핵심</b>: 중요 결정 → System 2 깨워라!<br>피곤하면 System 2 약해짐</div>' },
+        content: '<p><b>System 1</b>: 자동적, 직관적, 편향 취약</p><p><b>System 2</b>: 의식적, 분석적, 노력 필요</p><div class="box-y"><b>WYSIATI</b> (What You See Is All There Is):<br>"보이는 것이 전부다" - 가용한 정보만으로 판단</div><div class="box-b"><b>✅ 핵심</b>: 중요 결정 → System 2 깨워라!<br>피곤하면 System 2 약해짐</div>' },
       { id: 'heuristics', title: '3대 휴리스틱', overview: '판단의 지름길', thought: '"어떤 지름길?"',
         content: '<ul><li><b>대표성</b>: 전형에 유사하면 해당 범주로 판단<div class="box-r">⚠️ 기저율 무시! "변호사 같으니까 변호사"</div></li><li><b>가용성</b>: 쉽게 떠오르면 빈번하다고 판단<div class="box-g">"비행기 사고 뉴스 → 비행기 위험"</div></li><li><b>앵커링</b>: 첫 숫자에 끌려감<div class="box-g">협상에서 첫 제안이 결과 좌우</div></li></ul>',
         detail: '<p><b>✅ 대응 전략</b>:</p><ul><li>대표성 → 기저율 먼저 확인!</li><li>가용성 → 실제 통계 찾기</li><li>앵커링 → 반대 앵커 의도적 제시</li></ul>' },
@@ -508,22 +553,21 @@ var THINKING = {
         content: '<ul><li><b>손실 회피</b>: 손실의 고통 > 이득의 기쁨 (약 2:1)</li><li><b>프레이밍</b>: 표현 방식에 따라 판단 달라짐<div class="box-g">"90% 성공" vs "10% 실패"</div></li><li><b>현상 유지</b>: 변화를 싫어함 (디폴트 선호)</li><li><b>매몰 비용</b>: 이미 쓴 것 때문에 계속 투자</li><li><b>과신</b>: 자기 능력/지식 과대평가</li><li><b>후견지명</b>: "나 그럴 줄 알았어" (실제론 몰랐음)</li></ul>' }
     ]},
     { name: '과학 리터러시', emoji: '🔬', color: '#0891b2', steps: [
-      { id: 'falsify', title: '반증 가능성', overview: '포퍼의 기준', thought: '"반증 가능?"',
-        content: '<p>과학적 주장: 틀릴 수 있는 예측을 내놓아야</p><div class="box-y"><b>✅ 체크</b>: "틀렸다면 어떤 증거?"</div><p>반증 불가: 점술, 사후 설명만 하는 이론</p>' },
+      { id: 'falsify', title: '반증 가능성', overview: '과학 vs 비과학 구분', thought: '"틀릴 수 있는 주장인가?"',
+        content: '<p><b>과학적 주장</b>: "이런 증거가 나오면 내가 틀린 것"을 말할 수 있어야</p><div class="box-g"><b>✓ 반증 가능</b>:<br>• "이 약은 혈압을 낮춘다" → 임상시험으로 검증 가능<br>• "지구 온도가 상승 중" → 측정으로 확인 가능</div><div class="box-r"><b>✗ 반증 불가</b>:<br>• "우주는 5분 전 창조됐다 (기억도 함께)" → 확인 불가<br>• "효과 없으면 믿음이 부족해서" → 어떤 결과도 설명</div><div class="box-y"><b>✅ 체크 질문</b>:<br>① "틀렸다면 어떤 증거가 있어야 하나?"<br>② 그 증거를 실제로 얻을 수 있나?<br>③ 주장자가 반대 증거를 인정할 의향이 있나?</div>',
+        detail: '<p><b>주의: 반증 가능 ≠ 틀림</b></p><p>반증 가능하다는 것은 "검증할 수 있다"는 뜻이지, "틀렸다"는 뜻이 아님. 오히려 반증 가능한 주장이 과학적으로 의미 있음.</p><p><b>사후 설명의 함정</b>:</p><ul><li>결과 나온 후 "그럴 줄 알았어" 식 설명</li><li>어떤 결과가 나와도 설명 가능 → 예측력 없음</li></ul>' },
       { id: 'rct_basic', title: 'RCT 기초', overview: '인과추론 황금기준', thought: '"어떻게 인과 증명?"',
-        content: '<p><b>3요소</b>:</p><ul><li><b>무작위 배정</b>: 그룹 간 차이 제거</li><li><b>대조군</b>: 처치 vs 자연 변화</li><li><b>블라인드</b>: 기대 효과 제거 (단일/이중/삼중)</li></ul><div class="box-g">RCT → "A가 B를 야기" 가능</div><div class="box-y">준실험 → "인과 가능성" (약함)</div><div class="box-r">관찰연구 → "A와 B가 함께" (인과 불가)</div>' },
+        core: 'RCT(무작위+대조군) = 인과 가능 / 관찰연구 = 상관만. "~때문에" 주장 보면 연구설계 확인!',
+        content: '<p><b>3요소</b>:</p><ul><li><b>무작위 배정</b>: 그룹 간 차이 제거</li><li><b>대조군</b>: 처치 vs 자연 변화</li><li><b>블라인드</b>: 기대 효과 제거 (단일/이중/삼중)</li></ul><div class="box-g">RCT → "A가 B를 야기" 가능</div><div class="box-y">준실험 → "인과 가능성" (약함)</div><div class="box-r">관찰연구 → "A와 B가 함께" (인과 불가)</div><div class="ref-link">📚 논문 평가시: 심화탭 → 연구 타당도</div>' },
       { id: 'sample_bias', title: '표본 문제', overview: '편향된 표본', thought: '"표본이 대표적?"',
         content: '<ul><li><b>선택 편향</b>: 특정 집단 과다/과소 대표</li><li><b>생존자 편향</b>: 살아남은 것만 봄<div class="box-g">"성공 창업가만 보고 중퇴해도 성공"</div></li><li><b>자기선택</b>: 특정 성향만 참여</li><li><b>무응답 편향</b>: 응답자 ≠ 비응답자</li><li><b>WEIRD</b>: 서양/교육/산업화/부유/민주주의 표본 과다</li></ul>' },
       { id: 'graph_tricks', title: '그래프 속임수', overview: '시각적 조작', thought: '"그래프가 정직?"',
-        content: '<ul><li><b>y축 조작</b>: 0에서 시작 안 함 → 차이 과장</li><li><b>축 비율 왜곡</b>: 가로/세로 비율로 기울기 조작</li><li><b>3D 효과</b>: 원근법으로 크기 왜곡</li><li><b>선택적 범위</b>: 유리한 구간만 표시</li><li><b>이중 y축</b>: 무관한 두 변수를 상관 있어 보이게</li></ul><div class="box-y"><b>✅ 체크</b>: y축 0부터? 비율 적절? 전체 범위?</div>' }
-    ]},
-    { name: '베이지안 기초', emoji: '📐', color: '#8b5cf6', steps: [
-      { id: 'baserate', title: '기저율', overview: '사전확률의 힘', thought: '"기본 빈도는?"',
-        content: '<p><b>기저율</b>: 조건 없이 기본 발생 비율</p><div class="box-r"><b>예</b>: 99% 정확 검사, 유병률 0.1%<br>양성 중 진짜 환자 = <b>9%뿐!</b></div><div class="box-y"><b>✅ 핵심</b>: 새 정보 해석 전 기저율 먼저!</div>' },
-      { id: 'natfreq', title: '자연빈도', overview: '확률→빈도 변환', thought: '"몇 명 중 몇 명?"',
-        content: '<p><b>확률보다 자연빈도가 직관적</b></p><div class="box-g"><b>확률</b>: "유병률 1%, 민감도 80%"<br><b>자연빈도</b>: "1000명 중 10명 환자, 8명 양성"</div><div class="box-y"><b>✅ 효과</b>: 자연빈도 사용시 정확도 37%↑</div>' },
-      { id: 'lr', title: '우도비 (LR)', overview: '증거의 강도', thought: '"이 증거가 얼마나?"',
-        content: '<p><b>우도비</b>: 증거가 가설을 얼마나 지지?</p><ul><li>LR > 10: 강력한 증거</li><li>LR 3-10: 중간</li><li>LR ≈ 1: 증거 아님</li><li>LR < 0.1: 강력히 배제</li></ul>' }
+        content: '<ul><li><b>y축 조작</b>: 0에서 시작 안 함 → 차이 과장</li><li><b>축 비율 왜곡</b>: 가로/세로 비율로 기울기 조작</li><li><b>3D 효과</b>: 원근법으로 크기 왜곡</li><li><b>선택적 범위</b>: 유리한 구간만 표시</li><li><b>이중 y축</b>: 무관한 두 변수를 상관 있어 보이게</li></ul><div class="box-y"><b>✅ 체크</b>: y축 0부터? 비율 적절? 전체 범위?</div>' },
+      { id: 'baserate', title: '기저율 함정', overview: '기본 확률 무시 주의', thought: '"원래 얼마나 흔한가?"',
+        content: '<p><b>기저율</b>: 조건 없이 기본 발생 비율</p><div class="box-r"><b>예</b>: 99% 정확 검사, 유병률 0.1%<br>양성 나왔을 때 진짜 환자 = <b>9%뿐!</b></div><p><b>왜 이런 일이?</b></p><ul><li>희귀 질병 → 정상인이 훨씬 많음</li><li>1% 오진율이라도 정상인 수가 많으면 오진 수 > 실제 환자</li></ul><div class="box-y"><b>✅ 핵심</b>: "몇 % 정확"보다 "원래 얼마나 흔한가"가 중요!</div>' },
+      { id: 'natfreq', title: '자연빈도로 계산', overview: '확률→빈도 변환', thought: '"몇 명 중 몇 명?"',
+        content: '<p><b>확률보다 자연빈도가 직관적</b></p><div class="box-b"><b>문제</b>: 유병률 1%, 검사 민감도 90%, 특이도 90%<br>양성 나오면 진짜 환자일 확률은?</div><div class="box-g"><b>자연빈도로 풀기</b>:<br>• 1000명 중 <b>10명</b> 환자, <b>990명</b> 정상<br>• 환자 10명 중 <b>9명</b> 양성 (민감도 90%)<br>• 정상 990명 중 <b>99명</b> 양성 (특이도 90% → 10% 오양성)<br>• 총 양성 = 9 + 99 = <b>108명</b><br>• 진짜 환자 = 9/108 = <b>약 8%</b></div><div class="box-y"><b>✅ 핵심</b>: "90% 정확" 검사도 희귀 질병에선 오진이 대부분!</div>',
+        detail: '<p><b>왜 자연빈도가 쉬운가?</b></p><ul><li>확률 곱셈 필요 없음</li><li>구체적 사람 수로 상상 가능</li><li>연구: 자연빈도 사용시 정답률 2~3배↑</li></ul><p><b>✅ 변환법</b>: 먼저 전체 인원(예: 1000명)을 정하고, 각 그룹 인원수로 계산</p>' }
     ]},
     { name: '출처 평가', emoji: '🔍', color: '#0d9488', steps: [
       { id: 'craap', title: 'CRAAP 테스트', overview: '5가지 기준', thought: '"이 출처 믿을 만?"',
@@ -545,15 +589,15 @@ var ADVANCED = {
       { id: 'effectsize', title: '효과크기', overview: 'Cohen\'s d 해석', thought: '"실제로 얼마나?"',
         content: '<p><b>Cohen d 기준</b>:</p><table style="width:100%;font-size:0.8rem;border-collapse:collapse"><tr style="background:#f1f5f9"><td style="padding:4px;border:1px solid #e2e8f0">d</td><td>0.2(소)</td><td>0.5(중)</td><td>0.8(대)</td></tr></table><div class="box-g">사회심리학 평균 d≈0.4</div><div class="box-y"><b>✅ 핵심</b>: p값보다 효과크기가 실제 의미!</div>' },
       { id: 'ci', title: '신뢰구간 (CI)', overview: '추정의 정밀도', thought: '"얼마나 확실?"',
-        content: '<p><b>95% CI</b>: 반복시 95%가 참값 포함</p><div class="box-r">❌ "참값이 여기 있을 확률 95%"</div><p><b>✅ 체크</b>: 폭 적절? 0 포함?</p>' },
+        content: '<p><b>95% CI (Confidence Interval)</b>: 같은 방식으로 반복하면 95%가 참값 포함</p><div class="box-r">❌ 흔한 오해: "참값이 여기 있을 확률 95%"</div><p><b>✅ 체크</b>: 폭 좁으면 정밀. 0 포함하면 효과 불확실.</p>' },
       { id: 'power', title: '검정력', overview: '효과 탐지 확률', thought: '"표본이 충분?"',
-        content: '<p><b>검정력</b>: 실제 효과 탐지 확률</p><p>≥80% 권장, 심리학 평균 48%</p><div class="box-y">d=0.5 탐지: 그룹당 ~64명</div><p><b>✅ 체크</b>: 사전 분석? 표본 충분?</p>' },
+        content: '<p><b>검정력 (Statistical Power)</b>: 실제 효과가 있을 때 탐지할 확률</p><p>≥80% 권장, 심리학 연구 평균 약 48%</p><div class="box-y">d=0.5(중간효과) 탐지: 그룹당 ~64명 필요</div><p><b>✅ 체크</b>: 사전 검정력 분석 했나? 표본 충분?</p>' },
       { id: 'multiple', title: '다중비교', overview: '1종 오류 누적', thought: '"몇 개 검정?"',
-        content: '<p>20개 검정 → 1개는 우연히 유의</p><p><b>보정</b>: Bonferroni, Holm, FDR</p><div class="box-y"><b>✅ 체크</b>: 몇 개 검정? 보정?</div>' },
+        content: '<p>20개 검정 → 1개는 우연히 유의할 수 있음</p><p><b>보정 방법</b>:</p><ul><li><b>Bonferroni</b>: 가장 엄격 (α/검정수)</li><li><b>Holm</b>: 순차적, 덜 엄격</li><li><b>FDR</b> (False Discovery Rate): 허용된 오발견 비율</li></ul><div class="box-y"><b>✅ 체크</b>: 몇 개 검정했나? 보정 방법은?</div>' },
       { id: 'regression', title: '회귀분석', overview: 'β, R² 읽기', thought: '"계수 의미는?"',
-        content: '<ul><li><b>b</b>: 원래 단위 기울기</li><li><b>β</b>: 표준화, 비교 가능</li><li><b>R²</b>: 설명된 분산</li></ul><p><b>✅ 체크</b>: VIF>10? 가정 점검?</p>' },
+        content: '<ul><li><b>b</b>: 원래 단위 기울기</li><li><b>β</b>: 표준화, 비교 가능</li><li><b>R²</b>: 설명된 분산</li></ul><p><b>✅ 체크</b>: VIF(분산팽창지수)>10이면 다중공선성 의심</p>' },
       { id: 'medmod', title: '매개/조절', overview: 'How vs When', thought: '"메커니즘? 조건?"',
-        content: '<p><b>매개</b>: X→M→Y ("어떻게")</p><p><b>조절</b>: X×Z ("언제/누구")</p><div class="box-y"><b>✅ 체크</b>: 인과 순서? 부트스트래핑?</div>' }
+        content: '<p><b>매개 (Mediation)</b>: X→M→Y ("어떻게" 작용하나)</p><p><b>조절 (Moderation)</b>: X×Z ("언제/누구에게" 효과 달라지나)</p><div class="box-y"><b>✅ 체크</b>: 인과 순서 맞나? 부트스트래핑(bootstrap) 사용?</div>' }
     ]},
     { name: '연구 타당도', emoji: '✅', color: '#059669', steps: [
       { id: 'validity4', title: '4가지 타당도', overview: '연구 질 평가', thought: '"연구가 타당?"',
@@ -562,7 +606,7 @@ var ADVANCED = {
       { id: 'study_design', title: '연구설계 판별', overview: 'RCT/준실험/관찰', thought: '"어떤 연구?"',
         content: '<p><b>Methods에서</b>:</p><ul><li>"randomly" → <b>RCT</b></li><li>"intervention" (무작위X) → <b>준실험</b></li><li>"observational" → <b>관찰</b></li></ul><div class="box-g">RCT: 인과 가능</div><div class="box-r">관찰: 인과 불가</div>' },
       { id: 'reliability', title: '신뢰도', overview: '측정 일관성', thought: '"측정이 일관적?"',
-        content: '<ul><li><b>Cronbach α</b>: 내적 일관성 ≥0.70</li><li><b>검사-재검사</b>: 시간 안정성 r≥0.70</li><li><b>평정자 간</b>: 평가자 일치 κ≥0.60</li></ul><div class="box-y"><b>✅ 체크</b>: Methods에서 신뢰도 보고 확인</div>' },
+        content: '<ul><li><b>Cronbach α</b> (크론바흐 알파): 내적 일관성 ≥0.70</li><li><b>검사-재검사</b>: 시간 안정성 r≥0.70</li><li><b>평정자 간 신뢰도</b>: 평가자 일치 κ(카파)≥0.60</li></ul><div class="box-y"><b>✅ 체크</b>: Methods에서 신뢰도 지표 보고 확인</div>' },
       { id: 'weird', title: 'WEIRD 문제', overview: '표본 대표성', thought: '"누구 대상?"',
         content: '<p><b>WEIRD</b>: Western, Educated, Industrialized, Rich, Democratic</p><div class="box-r">심리학 ~96%가 인구 12%에서!</div><p><b>✅ 체크</b>: 다른 문화에도?</p>' },
       { id: 'samplebias', title: '표본 편향 유형', overview: '체계적 오류', thought: '"편향이 있나?"',
@@ -570,30 +614,32 @@ var ADVANCED = {
     ]},
     { name: '재현성 문제', emoji: '🔄', color: '#dc2626', steps: [
       { id: 'phacking', title: 'p-hacking', overview: '분석 조작', thought: '"데이터 조작?"',
-        content: '<p><b>수법</b>: 유의할 때까지 수집, 공변량 조합, 이상치 제거</p>',
-        detail: '<p><b>🔴 의심 신호</b>:</p><ul><li>□ p가 0.05 근처 몰림</li><li>□ "추가 분석에서" 유의</li><li>□ 아웃라이어 제거 후 유의</li><li>□ 여러 DV 중 하나만 유의</li></ul><div class="box-y">2개↑ = 의심!</div>' },
+        content: '<p><b>p-해킹</b>: 유의한 결과 나올 때까지 분석 조작</p><p><b>수법</b>: 유의할 때까지 데이터 추가 수집, 공변량 조합 시도, 이상치 선택적 제거</p>',
+        detail: '<p><b>🔴 의심 신호</b>:</p><ul><li>□ p가 0.05 바로 아래 몰림 (p=.048, .043...)</li><li>□ "추가 분석에서" 갑자기 유의</li><li>□ 아웃라이어 제거 후에만 유의</li><li>□ 여러 종속변수 중 하나만 유의</li></ul><div class="box-y">2개↑ 해당시 = 강하게 의심!</div>' },
       { id: 'harking', title: 'HARKing', overview: '사후 가설', thought: '"가설이 진짜?"',
-        content: '<p><b>정의</b>: 결과 확인 후 가설 생성</p><p><b>✅ 의심 신호</b>:</p><ul><li>□ 사전등록 없음</li><li>□ 가설과 결과가 너무 완벽히 일치</li></ul>' },
+        content: '<p><b>HARKing</b>: Hypothesizing After Results are Known<br>(결과 확인 후 가설 만들기)</p><p><b>✅ 의심 신호</b>:</p><ul><li>□ 사전등록 없음</li><li>□ 가설과 결과가 너무 완벽히 일치</li></ul>' },
       { id: 'prereg', title: '사전등록', overview: '연구 계획 공개', thought: '"미리 등록?"',
         content: '<p><b>포함</b>: 가설, 설계, 표본크기, 분석 계획</p><p><b>플랫폼</b>: OSF, AsPredicted</p><div class="box-y"><b>✅ 실행</b>: 논문에서 "preregistered" 검색!</div>' },
       { id: 'pubbias', title: '출판 편향', overview: '유의한 것만 출판', thought: '"출판 안 된 건?"',
-        content: '<p>유의한 결과만 출판 → 메타분석 왜곡</p><p><b>탐지 방법</b>:</p><ul><li><b>Funnel Plot</b>: 비대칭이면 의심</li><li><b>Egger\'s Test</b>: 통계적 검정</li><li><b>Trim and Fill</b>: 누락 연구 추정</li></ul><div class="box-y"><b>✅ 체크</b>: 메타분석에서 편향 검토?</div>' }
+        content: '<p>유의한 결과만 출판 → 전체 그림 왜곡</p><p><b>탐지 방법</b>:</p><ul><li><b>Funnel Plot</b>: 깔때기 그래프 비대칭이면 의심</li><li><b>Egger\'s Test</b>: 비대칭 통계 검정</li><li><b>Trim and Fill</b>: 누락 연구 수 추정</li></ul><div class="box-y"><b>✅ 체크</b>: 메타분석에서 출판 편향 검토했나?</div>' }
     ]},
     { name: '베이지안 심화', emoji: '📐', color: '#8b5cf6', steps: [
       { id: 'sens_spec', title: '민감도/특이도', overview: '검사 성능', thought: '"검사가 정확?"',
-        content: '<ul><li><b>민감도</b>: 환자 중 양성 (진양성률)</li><li><b>특이도</b>: 정상 중 음성 (진음성률)</li></ul><div class="box-y"><b>SnNout</b>: 민감도↑ → 음성이면 배제<br><b>SpPin</b>: 특이도↑ → 양성이면 확진</div>' },
+        content: '<ul><li><b>민감도</b> (Sensitivity): 환자 중 양성 비율</li><li><b>특이도</b> (Specificity): 정상 중 음성 비율</li></ul><div class="box-y"><b>암기법</b>:<br><b>SnNout</b>: 민감도↑ → 음성이면 배제 (Sensitivity rules out)<br><b>SpPin</b>: 특이도↑ → 양성이면 확진 (Specificity rules in)</div>' },
       { id: 'ppv_npv', title: 'PPV/NPV', overview: '예측력', thought: '"양성이면 진짜?"',
-        content: '<p><b>PPV</b>: 양성 중 실제 환자</p><div class="box-r"><b>핵심</b>: 유병률에 크게 영향!</div><p>민감도/특이도 95%일 때:</p><ul><li>유병률 1%: PPV≈16%</li><li>유병률 10%: PPV≈68%</li></ul>' },
+        content: '<ul><li><b>PPV</b> (Positive Predictive Value): 양성 중 실제 환자</li><li><b>NPV</b> (Negative Predictive Value): 음성 중 실제 정상</li></ul><div class="box-r"><b>핵심</b>: 유병률에 크게 영향!</div><p>민감도/특이도 95%일 때:</p><ul><li>유병률 1%: PPV≈16%</li><li>유병률 10%: PPV≈68%</li></ul>' },
       { id: 'rare_paradox', title: '희귀질병 역설', overview: '낮은 기저율 함정', thought: '"99% 정확한데?"',
         content: '<div class="box-g"><b>계산</b>: 유병률 0.1%, 99% 정확<br>→ PPV ≈ <b>9%</b></div><div class="box-r"><b>✅ 핵심</b>: "99% 정확" → 기저율 확인!</div>' },
+      { id: 'lr', title: '우도비 (LR)', overview: '증거의 강도', thought: '"이 증거가 얼마나 강력?"',
+        content: '<p><b>우도비 (Likelihood Ratio)</b>: 증거가 가설을 얼마나 지지하는지</p><p><b>LR = P(증거|가설참) / P(증거|가설거짓)</b></p><ul><li>LR > 10: 강력한 증거</li><li>LR 3-10: 중간 증거</li><li>LR ≈ 1: 증거 아님 (아무 정보 없음)</li><li>LR < 0.1: 강력히 가설 배제</li></ul><div class="box-y"><b>✅ 활용</b>: 사전확률 × LR ≈ 사후확률</div>' },
       { id: 'bf', title: 'Bayes Factor', overview: '가설 비교', thought: '"어느 가설이?"',
-        content: '<p><b>Jeffreys 척도</b>:</p><ul><li>1-3: 언급 가치 없음</li><li>3-10: 중간</li><li>10-30: 강함</li><li>>100: 결정적</li></ul><div class="box-y">p-값과 달리 귀무가설 지지도 정량화!</div>' }
+        content: '<p><b>베이즈 팩터 (BF)</b>: 두 가설의 상대적 증거 강도</p><p><b>Jeffreys 기준</b>:</p><ul><li>1-3: 언급 가치 없음</li><li>3-10: 중간 증거</li><li>10-30: 강한 증거</li><li>>100: 결정적</li></ul><div class="box-y">p-값과 달리 귀무가설 지지도 정량화 가능!</div>' }
     ]},
     { name: '탈편향 전략', emoji: '🛡️', color: '#dc2626', steps: [
       { id: 'premortem', title: 'Pre-mortem', overview: '미리 실패 상상', thought: '"왜 실패할까?"',
-        content: '<p><b>절차</b>:</p><div class="num-list"><div>① "1년 후 대실패했다. 왜?"</div><div>② 실패 이유 3-5개 구체적으로 적기</div><div>③ 각 이유에 대한 대책 수립</div></div><div class="box-g"><b>효과</b>: 과신↓, 위험 가시화, 팀 내 의견 표출 촉진</div>' },
+        content: '<p><b>프리모템</b>: 프로젝트 시작 전 "이미 실패했다" 가정하고 원인 분석</p><div class="num-list"><div>① "1년 후 대실패했다. 왜?"</div><div>② 실패 이유 3-5개 구체적으로 적기</div><div>③ 각 이유에 대한 대책 수립</div></div><div class="box-g"><b>효과</b>: 과신↓, 위험 가시화, 팀 내 의견 표출 촉진</div>' },
       { id: 'redteam', title: 'Red Team', overview: '적대적 관점', thought: '"공격한다면?"',
-        content: '<p>일부가 의도적 반대 역할</p><ul><li>모든 가정에 도전</li><li>최악 시나리오 제시</li></ul><div class="box-y"><b>✅ 핵심</b>: 반론 제기자 보호 필수!</div>' },
+        content: '<p><b>레드팀</b>: 일부가 의도적으로 반대 역할 수행</p><ul><li>모든 가정에 도전</li><li>최악 시나리오 제시</li><li>"이게 실패한다면 왜?"</li></ul><div class="box-y"><b>✅ 핵심</b>: 반론 제기자 보호 필수! 처벌하면 침묵함.</div>' },
       { id: 'steelman', title: 'Steelmanning', overview: '상대 최강 버전', thought: '"최선의 해석?"',
         content: '<p><b>Strawman</b>: 상대 약화해서 공격</p><p><b>Steelman</b>: 상대 <b>최강 버전</b>으로 반박</p><div class="box-g"><b>효과</b>: 진짜 약점 발견</div>' },
       { id: 'consider', title: '반대 고려', overview: '"틀렸다면?"', thought: '"틀렸다면?"',
@@ -614,39 +660,77 @@ var ADVANCED = {
 
 // ========== SOS 데이터 ==========
 var SOS = [
-  { emoji: '😵', title: '이해가 안 돼', strategies: [
-    { action: '문장 쪼개기', hint: '긴 문장을 마침표로 끊어. 주어-동사 먼저.' },
-    { action: '첫 문장만 연결', hint: '각 문단 첫 문장만 읽고 전체 흐름 파악.' },
-    { action: '결론부터', hint: '마지막 문단부터 거슬러 올라가며 읽기.' },
-    { action: '쉬운 자료 먼저', hint: '위키, 유튜브 해설로 배경 채우고 다시.' },
-    { action: '용어 정리', hint: '모르는 용어가 벽. 먼저 정의 찾기.' }
+  { emoji: '😤', title: '시작이 안 돼', 
+    first: '책/문서 표지만 펴. 그게 오늘의 성공.',
+    strategies: [
+    { action: '2분 규칙', hint: '"2분만 하고 그만둬도 됨." 대부분 계속하게 됨.' },
+    { action: '가장 쉬운 것', hint: '목차 보기, 그림만 보기, 제목만 읽기. 뭐든 OK.' },
+    { action: '장소 이동', hint: '카페, 도서관, 다른 방. 환경이 시작을 만듦.' },
+    { action: '시작 의식', hint: '"책 펴고 커피 한 모금"처럼 매번 같은 루틴.' },
+    { action: '누군가에게 선언', hint: '"지금부터 30분 읽는다" 말하거나 문자.' }
   ]},
-  { emoji: '🤔', title: '기억이 안 나', strategies: [
-    { action: '덮고 말하기', hint: '10초 안에 "핵심은..." 소리내어.' },
-    { action: '키워드 3개', hint: '가장 중요한 단어 3개만 떠올리기.' },
-    { action: '그림으로', hint: '마인드맵, 다이어그램으로 관계 표현.' },
-    { action: '가르쳐보기', hint: '"이건 말이야..." 혼잣말로 설명.' },
-    { action: '테스트', hint: '다시 읽지 말고 문제 풀어보기.' }
+  { emoji: '😴', title: '지루해 / 흥미 없어', 
+    first: '"이게 나랑 뭔 상관?" 연결고리 1개만 찾아보기.',
+    strategies: [
+    { action: '연결고리 찾기', hint: '내 삶, 관심사, 미래와 어떻게 연결되나?' },
+    { action: '게임화', hint: '"5분 안에 핵심 3개 찾기" 스스로 미션 부여.' },
+    { action: '형식 바꾸기', hint: '유튜브 해설, 팟캐스트, 오디오북으로 같은 내용.' },
+    { action: '가르칠 사람 상상', hint: '"친구에게 설명한다면?" 목적이 생기면 흥미↑' },
+    { action: '건너뛰기', hint: '지루한 부분 ⭐표시하고 넘기기. 나중에 필요하면 돌아옴.' }
   ]},
-  { emoji: '🤯', title: '집중이 안 돼', strategies: [
-    { action: '5분만 규칙', hint: '5분 타이머. 일단 시작하면 이어짐.' },
-    { action: '소리내어 읽기', hint: '눈+귀+입 = 강제 집중.' },
-    { action: '환경 리셋', hint: '폰 다른 방, 책상 정리, 2분 환기.' },
-    { action: '목표 축소', hint: '"1페이지만", "5분만". 작은 성공 쌓기.' },
-    { action: '몸 움직이기', hint: '2분 스트레칭, 10번 스쿼트.' }
+  { emoji: '🤯', title: '집중이 안 돼', 
+    first: '타이머 5분 설정. 지금 바로 시작.',
+    strategies: [
+    { action: '5분 타이머', hint: '5분만 버텨. 뇌가 몰입 모드 들어가면 계속됨.' },
+    { action: '소리내어 읽기', hint: '눈+귀+입 = 딴생각 끼어들 틈 없음.' },
+    { action: '손가락 따라가기', hint: '읽는 줄을 손가락으로 짚으며. 눈 이탈 방지.' },
+    { action: '환경 리셋', hint: '폰 다른 방. 알림 끄기. 책상 위 책만.' },
+    { action: '신체 리셋', hint: '2분 스트레칭, 찬물 세수, 창문 열기.' }
   ]},
-  { emoji: '🌲', title: '길을 잃었어', strategies: [
-    { action: '목차 확인', hint: '"지금 어디?" 전체에서 내 위치 확인.' },
-    { action: '여기까지 정리', hint: '"지금까지는..." 한 줄 요약.' },
-    { action: '구조 그리기', hint: '박스+화살표로 구조 그리기.' },
-    { action: '처음으로', hint: '서론 다시 읽기. 저자 의도 다시 확인.' }
+  { emoji: '😵', title: '이해가 안 돼', 
+    first: '문장에서 주어-동사만 먼저 찾아.',
+    strategies: [
+    { action: '문장 쪼개기', hint: '긴 문장 → 주어/동사 찾기. 나머지는 부가 정보.' },
+    { action: '모르는 것 인정', hint: '"뭘 모르지?" 구체화. 막연한 "몰라"는 해결 불가.' },
+    { action: '배경지식 채우기', hint: '위키, 유튜브 5분. 기초 없이 응용 이해 불가.' },
+    { action: '첫 문장 연결', hint: '각 문단 첫 문장만 읽어 전체 흐름 먼저 파악.' },
+    { action: '거꾸로 읽기', hint: '결론(마지막)부터 읽으면 저자 의도 파악 쉬움.' }
   ]},
-  { emoji: '😰', title: '너무 어려워', strategies: [
-    { action: '난이도 낮추기', hint: '입문서, 해설 영상 먼저.' },
-    { action: '건너뛰기', hint: '⭐ 표시하고 일단 넘기기.' },
-    { action: '부분만 목표', hint: '"전부" 포기. "핵심 3개만".' },
-    { action: '휴식', hint: '뇌도 처리 시간 필요. 자고 나면 이해될 수도.' },
-    { action: '질문 바꾸기', hint: '"이해해야 해" → "뭘 모르지?" 구체화.' }
+  { emoji: '🤔', title: '기억이 안 나', 
+    first: '책 덮고 3초 안에 "핵심은..." 말해보기.',
+    strategies: [
+    { action: '즉시 말하기', hint: '읽자마자 덮고 한마디. 못하면 다시 읽기.' },
+    { action: '키워드 3개', hint: '이 섹션의 핵심 단어 3개만. 문장 말고 단어.' },
+    { action: '연결짓기', hint: '"이건 전에 배운 X와 비슷하네" 기존 지식에 연결.' },
+    { action: '그림/도식', hint: '관계를 화살표로, 구조를 박스로. 시각화=기억.' },
+    { action: '간격 두고 복습', hint: '10분 후, 1시간 후, 다음 날. 잊을 때쯤 다시.' }
+  ]},
+  { emoji: '🌲', title: '길을 잃었어', 
+    first: '목차 펴고 "지금 여기" 손가락으로 짚기.',
+    strategies: [
+    { action: '목차 확인', hint: '"전체에서 지금 어디?" 위치 파악이 먼저.' },
+    { action: '여기까지 요약', hint: '"지금까지 내용은..." 한 문장으로. 못하면 다시.' },
+    { action: '원래 질문 상기', hint: '"내가 뭘 찾으려고 했지?" 목적 잃으면 헤맴.' },
+    { action: '구조 그리기', hint: '박스와 화살표로 지금까지 내용 정리.' },
+    { action: '처음으로', hint: '서론/개요 다시 읽기. 저자 의도 재확인.' }
+  ]},
+  { emoji: '⏰', title: '시간이 없어', 
+    first: '결론부터. 마지막 문단 + 각 섹션 첫 문장만.',
+    strategies: [
+    { action: '결론 먼저', hint: '마지막 섹션/문단부터 읽기. 핵심은 거기 있음.' },
+    { action: '첫+끝 문장만', hint: '각 섹션의 첫 문장과 끝 문장. 중간은 예시일 뿐.' },
+    { action: '굵은 글씨만', hint: '제목, 소제목, 굵은 글씨, 박스만 훑기.' },
+    { action: '완벽 포기', hint: '"전부 이해"는 불가능. "핵심 3개"로 목표 축소.' },
+    { action: '나중에 표시', hint: '중요해 보이는 곳 ⭐표시만 하고 넘기기.' }
+  ]},
+  { emoji: '😰', title: '너무 힘들어', 
+    first: '"힘들다" 인정. 그리고 딱 1분만 해보기.',
+    strategies: [
+    { action: '감정 인정', hint: '"어렵고 짜증난다" OK. 부정하면 더 힘듦.' },
+    { action: '1분만', hint: '1분 타이머. 1분 후 계속할지 말지 결정.' },
+    { action: '난이도 낮추기', hint: '입문서, 요약본, 해설 영상으로 먼저.' },
+    { action: '쉬는 것도 전략', hint: '뇌도 처리 시간 필요. 자고 나면 이해되기도.' },
+    { action: '작은 성공', hint: '"1페이지 읽음" "용어 3개 찾음" 작은 것도 성공.' }
   ]}
 ];
 
@@ -665,28 +749,31 @@ var state = {
   timer: 25*60,
   timerRunning: false,
   timerPreset: 25,
-  justCompleted: false
+  justCompleted: false,
+  lastViewed: {} // type별 마지막 본 위치 {academic: {phase: 0, step: 2}, ...}
 };
 var timerInterval = null;
 
 // localStorage 저장/복원
 function saveState() {
   try {
-    localStorage.setItem('readingGuideV17', JSON.stringify({
+    localStorage.setItem('readingGuideV18', JSON.stringify({
       type: state.type,
       completed: state.completed,
-      checked: state.checked
+      checked: state.checked,
+      lastViewed: state.lastViewed
     }));
   } catch(e) {}
 }
 function loadState() {
   try {
-    var saved = localStorage.getItem('readingGuideV17');
+    var saved = localStorage.getItem('readingGuideV18');
     if (saved) {
       var s = JSON.parse(saved);
       if (s.type) state.type = s.type;
       if (s.completed) state.completed = s.completed;
       if (s.checked) state.checked = s.checked;
+      if (s.lastViewed) state.lastViewed = s.lastViewed;
     }
   } catch(e) {}
 }
@@ -807,8 +894,18 @@ function renderOverview() {
   var protocol = PROTOCOLS[state.type];
   var h = '<div class="top-bar">';
   h += '<button class="back-btn" onclick="goBack()">← 선택</button>';
+  h += '<button class="reset-btn" onclick="goHome()">🏠</button>';
   h += '</div>';
   h += '<h2>' + protocol.icon + ' ' + protocol.name + '</h2>';
+  
+  // 이어서 보기 버튼 (마지막 본 위치 있으면)
+  var lastPos = state.lastViewed[state.type];
+  if (lastPos && protocol.phases[lastPos.phase] && protocol.phases[lastPos.phase].steps[lastPos.step]) {
+    var lastStep = protocol.phases[lastPos.phase].steps[lastPos.step];
+    h += '<button class="continue-btn" onclick="goToDetail(' + lastPos.phase + ',' + lastPos.step + ')">';
+    h += '▶️ 이어서: ' + lastStep.title;
+    h += '</button>';
+  }
   
   // 장르 선택 (학술서만)
   if (state.type === 'academic') {
@@ -840,9 +937,10 @@ function renderOverview() {
     h += '</div>';
     h += '<div class="phase-body">';
     phase.steps.forEach(function(step, sIdx) {
-      h += '<div class="step-item" onclick="goToDetail(' + pIdx + ',' + sIdx + ')">';
+      var isLastViewed = lastPos && lastPos.phase === pIdx && lastPos.step === sIdx;
+      h += '<div class="step-item' + (isLastViewed ? ' last-viewed' : '') + '" onclick="goToDetail(' + pIdx + ',' + sIdx + ')">';
       h += '<div class="step-num" style="background:' + protocol.color + '">' + (sIdx + 1) + '</div>';
-      h += '<div class="step-info"><div class="step-title">' + step.title + '</div><div class="step-overview">' + step.overview + '</div></div>';
+      h += '<div class="step-info"><div class="step-title">' + step.title + (isLastViewed ? ' <span class="last-badge">최근</span>' : '') + '</div><div class="step-overview">' + step.overview + '</div></div>';
       h += '<span class="step-arrow">▶</span>';
       h += '</div>';
     });
@@ -871,20 +969,49 @@ function renderDetail() {
   h += '<div class="detail-thought-text" style="color:' + protocol.color + '">' + step.thought + '</div>';
   h += '</div>';
   
-  // content는 항상 표시
-  h += '<div class="detail-content">' + step.content + '</div>';
-  
-  // 체크리스트가 있으면 세부사항으로
-  if (step.chk) {
-    h += '<button class="toggle-btn" style="border:2px solid ' + protocol.color + ';background:' + (state.showContent ? protocol.color : 'white') + ';color:' + (state.showContent ? 'white' : protocol.color) + '" onclick="toggleContent()">✓ 체크리스트 ' + (state.showContent ? '▲' : '▼') + '</button>';
+  // 핵심 모드: core가 있으면 먼저 표시
+  if (step.core) {
+    h += '<div class="detail-core">';
+    h += '<div class="detail-core-label">⭐ 지금 할 일</div>';
+    h += '<div class="detail-core-text">' + step.core + '</div>';
+    h += '</div>';
+    
+    // 상세 보기 버튼
+    h += '<button class="toggle-btn" style="border:2px solid ' + protocol.color + ';background:' + (state.showContent ? protocol.color : 'white') + ';color:' + (state.showContent ? 'white' : protocol.color) + '" onclick="toggleContent()">📖 상세 보기 ' + (state.showContent ? '▲' : '▼') + '</button>';
+    
     if (state.showContent) {
-      h += '<div class="chk">';
-      step.chk.forEach(function(c, i) {
-        var cid = step.id + '-c' + i;
-        h += '<div class="chk-item"><div class="chk-box ' + (state.checked[cid] ? 'on' : '') + '" onclick="toggleChk(\'' + cid + '\')">' + (state.checked[cid] ? '✓' : '') + '</div><span>' + c + '</span></div>';
-      });
-      h += '</div>';
+      h += '<div class="detail-content">' + step.content + '</div>';
+      // 체크리스트도 함께 표시
+      if (step.chk) {
+        h += '<div class="chk">';
+        step.chk.forEach(function(c, i) {
+          var cid = step.id + '-c' + i;
+          h += '<div class="chk-item"><div class="chk-box ' + (state.checked[cid] ? 'on' : '') + '" onclick="toggleChk(\'' + cid + '\')">' + (state.checked[cid] ? '✓' : '') + '</div><span>' + c + '</span></div>';
+        });
+        h += '</div>';
+      }
     }
+  } else {
+    // 기존 로직: content 항상 표시
+    h += '<div class="detail-content">' + step.content + '</div>';
+    
+    // 체크리스트가 있으면 세부사항으로
+    if (step.chk) {
+      h += '<button class="toggle-btn" style="border:2px solid ' + protocol.color + ';background:' + (state.showContent ? protocol.color : 'white') + ';color:' + (state.showContent ? 'white' : protocol.color) + '" onclick="toggleContent()">✓ 체크리스트 ' + (state.showContent ? '▲' : '▼') + '</button>';
+      if (state.showContent) {
+        h += '<div class="chk">';
+        step.chk.forEach(function(c, i) {
+          var cid = step.id + '-c' + i;
+          h += '<div class="chk-item"><div class="chk-box ' + (state.checked[cid] ? 'on' : '') + '" onclick="toggleChk(\'' + cid + '\')">' + (state.checked[cid] ? '✓' : '') + '</div><span>' + c + '</span></div>';
+        });
+        h += '</div>';
+      }
+    }
+  }
+  
+  // 연구 근거 항상 표시 (버튼 없이)
+  if (step.detail) {
+    h += '<div class="detail-evidence">' + step.detail + '</div>';
   }
   
   h += '</div></div>';
@@ -957,12 +1084,30 @@ function renderThinkingDetail() {
   h += '<div class="detail-thought-text" style="color:' + color + '">' + step.thought + '</div>';
   h += '</div>';
   
-  h += '<div class="detail-content">' + step.content + '</div>';
-  
-  if (step.detail) {
-    h += '<button class="toggle-btn" style="border:2px solid ' + color + ';background:' + (state.showContent ? color : 'white') + ';color:' + (state.showContent ? 'white' : color) + '" onclick="toggleContent()">🔍 세부사항 ' + (state.showContent ? '▲' : '▼') + '</button>';
+  // 핵심 모드: core가 있으면 먼저 표시
+  if (step.core) {
+    h += '<div class="detail-core">';
+    h += '<div class="detail-core-label">⭐ 핵심</div>';
+    h += '<div class="detail-core-text">' + step.core + '</div>';
+    h += '</div>';
+    
+    h += '<button class="toggle-btn" style="border:2px solid ' + color + ';background:' + (state.showContent ? color : 'white') + ';color:' + (state.showContent ? 'white' : color) + '" onclick="toggleContent()">📖 상세 보기 ' + (state.showContent ? '▲' : '▼') + '</button>';
+    
     if (state.showContent) {
-      h += '<div class="detail-extra">' + step.detail + '</div>';
+      h += '<div class="detail-content">' + step.content + '</div>';
+      if (step.detail) {
+        h += '<div class="detail-extra">' + step.detail + '</div>';
+      }
+    }
+  } else {
+    // 기존 로직
+    h += '<div class="detail-content">' + step.content + '</div>';
+    
+    if (step.detail) {
+      h += '<button class="toggle-btn" style="border:2px solid ' + color + ';background:' + (state.showContent ? color : 'white') + ';color:' + (state.showContent ? 'white' : color) + '" onclick="toggleContent()">🔍 세부사항 ' + (state.showContent ? '▲' : '▼') + '</button>';
+      if (state.showContent) {
+        h += '<div class="detail-extra">' + step.detail + '</div>';
+      }
     }
   }
   
@@ -988,12 +1133,30 @@ function renderAdvancedDetail() {
   h += '<div class="detail-thought-text" style="color:' + color + '">' + step.thought + '</div>';
   h += '</div>';
   
-  h += '<div class="detail-content">' + step.content + '</div>';
-  
-  if (step.detail) {
-    h += '<button class="toggle-btn" style="border:2px solid ' + color + ';background:' + (state.showContent ? color : 'white') + ';color:' + (state.showContent ? 'white' : color) + '" onclick="toggleContent()">🔍 세부사항 ' + (state.showContent ? '▲' : '▼') + '</button>';
+  // 핵심 모드: core가 있으면 먼저 표시
+  if (step.core) {
+    h += '<div class="detail-core">';
+    h += '<div class="detail-core-label">⭐ 핵심</div>';
+    h += '<div class="detail-core-text">' + step.core + '</div>';
+    h += '</div>';
+    
+    h += '<button class="toggle-btn" style="border:2px solid ' + color + ';background:' + (state.showContent ? color : 'white') + ';color:' + (state.showContent ? 'white' : color) + '" onclick="toggleContent()">📖 상세 보기 ' + (state.showContent ? '▲' : '▼') + '</button>';
+    
     if (state.showContent) {
-      h += '<div class="detail-extra">' + step.detail + '</div>';
+      h += '<div class="detail-content">' + step.content + '</div>';
+      if (step.detail) {
+        h += '<div class="detail-extra">' + step.detail + '</div>';
+      }
+    }
+  } else {
+    // 기존 로직
+    h += '<div class="detail-content">' + step.content + '</div>';
+    
+    if (step.detail) {
+      h += '<button class="toggle-btn" style="border:2px solid ' + color + ';background:' + (state.showContent ? color : 'white') + ';color:' + (state.showContent ? 'white' : color) + '" onclick="toggleContent()">🔍 세부사항 ' + (state.showContent ? '▲' : '▼') + '</button>';
+      if (state.showContent) {
+        h += '<div class="detail-extra">' + step.detail + '</div>';
+      }
     }
   }
   
@@ -1004,7 +1167,7 @@ function renderAdvancedDetail() {
 
 function renderSOS() {
   var h = '<h2>🆘 막혔을 때</h2>';
-  h += '<p class="subtitle">상황에 맞는 카드 탭해서 열기</p>';
+  h += '<p class="subtitle">지금 상황 탭 → 첫 번째 행동부터</p>';
   
   SOS.forEach(function(item, idx) {
     var isOpen = state.sosOpen === idx;
@@ -1014,8 +1177,13 @@ function renderSOS() {
     h += '<span class="sos-title">' + item.title + '</span>';
     h += '<span style="margin-left:auto;color:#94a3b8">' + (isOpen ? '▲' : '▼') + '</span>';
     h += '</div>';
+    // 첫 번째 행동 항상 표시
+    h += '<div class="sos-first" onclick="toggleSOS(' + idx + ')">';
+    h += '<span class="sos-first-label">👉 지금 바로:</span> ' + item.first;
+    h += '</div>';
     if (isOpen) {
       h += '<div class="sos-body">';
+      h += '<div class="sos-more-label">더 많은 전략:</div>';
       item.strategies.forEach(function(s) {
         h += '<div class="sos-strat">';
         h += '<div class="sos-action">' + s.action + '</div>';
@@ -1107,6 +1275,11 @@ window.goToDetail = function(pIdx, sIdx) {
   state.stepIdx = sIdx;
   state.mode = 'detail';
   state.showContent = true;
+  // 마지막 본 위치 저장
+  if (state.type) {
+    state.lastViewed[state.type] = { phase: pIdx, step: sIdx };
+    saveState();
+  }
   render();
 };
 
